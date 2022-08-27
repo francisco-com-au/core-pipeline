@@ -1,0 +1,3 @@
+name: core-pipeline
+runtime: nodejs
+description: Core pipeline to deploy GCP components
