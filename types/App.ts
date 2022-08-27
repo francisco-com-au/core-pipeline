@@ -19,7 +19,7 @@ interface App extends KRM {
         }
         
         /* GCP configuration */
-        gcp: {
+        gcp?: {
             /* Can add extra IAM bindings here */
             roleBindings?: RoleBinding[];
             /* Can enable extra APIs here */
