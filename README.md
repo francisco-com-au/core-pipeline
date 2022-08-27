@@ -27,12 +27,12 @@ application
 
 # Cross-tool logical relationship 
 
-| Logical component | Google Cloud | Kubernetes | GitHub       | ArgoCD      |
-|:-----------------:|:------------:|:----------:|:------------:|:-----------:|
-| App               | Folder       | Namespace  | Organization | Project     |
-| Environment       | Project      | Cluster    | Branch       |             |
-| Component         |              |            | Repository   | Application |
-| Container         |              | Manifests  | Subfolder    |             |
+| Logical component | Google Cloud | Kubernetes | GitHub       | ArgoCD      | Traffic       |
+|:-----------------:|:------------:|:----------:|:------------:|:-----------:|:-------------:|
+| App               | Folder       | Namespace  | Organization | Project     | domain name   |
+| Environment       | Project      | Cluster    | Branch       |             | ?             |
+| Component         |              |            | Repository   | Application | domain prefix |
+| Container         |              | Manifests  | Subfolder    |             | path          |
 
 # Dependencies
 - GCP Organization must be created (bootstrap)
