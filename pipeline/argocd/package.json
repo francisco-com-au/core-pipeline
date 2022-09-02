@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "typescript": "^4.8.2"
+  },
+  "dependencies": {
+    "@pulumi/kubernetes": "^3.21.0"
+  }
+}

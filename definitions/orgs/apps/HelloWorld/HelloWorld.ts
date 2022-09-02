@@ -8,8 +8,9 @@ const HelloWorld: App = {
         name: "hello-world"
     },
     spec: {
-        name: "hello-world",
-        description: "Hello World application",
+        id: "hw",
+        name: "Hello World",
+        description: "Toy application to test the core pipeline",
         github: {
             organization: "test-hello-world",
         },
@@ -18,10 +19,17 @@ const HelloWorld: App = {
             type: "dev",
             branch: "develop",
         }],
+        gcp: {
+            apis: [
+                "alloydb.googleapis.com",
+                "compute.googleapis.com", // needed for alloydb clusters
+                "servicenetworking.googleapis.com", // needed for alloydb clusters
+            ],
+        },
         components: []
     }
 }
-Website.spec.app = HelloWorld.spec.name;
+Website.spec.app = HelloWorld.spec.id;
 HelloWorld.spec.components?.push(Website);
 
 export { HelloWorld }

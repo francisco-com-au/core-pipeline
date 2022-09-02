@@ -2,6 +2,8 @@ import { KRM } from './KRM'
 
 interface Container extends KRM {
     spec: {
+        /* Short name */
+        id: string;
         /* Name of the container. Example: "static" or "api" */
         name: string;
         /* Free text description. Example: "Contains the static assets wrapped in an NGINX server" */

@@ -7,6 +7,7 @@ const Nginx: Container = {
         name: "nginx"
     },
     spec: {
+        id: "nginx",
         name: "nginx",
         description: "Boilerplate NGINX container",
         image: "nginx:latest"

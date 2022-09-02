@@ -1,8 +1,11 @@
 import { KRM } from "./KRM";
 import { Container } from "./Container";
+import { Apis, RoleBinding } from "./GCP";
 
 interface Component extends KRM {
     spec: {
+        /* Short name  */
+        id: string;
         /* Name of the component. Example: "website" */
         name: string;
         /* Free text description. Example: "Front End. Includes Static and API" */
@@ -20,6 +23,14 @@ interface Component extends KRM {
             repo: string;
             /* Name of the GitHub organization to use. If omitted the App's configuration applies. */
             organization?: string;
+        }
+
+        /* GCP configuration */
+        gcp?: {
+            /* Can add extra IAM bindings here */
+            roleBindings?: RoleBinding[];
+            /* Can enable extra APIs here */
+            apis?: Apis;
         }
 
         /* Containers to run. */

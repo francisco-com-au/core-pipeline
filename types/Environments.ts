@@ -1,3 +1,3 @@
-type EnvironmentTypes = "dev" | "test" | "prod"
+type EnvironmentTypes = "dev" | "test" | "staging" | "prod"
 
 export { EnvironmentTypes }
