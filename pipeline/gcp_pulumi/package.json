@@ -6,6 +6,9 @@
     },
     "dependencies": {
         "@pulumi/github": "^4.16.0",
-        "@pulumi/pulumi": "^3.0.0"
+        "@pulumi/pulumi": "^3.0.0",
+        "@types/dateformat": "^5.0.0",
+        "dateformat": "^5.0.3",
+        "moment": "^2.29.4"
     }
 }

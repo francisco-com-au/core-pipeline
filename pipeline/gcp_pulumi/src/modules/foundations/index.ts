@@ -5,6 +5,7 @@ import { Org } from "../../../../../types/Org"
 
 // Import packages
 import * as gcp from "@pulumi/gcp";
+import moment from 'moment'
 
 
 /*
@@ -112,11 +113,12 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                     projectId: projectId,
                     billingAccount: org.spec.gcp.billingId,
                     labels: {
-                        'organization': org.spec.id.replace(/ /g, '-').toLowerCase(),
-                        'app': app.spec.id.replace(/ /g, '-').toLowerCase(),
+                        'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
+                        'app': app.spec.name.replace(/ /g, '-').toLowerCase(),
                         'environment_name': `${app.spec.environments.find(e => e.name == envName)?.name}`.toLowerCase(),
                         'environment_type': `${app.spec.environments.find(e => e.name == envName)?.type}`.toLowerCase(),
                         'created_by': 'pulumi',
+                        'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
                     },
                 });
                 // Enable APIs
