@@ -19,6 +19,13 @@ const HelloWorld: App = {
             type: "dev",
             branch: "develop",
         }],
+        gcp: {
+            apis: [
+                "alloydb.googleapis.com",
+                "compute.googleapis.com", // needed for alloydb clusters
+                "servicenetworking.googleapis.com", // needed for alloydb clusters
+            ],
+        },
         components: []
     }
 }

@@ -1,6 +1,6 @@
 // Import types
 import { OrgFolders } from "../../types/folders";
-import {Apis} from "../../../../../types/GCP";
+import {Apis, RoleBinding} from "../../../../../types/GCP";
 import { Org } from "../../../../../types/Org"
 
 // Import packages
@@ -35,6 +35,7 @@ export function makeFolders(org: Org): OrgFolders {
     console.log(`org.spec.gcp.orgId ${org.spec.gcp.orgId}`)
     orgFolders[org.spec.id] = {
         gcpOrgId: org.spec.gcp.orgId,
+        roleBindings: org.spec.gcp.roleBindings,
         apps: {},
     };
     
@@ -45,9 +46,11 @@ export function makeFolders(org: Org): OrgFolders {
             environments: {}
         };
         app.spec.environments.forEach(environment => {
-            const roles = app.spec.gcp?.roleBindings?.filter(role => role.environment === environment.type)
+            const orgRoleBindings = org.spec.gcp.roleBindings?.filter(role => role.environment === environment.type) || [];
+            const appRoleBindings = app.spec.gcp?.roleBindings?.filter(role => role.environment === environment.type) || [];
+            const roleBindings: RoleBinding[] = [...orgRoleBindings, ...appRoleBindings];
             orgFolders[org.spec.id].apps[app.spec.id].environments[environment.name] = {
-                roles
+                roleBindings
             };
         });
     });
@@ -70,12 +73,12 @@ export function makeFolders(org: Org): OrgFolders {
                 });
                 orgFolders[orgId].apps[appId].environments[envName].gcpFolderId = envFolder.id;
                 // Apply IAM
-                app.environments[envName].roles?.forEach(role => {
-                    role.roles.forEach(gcpRole => {
-                        const folder = new gcp.folder.IAMMember(`${orgId}.${appId}.${envName}.${role.member}.${gcpRole}`, {
+                app.environments[envName].roleBindings?.forEach(roleBinding => {
+                    roleBinding.roles.forEach(role => {
+                        const folder = new gcp.folder.IAMMember(`${orgId}.${appId}.${envName}.${roleBinding.member}.${role}`, {
                             folder: envFolder.id,
-                            member: role.member,
-                            role: gcpRole,
+                            member: roleBinding.member,
+                            role: role,
                         });
                     });
                 });

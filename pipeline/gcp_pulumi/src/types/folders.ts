@@ -1,22 +1,20 @@
 import { Output } from "@pulumi/pulumi";
+import { RoleBinding } from "../../../../types/GCP";
 
-interface Role {
-    member: string;
-    roles: string[];
-};
 
 interface OrgFolders {
     [orgId: string]: {
         gcpOrgId: string;
+        roleBindings?: RoleBinding[];
         apps: {
             [appId: string]: {
                 name: string;
                 gcpFolderId?: Output<String>;
-                roles?: Role[];
+                roleBindings?: RoleBinding[];
                 environments: {
                     [envId: string]: {
                         gcpFolderId?: Output<String>;
-                        roles?: Role[];
+                        roleBindings?: RoleBinding[];
                     }
                 }
             }
