@@ -1,6 +1,6 @@
 import { RoleBinding } from '../../types/GCP';
 import { Org } from '../../types/Org';
-import { HelloWorld } from './apps/HelloWorld/HelloWorld';
+import { Lab } from './apps/Lab/Lab';
 
 const defaultRoles: RoleBinding[] = [{
     member: "user:franciscogalarza@gmail.com",
@@ -46,6 +46,6 @@ const Test: Org = {
     }
 }
 HelloWorld.spec.organization = Test.spec.id;
-Test.spec.apps?.push(HelloWorld)
+Test.spec.apps?.push(Lab)
 
 export { Test }

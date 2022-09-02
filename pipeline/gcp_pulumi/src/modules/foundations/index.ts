@@ -98,7 +98,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
             const environments = orgFolders[org.spec.id].apps[app.spec.id].environments;
             Object.keys(environments).forEach(envName => {
                 // Calculate project ID
-                const projectId = `${org.spec.id}-${app.spec.id}-${component.spec.id}-${envName}-2`;
+                const projectId = `${org.spec.id}-${app.spec.id}-${component.spec.id}-${envName}`;
                 // Calculate APIs to enable (inherit from org and app)
                 const apis: Apis = [];
                 org.spec.gcp?.apis?.forEach(api => apis.indexOf(api) === -1 ? apis.push(api) : null);
