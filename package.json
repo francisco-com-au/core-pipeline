@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@pulumi/gcp": "^6.36.0"
+  }
+}

@@ -4,6 +4,8 @@ import { KRM } from "./KRM"
 
 interface Org extends KRM {
     spec: {
+        /* Short name to append to use as an identifier and append to projectIds */
+        id: string;
         /* Name of the organization. Example: "main" */
         name: string;
         /* Free text description. Example: "This is the PROD org, where all the work happens" */

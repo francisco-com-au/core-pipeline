@@ -5,9 +5,11 @@ import { RoleBinding, Apis } from "./GCP"
 
 interface App extends KRM {
     spec: {
-        /* Name of the application. Example: "super-app". */
+        /* Short name to append to use as the projectIds */
+        id: string;
+        /* Name of the application. Example: "Super App". */
         name: string;
-        /* Free text description. Example: "Super App". */
+        /* Free text description. Example: "This App is the shit!". */
         description: string;
         /* Name of the parent organization. Can be populated programatically. */
         organization?: string;

@@ -8,6 +8,7 @@ const Website: Component = {
         name: "website"
     },
     spec: {
+        id: "website",
         name: "website",
         description: "Website",
         source: {
@@ -16,7 +17,7 @@ const Website: Component = {
         containers: []
     }
 }
-Nginx.spec.component = Website.spec.name;
+Nginx.spec.component = Website.spec.id;
 Website.spec.containers?.push(Nginx)
 
 export { Website }

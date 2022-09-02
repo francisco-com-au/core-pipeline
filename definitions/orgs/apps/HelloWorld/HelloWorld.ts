@@ -8,8 +8,9 @@ const HelloWorld: App = {
         name: "hello-world"
     },
     spec: {
-        name: "hello-world",
-        description: "Hello World application",
+        id: "hw",
+        name: "Hello World",
+        description: "Toy application to test the core pipeline",
         github: {
             organization: "test-hello-world",
         },
@@ -21,7 +22,7 @@ const HelloWorld: App = {
         components: []
     }
 }
-Website.spec.app = HelloWorld.spec.name;
+Website.spec.app = HelloWorld.spec.id;
 HelloWorld.spec.components?.push(Website);
 
 export { HelloWorld }
