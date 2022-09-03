@@ -31,7 +31,7 @@ git add .
 # Push to branch
 git commit -m "Automated commit from the core pipeline. $SHA"
 git push --set-upstream origin $BRANCH
-exit 0
+
 # Merge to master
 git checkout main
 git merge $BRANCH

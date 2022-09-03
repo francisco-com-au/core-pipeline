@@ -51,7 +51,7 @@ steps:
         PATH=$$PATH:/gh/$$(ls /gh)/bin
 
         # Login
-        echo "$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
+        echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
 
         # Configure git
         gh auth setup-git
@@ -83,12 +83,12 @@ steps:
         PATH=$$PATH:/gh/$$(ls /gh)/bin
 
         # Login
-        echo "$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
+        echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
 
         # Configure git
         gh auth setup-git
         git config --global user.email "core-pipeline"
-        git config --global user.name "core-pipeline@$ORG_DOMAIN"
+        git config --global user.name "core-pipeline@$$ORG_DOMAIN"
 
         # Move to the folder with the GitHub code
         cd pipeline/argocd
