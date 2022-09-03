@@ -43,10 +43,10 @@ steps:
         curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output gh.tar.gz
         mkdir /gh
         tar -xf gh.tar.gz -C /gh
-        PATH=$PATH:/gh/$(ls /gh)/bin
+        PATH=$$PATH:/gh/$$(ls /gh)/bin
 
         # Login
-        echo "$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
+        echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
 
         # Test
         gh repo list
