@@ -2,6 +2,8 @@
 
 set -e
 
+export APPS_REPO="francisco-com-au/platform-apps"
+
 # Figure out current commit sha
 SHA=$(git rev-parse HEAD)
 
@@ -12,7 +14,7 @@ rm -rf platform-apps
 
 # Clone repo
 # git clone git@github.com:francisco-com-au/platform-apps.git
-gh repo clone francisco-com-au/platform-apps
+gh repo clone $APPS_REPO
 cd platform-apps
 git checkout main
 git checkout -b $BRANCH
