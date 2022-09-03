@@ -2,9 +2,10 @@
 
 # What is this?
 This repo contains configuration for:
+- Bootstraping a GCP Org from zero to hero - [`bootstrap`](/bootstrap/)
 - GCP ORG level stuff (like policies, billing, IAM, etc)
-- Configuration for Apps
-- Code to make the configuration happen 🚀
+- Configuration for Apps - [`definitions`](/definitions/)
+- Code to make the configuration happen 🚀 - [`pipeline`](/pipeline/)
 
 # What's an App?
 An application is a logical construct that makes sense from a developer point of view. It packages things such as:
@@ -35,12 +36,12 @@ application
 | Container         |              | Manifests  | Subfolder    |             | path          |
 
 # Dependencies
-- GCP Organization must be created (bootstrap)
-- Create GCP Service Account with enough privileges to deploy stuff at the org level
-- Configure `GOOGLE_APPLICATION_CREDENTIALS` pointing at 👆🏼
-- Pulumi installed and logged in
-- GitHub CLI installed and logged in
+- GCP Organization must be created (see [`bootstrap`](/bootstrap/))
 - GitHub Organizations created for each App (cannot create GitHub Organizations programatically)
+- ~~Create GCP Service Account with enough privileges to deploy stuff at the org level~~
+- ~~Configure `GOOGLE_APPLICATION_CREDENTIALS` pointing at 👆🏼~~
+- ~~Pulumi installed and logged in~~
+- ~~GitHub CLI installed and logged in~~
 
 # Running
 WORK IN PROGRESS
