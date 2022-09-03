@@ -113,8 +113,35 @@ In this part you will configure a pipeline to automatically provision GCP resour
     - Create token
     - Copy the token and put it somewhere safe
 ### 3.2 Connect to GitHub
+- Login to GCP as admin
+    - Open the [GCP console](https://console.cloud.google.com)
+    - login with the admin user creted in 1.2 (`gcp-admin@francisco.com.au`)
+    - select the admin project created in 1.3 (`gcp-fran-root`)
+- Connect this GitHub repo
+    - go to the [Cloud Build](https://console.cloud.google.com/cloud-build) section
+    - go to Triggers > Manage Repositories > Connect repository
+    - select GitHub (Cloud Build GitHub App)
+    - enter your GitHub credentials and Authenticate
+    - select this repository
 ### 3.3 Configure Cloud Build
+- go to the [Cloud Build](https://console.cloud.google.com/cloud-build) page
+- Create a `main` trigger
+    - name: `core-pipeline-main`
+    - event: Push to a branch
+    - source: select the repo connected on 3.2
+    - branch: `^main$`
+    - configuration type: Cloud Build yaml
+    - configuration location: `build/cloudbuild.yaml` 
+    - Fill in the substitutions:
+        - `_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN`: your Pulumi token
+        - `_INSECURE_SUBSTITUTION_ORG_ID`: The ID of the organization you created on step 1
+        - `_INSECURE_SUBSTITUTION_BILLING_ID`: billing id of the org created on 1.2
+    - Send build logs to GitHub
+    - Select the `core-pipeline` service account
+    - Click Create
+- It's recommended that you also create a `develop` trigger to test changes in the develop branch and configure it to deploy to a different organization.
 
-# 4. Apply Terraform
-- Edit the backend.tf file to point to the new bucket.
-- Run ./entrypoint.sh
+# 4. Apply changes
+- Make a change to this repo and push it
+- See if Cloud Build gets triggerd
+- See if the change is applied

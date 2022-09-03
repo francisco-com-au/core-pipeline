@@ -27,6 +27,9 @@ gcloud alpha billing projects link $root_project_id --billing-account=$billing_i
 # Enable Cloud Identity API (to create groups)
 gcloud services enable cloudidentity.googleapis.com --project $root_project_id
 
+# Enable Cloud Build API (for the core pipeline)
+gcloud services enable cloudbuild.googleapis.com --project $root_project_id
+
 # [deprecated] Make a bucket to use as a terraform backend
 gsutil mb \
     -b on \

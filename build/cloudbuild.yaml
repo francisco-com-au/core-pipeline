@@ -2,7 +2,6 @@ steps:
 - id: gcp_pulumi
   env:
   - PULUMI_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN
-  - PROJECT_ID=$_INSECURE_SUBSTITUTION_PROJECT_ID
   - ORG_ID=$_INSECURE_SUBSTITUTION_ORG_ID
   - BILLING_ID=$_INSECURE_SUBSTITUTION_BILLING_ID
   name: 'pulumi/pulumi'
@@ -26,7 +25,7 @@ steps:
     pulumi stack select $BRANCH_NAME
 
     # Set project
-    pulumi config set gcp:project gcp-test-fran-root
+    pulumi config set gcp:project $PROJECT_ID
 
     # Up
     pulumi up -y
