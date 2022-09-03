@@ -13,29 +13,29 @@ metadata:
     #   - resources-finalizer.argocd.argoproj.io
 spec:
     generators:
-    - git:
-        repoURL: https://github.com/${repo}.git
-        revision: main
-        directories:
-        - path: 'managed/${appName}/components/*'
+        - git:
+            repoURL: https://github.com/${repo}.git
+            revision: main
+            directories:
+                - path: 'managed/${appName}/components/*'
     template:
-    metadata:
-        name: '{{path.basename}}'
-    spec:
-        project: ${appName}
-        source:
-        repoURL: https://github.com/${repo}.git
-        targetRevision: main
-        path: '{{path}}/overlays/prod'
-        destination:
-        server: https://kubernetes.default.svc
-        namespace: argocd
-        syncPolicy:
-        automated:
-            selfHeal: true
-            prune: true
-        syncOptions:
-        - CreateNamespace=true
+        metadata:
+            name: '{{path.basename}}'
+        spec:
+            project: ${appName}
+            source:
+                repoURL: https://github.com/${repo}.git
+                targetRevision: main
+                path: '{{path}}/overlays/prod'
+            destination:
+                server: https://kubernetes.default.svc
+                namespace: argocd
+            syncPolicy:
+                automated:
+                    selfHeal: true
+                    prune: true
+                syncOptions:
+                    - CreateNamespace=true
     `
 }
 

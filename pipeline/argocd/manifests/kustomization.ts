@@ -5,8 +5,8 @@ const kustomization = function(
     return `---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-resources:
-${resources.map(resource => `\t- ${resource}`).join('\n')}
+${resources.length ? 'resources:' : ''}
+${resources.map(resource => `  - ${resource}`).join('\n')}
 `
 }
 

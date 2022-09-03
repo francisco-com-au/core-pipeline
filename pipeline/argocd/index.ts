@@ -6,6 +6,7 @@ import { writeToFile } from "./modules/writeToFile";
 import { join } from 'path';
 import { argocdApplicationSet } from "./manifests/argocdApplicationSet";
 import { kustomization } from "./manifests/kustomization";
+import { argocdApplicationSetPatch } from "./manifests/argocdApplicationSetPatch";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -38,11 +39,12 @@ Orgs.forEach(org => {
         const appDir = join(managedDir, app.spec.id);
         console.log(`Making app folder "${appDir}...`);
         makeFolder([appDir]);
+
+        // Base
+        // ----------------------------------------
         const baseDir = join(appDir, 'base');
         console.log(`Making app base folder "${baseDir}...`);
         makeFolder([baseDir]);
-        
-        // Object to store resources to include in the kustomization
         const resources: string[] = [];
         
         // ArgoCD Project
@@ -58,7 +60,8 @@ Orgs.forEach(org => {
         const k = kustomization(resources);
         writeToFile(k, join(baseDir, 'kustomization.yaml'));
 
-        // Overlays
+        // Overlays for the APP - need to override the components overlay
+        // ----------------------------------------
         if (app.spec.environments?.length) {
             const overlaysDir = join(appDir, 'overlays');
             console.log(`Making app overlays folder "${overlaysDir}...`);
@@ -68,13 +71,19 @@ Orgs.forEach(org => {
                 console.log(`Making app overlay folder "${overlayDir}...`);
                 makeFolder([overlayDir]);
                 // Object to store resources to include in the kustomization
-                const resources: string[] = [];
-                resources.push('../../base');
+                const resources: string[] = ['../../base'];
+
+                // Render applicationSet patch
+                const componentsPatch = argocdApplicationSetPatch(app.spec.id, APPS_REPO, 'main', environment.name);
+                writeToFile(componentsPatch, join(overlayDir, 'components.yaml'));
+                resources.push('components.yaml');
+                // Write kustomization
                 const k = kustomization(resources);
                 writeToFile(k, join(overlayDir, 'kustomization.yaml'));
             });
         };
         
+
         // Make components
         const componentsDir = join(appDir, 'components')
         console.log(`Making components folder "${componentsDir}...`);
@@ -83,11 +92,19 @@ Orgs.forEach(org => {
             const componentDir = join(componentsDir, component.spec.id);
             console.log(`Making component folder "${componentDir}...`);
             makeFolder([componentDir]);
+            
+            // Base
+            // ----------------------------------------
             const baseDir = join(componentDir, 'base');
             console.log(`Making component base folder "${baseDir}...`);
             makeFolder([baseDir]);
-
+            const resources: string[] = [];
+            
+            const k = kustomization(resources);
+            writeToFile(k, join(baseDir, 'kustomization.yaml'));
+    
             // Overlays
+            // ----------------------------------------
             if (app.spec.environments?.length) {
                 const overlaysDir = join(componentDir, 'overlays');
                 console.log(`Making app overlays folder "${overlaysDir}...`);
