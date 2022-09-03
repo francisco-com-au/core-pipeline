@@ -5,33 +5,33 @@ import { Lab } from './apps/Lab/Lab';
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
 {
-    member: `user:gcp-viewer@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-viewer@${process.env.ORG_DOMAIN}`,
     roles: ["roles/viewer"],
     environment: 'dev'
 },{
-    member: `user:gcp-viewer@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-viewer@${process.env.ORG_DOMAIN}`,
     roles: ["roles/viewer"],
     environment: 'test'
 },{
-    member: `user:gcp-viewer@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-viewer@${process.env.ORG_DOMAIN}`,
     roles: ["roles/viewer"],
     environment: 'staging'
 },{
-    member: `user:gcp-viewer@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-viewer@${process.env.ORG_DOMAIN}`,
     roles: ["roles/viewer"],
     environment: 'prod'
 },
 // gcp-developers own dev, edit test & staging and view prod
 {
-    member: `user:gcp-developers@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-developers@${process.env.ORG_DOMAIN}`,
     roles: ["roles/owner"],
     environment: 'dev'
 },{
-    member: `user:gcp-developers@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-developers@${process.env.ORG_DOMAIN}`,
     roles: ["roles/editor"],
     environment: 'test'
 },{
-    member: `user:gcp-developers@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-developers@${process.env.ORG_DOMAIN}`,
     roles: ["roles/editor"],
     environment: 'staging'
 },{
