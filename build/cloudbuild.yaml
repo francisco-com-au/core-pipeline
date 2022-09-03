@@ -55,8 +55,8 @@ steps:
 
         # Configure git
         gh auth setup-git
-        git config --global user.email "core-pipeline"
-        git config --global user.name "core-pipeline@$$ORG_DOMAIN"
+        git config --global user.email "core-pipeline-$BRANCH_NAME@$$ORG_DOMAIN"
+        git config --global user.name "core-pipeline-$BRANCH_NAME"
 
         # Move to the folder with the GitHub code
         cd pipeline/github
@@ -87,8 +87,8 @@ steps:
 
         # Configure git
         gh auth setup-git
-        git config --global user.email "core-pipeline"
-        git config --global user.name "core-pipeline@$$ORG_DOMAIN"
+        git config --global user.email "core-pipeline-$BRANCH_NAME@$$ORG_DOMAIN"
+        git config --global user.name "core-pipeline-$BRANCH_NAME"
 
         # Move to the folder with the GitHub code
         cd pipeline/argocd
