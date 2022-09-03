@@ -28,14 +28,17 @@ node index.js
 cd platform-apps
 git add .
 
-# Push to branch
-git commit -m "Automated commit from the core pipeline. $SHA"
-git push --set-upstream origin $BRANCH
+function has_changes () {
+    # Push to branch
+    git push --set-upstream origin $BRANCH
 
-# Merge to master
-git checkout main
-git merge $BRANCH
-git push
+    # Merge to master
+    git checkout main
+    git merge $BRANCH
+    git push
+}
+
+git commit -m "Automated commit from the core pipeline. $SHA" && has_changes
 cd ..
 
 # Clear up cloned repo
