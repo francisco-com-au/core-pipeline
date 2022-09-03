@@ -1,4 +1,5 @@
 steps:
+
   - id: gcp_pulumi
     env:
       - PULUMI_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN
@@ -13,7 +14,7 @@ steps:
         set -e -x
 
         # Move to the folder with the Pulumi code
-        cd /app/pipeline/gcp_pulumi
+        cd pipeline/gcp_pulumi
 
         # Restore npm dependencies for our infra app.
         npm install
@@ -40,12 +41,14 @@ steps:
         set -e -x
 
         # Move to the folder with the ArgoCD code
-        cd /app/pipeline/argocd
+        cd pipeline/argocd
 
         # Install packages
         npm install
 
         # Run
         ./main.sh
+    waitFor: ['-']
+
 options:
   logging: CLOUD_LOGGING_ONLY
