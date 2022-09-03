@@ -14,3 +14,6 @@ chmod +x ./makeRepos.sh
 
 # Run script
 ./makeRepos.sh
+
+# Remove any generated script
+rm -f makeRepos.sh

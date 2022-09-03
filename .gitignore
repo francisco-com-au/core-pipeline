@@ -12,6 +12,10 @@ Pulumi.*.yaml
 
 # GitHub token
 github-token
+makeRepos.sh
+
+# ArgoCD pipeline
+pipeline/argocd/platform-apps
 
 # Logs
 logs

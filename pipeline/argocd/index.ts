@@ -29,12 +29,13 @@ Orgs.forEach(org => {
     org.spec.apps?.forEach(app => {
         // Render app level base
         // Make app folder
-        const baseFolder = `${repoBase}/${app.spec.name}/base`
-        makeFolder(repoBase, app.spec.name);
-        makeFolder(repoBase, baseFolder);
+        console.log(`repoBase ${repoBase}`)
+        const baseFolder = `${repoBase}/${app.spec.id}/base`
+        makeFolder(repoBase, app.spec.id);
+        makeFolder(baseFolder);
 
         // ArgoCD Project
-        const project = argocdProject(app.spec.name, app.spec.description);
+        const project = argocdProject(app.spec.id, app.spec.description);
         writeToFile(project, `${baseFolder}/project.yaml`)
 
 

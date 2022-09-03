@@ -12,7 +12,7 @@ const Lab: App = {
         name: "Lab",
         description: "A free product to test and break things manually.",
         github: {
-            organization: "galarzafrancisco",
+            organization: "francisco-com-au",
         },
         environments: [{
             name: "dev",

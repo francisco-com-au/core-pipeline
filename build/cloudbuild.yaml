@@ -34,11 +34,12 @@ steps:
 
         # Up
         pulumi up -y
-  
+
   - id: github
     env:
       - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
     name: 'pulumi/pulumi'
+    waitFor: ['-']
     entrypoint: /bin/bash
     args:
       - '-c'
@@ -50,30 +51,53 @@ steps:
         PATH=$$PATH:/gh/$$(ls /gh)/bin
 
         # Login
-        echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
+        echo "$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
 
-        # Test
-        gh repo list
+        # Configure git
+        gh auth setup-git
+        git config --global user.email "core-pipeline"
+        git config --global user.name "core-pipeline@$$ORG_DOMAIN"
 
+        # Move to the folder with the GitHub code
+        cd pipeline/github
+        
+        # Install dependencies
+        npm install
+        
+        # Execute
+        ./main.sh
 
-  # - id: install-argocd
-  #   name: 'pulumi/pulumi'
-  #   entrypoint: /bin/bash
-  #   args:
-  #     - '-c'
-  #     - |
-  #       # exit if a command returns a non-zero exit code and also print the commands and their args as they are executed.
-  #       set -e -x
+  - id: argocd
+    env:
+      - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
+    name: 'pulumi/pulumi'
+    waitFor: ['-']
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        # Install GitHub cli
+        curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output gh.tar.gz
+        mkdir /gh
+        tar -xf gh.tar.gz -C /gh
+        PATH=$$PATH:/gh/$$(ls /gh)/bin
 
-  #       # Move to the folder with the ArgoCD code
-  #       cd pipeline/argocd
+        # Login
+        echo "$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
 
-  #       # Install packages
-  #       npm install
+        # Configure git
+        gh auth setup-git
+        git config --global user.email "core-pipeline"
+        git config --global user.name "core-pipeline@$ORG_DOMAIN"
 
-  #       # Run
-  #       ./main.sh
-  #   waitFor: ['-']
+        # Move to the folder with the GitHub code
+        cd pipeline/argocd
+
+        # Install dependencies
+        npm install
+        
+        # Execute
+        ./main.sh
 
 options:
   logging: CLOUD_LOGGING_ONLY

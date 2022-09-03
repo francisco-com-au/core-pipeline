@@ -23,7 +23,6 @@ function syncWriteFile(filename: string, data: any) {
 }
 
 // Initiate a store
-const reposToMake: string[] = [];
 let repoFileContent = "#!/bin/bash\n";
 
 // Read
@@ -32,10 +31,10 @@ Orgs.forEach(org => {
         app.spec.components?.forEach(component => {
             const repo = component.spec.source.repo;
             let org = component.spec.source.organization || app.spec.github.organization;
-            // Check if repo exists
-            repoFileContent += `git ls-remote git@github.com:test-hello-world/website.git || `
+            // // Check if repo exists
+            // repoFileContent += `git ls-remote git@github.com:test-hello-world/website.git || `
             // Create repo
-            repoFileContent += `gh repo create ${org ? `${org}/` : "" }${repo} --private --description "Source code for ${app.spec.name}" --gitignore "Node" --license "MIT"\n`;
+            repoFileContent += `gh repo create ${org ? `${org}/` : "" }${repo} --private --description "Source code for ${app.spec.name}" --gitignore "Node" --license "MIT" || echo "Repo ${org ? `${org}/` : "" }${repo} exists"\n`;
         })
     })
 })
