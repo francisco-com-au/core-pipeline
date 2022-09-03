@@ -57,7 +57,7 @@ Orgs.forEach(org => {
             writeToFile(applicationSet, join(baseDir, 'components.yaml'));
             resources.push('components.yaml');
         }
-        const k = kustomization(resources);
+        const k = kustomization(resources, []);
         writeToFile(k, join(baseDir, 'kustomization.yaml'));
 
         // Overlays for the APP - need to override the components overlay
@@ -70,15 +70,19 @@ Orgs.forEach(org => {
                 const overlayDir = join(overlaysDir, environment.name);
                 console.log(`Making app overlay folder "${overlayDir}...`);
                 makeFolder([overlayDir]);
+                const patchesDir = join(overlayDir, 'patches');
+                console.log(`Making app patches folder "${patchesDir}...`);
+                makeFolder([patchesDir]);
                 // Object to store resources to include in the kustomization
                 const resources: string[] = ['../../base'];
+                const patches: string[] = [];
 
                 // Render applicationSet patch
                 const componentsPatch = argocdApplicationSetPatch(app.spec.id, APPS_REPO, 'main', environment.name);
-                writeToFile(componentsPatch, join(overlayDir, 'components.yaml'));
-                resources.push('components.yaml');
+                writeToFile(componentsPatch, join(patchesDir, 'components.yaml'));
+                patches.push('patches/components.yaml');
                 // Write kustomization
-                const k = kustomization(resources);
+                const k = kustomization(resources, patches);
                 writeToFile(k, join(overlayDir, 'kustomization.yaml'));
             });
         };
@@ -100,7 +104,7 @@ Orgs.forEach(org => {
             makeFolder([baseDir]);
             const resources: string[] = [];
             
-            const k = kustomization(resources);
+            const k = kustomization(resources, []);
             writeToFile(k, join(baseDir, 'kustomization.yaml'));
     
             // Overlays
@@ -116,7 +120,7 @@ Orgs.forEach(org => {
                     // Object to store resources to include in the kustomization
                     const resources: string[] = [];
                     resources.push('../../base');
-                    const k = kustomization(resources);
+                    const k = kustomization(resources, []);
                     writeToFile(k, join(overlayDir, 'kustomization.yaml'));
                 });
             };
