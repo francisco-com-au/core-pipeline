@@ -5,19 +5,19 @@ import { Lab } from './apps/Lab/Lab';
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
 {
-    member: `group:gcp-viewer@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-viewers@${process.env.ORG_DOMAIN}`,
     roles: ["roles/viewer"],
     environment: 'dev'
 },{
-    member: `group:gcp-viewer@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-viewers@${process.env.ORG_DOMAIN}`,
     roles: ["roles/viewer"],
     environment: 'test'
 },{
-    member: `group:gcp-viewer@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-viewers@${process.env.ORG_DOMAIN}`,
     roles: ["roles/viewer"],
     environment: 'staging'
 },{
-    member: `group:gcp-viewer@${process.env.ORG_DOMAIN}`,
+    member: `group:gcp-viewers@${process.env.ORG_DOMAIN}`,
     roles: ["roles/viewer"],
     environment: 'prod'
 },
