@@ -1,0 +1,49 @@
+steps:
+- id: gcp_pulumi
+  env:
+  - PULUMI_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN
+  - ORG_ID=$_INSECURE_SUBSTITUTION_ORG_ID
+  - BILLING_ID=$_INSECURE_SUBSTITUTION_BILLING_ID
+  name: 'pulumi/pulumi'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    # exit if a command returns a non-zero exit code and also print the commands and their args as they are executed.
+    set -e -x
+
+    # Move to the folder with the Pulumi code
+    cd /app/pipeline/gcp_pulumi
+
+    # Restore npm dependencies for our infra app.
+    npm install
+
+    # Login
+    pulumi login
+    
+    # Select stack
+    pulumi stack select $BRANCH_NAME
+
+    # Set project
+    pulumi config set gcp:project $PROJECT_ID
+
+    # Up
+    pulumi up -y
+    
+- id: install-argocd
+  name: 'pulumi/pulumi'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    # exit if a command returns a non-zero exit code and also print the commands and their args as they are executed.
+    set -e -x
+
+    # Move to the folder with the ArgoCD code
+    cd /app/pipeline/argocd
+
+    # Install packages
+    npm install
+
+    # Run
+    ./main.sh
