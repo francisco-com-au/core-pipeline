@@ -14,10 +14,10 @@ metadata:
 spec:
   generators:
     - git:
-      repoURL: https://github.com/${repo}.git
-      revision: main
-      directories:
-        - path: 'managed/${appName}/components/*'
+        repoURL: https://github.com/${repo}.git
+        revision: main
+        directories:
+          - path: 'managed/${appName}/components/*'
   template:
     metadata:
       name: '{{path.basename}}'
