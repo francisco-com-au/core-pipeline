@@ -15,8 +15,6 @@ function syncWriteFile(filename: string, data: any) {
 
   // const contents = readFileSync(filename, 'utf-8');
   // console.log(contents); // 👉️ "One Two Three Four"
-
-  return contents;
 }
 
 
