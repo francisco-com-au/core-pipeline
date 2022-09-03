@@ -31,24 +31,24 @@ steps:
         # Up
         pulumi up -y
       
-  - id: install-argocd
-    name: 'pulumi/pulumi'
-    entrypoint: /bin/bash
-    args:
-      - '-c'
-      - |
-        # exit if a command returns a non-zero exit code and also print the commands and their args as they are executed.
-        set -e -x
+  # - id: install-argocd
+  #   name: 'pulumi/pulumi'
+  #   entrypoint: /bin/bash
+  #   args:
+  #     - '-c'
+  #     - |
+  #       # exit if a command returns a non-zero exit code and also print the commands and their args as they are executed.
+  #       set -e -x
 
-        # Move to the folder with the ArgoCD code
-        cd pipeline/argocd
+  #       # Move to the folder with the ArgoCD code
+  #       cd pipeline/argocd
 
-        # Install packages
-        npm install
+  #       # Install packages
+  #       npm install
 
-        # Run
-        ./main.sh
-    waitFor: ['-']
+  #       # Run
+  #       ./main.sh
+  #   waitFor: ['-']
 
 options:
   logging: CLOUD_LOGGING_ONLY
