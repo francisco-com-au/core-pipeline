@@ -95,6 +95,15 @@ export cloud_build_sa_name="cloud-build"
 ```bash
 ./bootstrap.sh
 ```
+### 2.3 Add yourself to some groups
+This will give you access to see and work on projects from your own personal gmail account.
+- Navigate to the [Google Admin](https://admin.google.com/) console
+- Sign in with your `gcp-admin` account
+- Add your personal gmail account to some groups. Recommendations are:
+    - Developres
+    - Viewers
+
+
 
 
 # 3. Continuous delivery with Infra as Code
