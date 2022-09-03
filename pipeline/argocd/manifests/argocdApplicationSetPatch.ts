@@ -9,21 +9,21 @@ const argocdApplicationSetPatch = function(
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-    name: ${appName}-components
-    namespace: argocd
+  name: ${appName}-components
+  namespace: argocd
 spec:
-    generators:
-        - git:
-            repoURL: https://github.com/${repo}.git
-            revision: ${branch}
-            directories:
-                - path: 'managed/${appName}/components/*'
-    template:
-        spec:
-            source:
-                targetRevision: ${branch}
-                path: '{{path}}/overlays/${env}'
-    `
+  generators:
+    - git:
+      repoURL: https://github.com/${repo}.git
+      revision: ${branch}
+      directories:
+        - path: 'managed/${appName}/components/*'
+  template:
+    spec:
+      source:
+        targetRevision: ${branch}
+        path: '{{path}}/overlays/${env}'
+`
 }
 
 export { argocdApplicationSetPatch }

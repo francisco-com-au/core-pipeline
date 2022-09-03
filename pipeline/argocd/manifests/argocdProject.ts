@@ -7,26 +7,26 @@ const argocdProject = function(
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-    name: ${name}
-    namespace: argocd
-    finalizers:
+  name: ${name}
+  namespace: argocd
+  finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-    description: ${description}
-    sourceRepos:
+  description: ${description}
+  sourceRepos:
     - '*'
-    destinations:
+  destinations:
     - namespace: ${name}
-    server: https://kubernetes.default.svc
+      server: https://kubernetes.default.svc
     - namespace: '*'
-    server: https://kubernetes.default.svc
-    clusterResourceWhitelist:
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
     - group: '*'
-    kind: '*'
-    namespaceResourceWhitelist:
+      kind: '*'
+  namespaceResourceWhitelist:
     - group: '*'
-    kind: '*'
-    `
+      kind: '*'
+`
 }
 
 export { argocdProject }
