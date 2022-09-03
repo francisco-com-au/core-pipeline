@@ -20,7 +20,7 @@ spec:
           - path: 'managed/${appName}/components/*'
   template:
     metadata:
-      name: '{{path.basename}}'
+      name: '${appName}-{{path.basename}}'
     spec:
       project: ${appName}
       source:
