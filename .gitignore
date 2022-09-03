@@ -1,8 +1,14 @@
+# Bootstrap stuff
+*key.json
+env
+policy.json
+
 # Compiled files
 *.js
 
-# Env
-env
+# Pulumi sensitive config
+pulumi-key
+Pulumi.*.yaml
 
 # Logs
 logs
