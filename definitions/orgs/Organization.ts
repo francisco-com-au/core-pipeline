@@ -44,7 +44,7 @@ const Organization: Org = {
     apiVersion: "platform.io/v1alpha1",
     kind: "org",
     metadata: {
-        name: "test"
+        name: `${process.env.ORG_SHORT_NAME}`
     },
     spec: {
         id: `${process.env.ORG_SHORT_NAME}`,
