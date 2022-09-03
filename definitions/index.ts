@@ -1,7 +1,6 @@
 import { Org } from "../types/Org";
-import { Test } from "./orgs/Test";
+import { Organization } from "./orgs/Organization";
 
-// const Orgs = [Test];
-const Orgs: Org[] = [];
+const Orgs = [Organization];
 
 export { Orgs }

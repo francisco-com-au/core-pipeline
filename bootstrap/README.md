@@ -134,9 +134,13 @@ In this part you will configure a pipeline to automatically provision GCP resour
     - configuration location: `build/cloudbuild.yaml` 
     - Fill in the substitutions:
         - `_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN`: your Pulumi token
+        - `_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN`: github token used to create repos. It needs `read:org, repo`
         - `_INSECURE_SUBSTITUTION_ORG_ID`: The ID of the organization you created on step 1
         - `_INSECURE_SUBSTITUTION_BILLING_ID`: billing id of the org created on 1.2
-        - `_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN`: github token used to create repos. It needs `read:org, repo`
+        - `_ORG_NAME`: full name
+        - `_ORG_SHORT_NAME`: short prefix to be added to all projects
+        - `_ORG_DESCRIPTION`: useful description
+        - `_ORG_DOMAIN`: domain name
     - Send build logs to GitHub
     - Select the `core-pipeline` service account
     - Click Create
