@@ -7,8 +7,11 @@ policy.json
 *.js
 
 # Pulumi sensitive config
-pulumi-key
+pulumi-token
 Pulumi.*.yaml
+
+# GitHub token
+github-token
 
 # Logs
 logs

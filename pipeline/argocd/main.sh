@@ -11,7 +11,8 @@ BRANCH=feature/core-pipeline-$SHA
 rm -rf platform-apps
 
 # Clone repo
-git clone git@github.com:francisco-com-au/platform-apps.git
+# git clone git@github.com:francisco-com-au/platform-apps.git
+gh clone repofrancisco-com-au/platform-apps
 cd platform-apps
 git checkout main
 git checkout -b $BRANCH

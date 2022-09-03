@@ -136,6 +136,7 @@ In this part you will configure a pipeline to automatically provision GCP resour
         - `_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN`: your Pulumi token
         - `_INSECURE_SUBSTITUTION_ORG_ID`: The ID of the organization you created on step 1
         - `_INSECURE_SUBSTITUTION_BILLING_ID`: billing id of the org created on 1.2
+        - `_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN`: github token used to create repos. It needs `read:org, repo`
     - Send build logs to GitHub
     - Select the `core-pipeline` service account
     - Click Create
