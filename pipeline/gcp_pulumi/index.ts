@@ -4,9 +4,12 @@ import * as PlatformOps from "./src/modules/platform-ops"
 
 
 Orgs.forEach(org => {
+    // Make platform-ops
+    const {networkProject, ciProject} = PlatformOps.makePlatformOps(org);
+
     // Make folders
-    const orgFolders = Foundations.makeFolders(org);
+    const orgFolders = Foundations.makeFolders(org, ciProject);
     
     // Make projects
-    Foundations.makeProjects(org, orgFolders)
+    Foundations.makeProjects(org, orgFolders);
 });

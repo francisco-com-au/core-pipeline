@@ -103,3 +103,11 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     return project
 }
 
+export function makePlatformOps(org: Org) {
+    const platformOpsFolder = makeFolders(org);
+    const networkProject = makeNetworkProject(org, platformOpsFolder);
+    const ciProject = makeCIProject(org, platformOpsFolder);
+    return {
+        ciProject, networkProject
+    }
+}

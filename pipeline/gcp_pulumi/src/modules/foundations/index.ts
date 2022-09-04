@@ -29,7 +29,7 @@ org
       └─ Component 2 project
 */
 
-export function makeFolders(org: Org): OrgFolders {
+export function makeFolders(org: Org, ciProject: gcp.organizations.Project): OrgFolders {
     // Initiate an org folder object to create a graph
     // of folders.
     const orgFolders: OrgFolders = {};
@@ -75,7 +75,7 @@ export function makeFolders(org: Org): OrgFolders {
                 orgFolders[orgId].apps[appId].environments[envName].gcpFolderId = envFolder.id;
                 // Apply IAM
                 app.environments[envName].roleBindings?.push({ // add the cicd project
-                    member: `cicd.${appId}.${envName}`,
+                    member: `serviceAccount:cicd.${appId}.${envName}@${ciProject.id}.iam.gserviceaccount.com`,
                     roles: ['role/editor'],
                 });
                 app.environments[envName].roleBindings?.forEach(roleBinding => {
