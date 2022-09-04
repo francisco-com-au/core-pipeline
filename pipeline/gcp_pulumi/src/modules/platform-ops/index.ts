@@ -74,7 +74,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
 // Create project for network
 export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Folder): gcp.organizations.Project {
     const projectId = `${org.spec.id}-platform-ops-network`;
-    const project = new gcp.organizations.Project(projectId, {
+    const networkProject = new gcp.organizations.Project(projectId, {
         folderId: parentFolder.id,
         name: projectId,
         projectId: projectId,
@@ -106,7 +106,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     apis.forEach(api => {
         const enabledApi = new gcp.projects.Service(`${org.spec.id}.platform-ops.network.${api}`, {
             disableDependentServices: true,
-            project: project.projectId,
+            project: networkProject.projectId,
             service: api,
         });
         enabledApis.set(api, enabledApi);
@@ -120,6 +120,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
         domains.push(org.spec.domain);
         const zone = new gcp.dns.ManagedZone(`${org.spec.id}.platform-ops.network.${org.spec.domain}`, {
             name: 'Org DNS zone',
+            project: networkProject.projectId,
             description: `Org level domain for organization ${org.spec.name}`,
             dnsName: org.spec.domain,
             labels: {
@@ -138,6 +139,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
             domains.push(app.spec.domainName);
             const zone = new gcp.dns.ManagedZone(`${org.spec.id}.platform-ops.network.${app.spec.domainName}`, {
                 name: app.spec.name,
+                project: networkProject.projectId,
                 description: `Domain for app ${app.spec.name}`,
                 dnsName: app.spec.domainName,
                 labels: {
@@ -153,7 +155,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
         };
     });
 
-    return project
+    return networkProject
 };
 
 export function makePlatformOps(org: Org) {
