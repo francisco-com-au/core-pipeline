@@ -75,13 +75,18 @@ export function makeFolders(org: Org, ciProject: gcp.organizations.Project): Org
                 });
                 orgFolders[orgId].apps[appId].environments[envName].gcpFolderId = envFolder.id;
                 // Apply IAM
-                app.environments[envName].roleBindings?.push({ // add the cicd project
-                    member: `serviceAccount:cicd-${appId}-${envName}@${ciProject.id.apply(o => `${o}`)}.iam.gserviceaccount.com`,
-                    roles: ['roles/editor'],
+                // app.environments[envName].roleBindings?.push({ // add the cicd project
+                //     member: `serviceAccount:cicd-${appId}-${envName}@${ciProject.id.apply(o => `${o}`)}.iam.gserviceaccount.com`,
+                //     roles: ['roles/editor'],
+                // });
+                new gcp.folder.IAMMember(`${orgId}.${appId}.${envName}.serviceAccount:cicd.roles/editor`, {
+                    folder: envFolder.id,
+                    member: ciProject.id.apply(projectId => `serviceAccount:cicd-${appId}-${envName}@${projectId}.iam.gserviceaccount.com`),
+                    role: 'roles/editor',
                 });
                 app.environments[envName].roleBindings?.forEach(roleBinding => {
                     roleBinding.roles.forEach(role => {
-                        const folder = new gcp.folder.IAMMember(`${orgId}.${appId}.${envName}.${roleBinding.member}.${role}`, {
+                        const folderIam = new gcp.folder.IAMMember(`${orgId}.${appId}.${envName}.${roleBinding.member}.${role}`, {
                             folder: envFolder.id,
                             member: roleBinding.member,
                             role: role,
@@ -113,7 +118,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                 // Make the project 🔥
                 console.log(`Org: ${org.spec.id} - App: ${app.spec.id} - Component: ${component.spec.id} - Env: ${envName}`)
                 const project = new gcp.organizations.Project(projectId, {
-                    folderId: environments[envName].gcpFolderId?.apply(a => `${a}`),
+                    folderId: environments[envName].gcpFolderId?.apply(folderId => `${folderId}`),
                     name: projectId,
                     projectId: projectId,
                     billingAccount: org.spec.gcp.billingId,

@@ -18,4 +18,4 @@ Orgs.forEach(org => {
     Foundations.makeProjects(org, orgFolders);
 });
 
-// export const readme = Readme(orgFolders);
+export const readme = Readme(orgFolders);

@@ -20,7 +20,7 @@ export function makeFolders(org: Org): gcp.organizations.Folder {
     };
     roleBinding.roles.forEach(role => {
         const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.platform-ops.${roleBinding.member}.${role}`, {
-            folder: platformOpsFolder.id.apply(o => `${o}`),
+            folder: platformOpsFolder.id,
             member: roleBinding.member,
             role: role,
         });
@@ -32,7 +32,7 @@ export function makeFolders(org: Org): gcp.organizations.Folder {
 export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder): gcp.organizations.Project {
     const projectId = `${org.spec.id}-platform-ops-cicd`;
     const ciProject = new gcp.organizations.Project(projectId, {
-        folderId: parentFolder.id?.apply(a => `${a}`),
+        folderId: parentFolder.id,
         name: projectId,
         projectId: projectId,
         billingAccount: org.spec.gcp.billingId,
@@ -50,7 +50,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     };
     roleBinding.roles.forEach(role => {
         const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.platform-ops.${roleBinding.member}.${role}`, {
-            folder: parentFolder.id.apply(o => `${o}`),
+            folder: parentFolder.id,
             member: roleBinding.member,
             role: role,
         });
@@ -60,7 +60,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     org.spec.apps?.forEach(app => {
         app.spec.environments?.forEach(env => {
             const serviceAccount = new gcp.serviceaccount.Account(`${org.spec.id}.cicd.${app.spec.id}.${env.name}`, {
-                project: ciProject.id.apply(o => `${o}`),
+                project: ciProject.id,
                 accountId: `cicd-${app.spec.id}-${env.name}`,
                 displayName: `CI/CD - ${app.spec.name} / ${env.name}`,
                 description: `Service account for automated CI/CD for App "${app.spec.name}" - Environment "${env.name}"`,
@@ -75,7 +75,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
 export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Folder): gcp.organizations.Project {
     const projectId = `${org.spec.id}-platform-ops-network`;
     const project = new gcp.organizations.Project(projectId, {
-        folderId: parentFolder.id?.apply(a => `${a}`),
+        folderId: parentFolder.id,
         name: projectId,
         projectId: projectId,
         billingAccount: org.spec.gcp.billingId,
@@ -93,7 +93,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     };
     roleBinding.roles.forEach(role => {
         const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.platform-ops.${roleBinding.member}.${role}`, {
-            folder: parentFolder.id.apply(o => `${o}`),
+            folder: parentFolder.id,
             member: roleBinding.member,
             role: role,
         });
