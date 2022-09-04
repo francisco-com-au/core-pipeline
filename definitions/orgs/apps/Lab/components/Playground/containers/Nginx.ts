@@ -13,8 +13,8 @@ const Nginx: Container = {
         image: "nginx:latest",
         expose: [
             {
-                name: "root",
-                port: 8080,
+                name: "server",
+                port: 80,
                 ingressPath: "/",
             }
         ]
