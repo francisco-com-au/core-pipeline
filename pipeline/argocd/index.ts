@@ -8,6 +8,7 @@ import { argocdApplicationSet } from "./manifests/argocdApplicationSet";
 import { kustomization } from "./manifests/kustomization";
 import { argocdApplicationSetPatch } from "./manifests/argocdApplicationSetPatch";
 import { certificate } from "./manifests/certificate";
+import { service } from "./manifests/service";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -128,19 +129,26 @@ Orgs.forEach(org => {
             // Deployments
             component.spec.containers?.forEach(container => {
                 container.spec.expose?.forEach(containerPort => {
+                    const containerPortName = `${component.spec.id}-${container.spec.id}-${containerPort.name}`
+                    const svc = service(
+                        containerPortName, // name
+                        `${containerPort.port}`, // port
+                        app.spec.id, // namespace
+                    )
                     // Service
+                    writeToFile(svc, join(baseDir, `svc-${containerPortName}.yaml`));
+                    resources.push(`svc-${containerPortName}.yaml`);
 
                     // Is this exposed externally?
                     if (containerPort.ingressPath) {
                         // Cert
-                        const certName = `${component.spec.id}-${container.spec.id}-${containerPort.name}`;
                         const cert = certificate(
-                            certName, // name
+                            containerPortName, // name
                             componentDomainName, //domain name
                             app.spec.id // namespace
                         )
-                        writeToFile(cert, join(baseDir, `cert-${certName}.yaml`));
-                        resources.push(`cert-${certName}.yaml`);
+                        writeToFile(cert, join(baseDir, `cert-${containerPortName}.yaml`));
+                        resources.push(`cert-${containerPortName}.yaml`);
                         // Ingress
                     }
                 });
