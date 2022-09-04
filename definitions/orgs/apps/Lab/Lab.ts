@@ -11,7 +11,7 @@ const Lab: App = {
         id: "lab",
         name: "Lab",
         description: "A free product to test and break things manually.",
-        domainName: `lab.${process.env.ORG_DOMAIN}`,
+        domainName: `american-broomstick.com`,
         github: {
             organization: "francisco-com-au",
         },
