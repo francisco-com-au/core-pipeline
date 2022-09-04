@@ -8,7 +8,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: ${appName}-components
-  namespace: ${appName}
+  namespace: argocd
   # finalizers:
   #   - resources-finalizer.argocd.argoproj.io
 spec:
@@ -29,7 +29,7 @@ spec:
         path: '{{path}}/overlays/prod'
       destination:
         server: https://kubernetes.default.svc
-        namespace: argocd
+        namespace: ${appName}
       syncPolicy:
         automated:
           selfHeal: true
