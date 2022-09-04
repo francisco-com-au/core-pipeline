@@ -132,7 +132,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
         {
             dependsOn: dnsApi ? [dnsApi] : []
         });
-    }
+    };
     org.spec.apps?.forEach(app => {
         if (app.spec.domainName && !domains.includes(app.spec.domainName)) {
             domains.push(app.spec.domainName);
@@ -154,7 +154,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     });
 
     return project
-}
+};
 
 export function makePlatformOps(org: Org) {
     const platformOpsFolder = makeFolders(org);
