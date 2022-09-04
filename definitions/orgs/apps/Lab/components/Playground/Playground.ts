@@ -15,7 +15,10 @@ const Playground: Component = {
         source: {
             repo: "playground"
         },
-        containers: []
+        containers: [],
+        gcp: {
+            apis: ['dns.googleapis.com']
+        }
     }
 }
 Nginx.spec.component = Playground.spec.id;
