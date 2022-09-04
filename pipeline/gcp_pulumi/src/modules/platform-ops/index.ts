@@ -101,13 +101,18 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
 
     // Enable DNS API
     const apis = ['dns.googleapis.com'];
+    const enabledApis = new Map<string, gcp.projects.Service>();
+    let e: gcp.projects.Service;
     apis.forEach(api => {
-        const dnsApi = new gcp.projects.Service(`${org.spec.id}.platform-ops.network.${api}`, {
+        const enabledApi = new gcp.projects.Service(`${org.spec.id}.platform-ops.network.${api}`, {
             disableDependentServices: true,
             project: project.projectId,
             service: api,
         });
+        enabledApis.set(api, enabledApi);
+        e = enabledApi;
     });
+    const dnsApi = enabledApis.get('dns.googleapis.com');
 
     // Create DNS entries. Crawl the org to see what domains we need.
     const domains: string[] = [];
@@ -122,8 +127,11 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
                 'created_by': 'pulumi',
                 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
             },
+        },
+        {
+            dependsOn: dnsApi ? [dnsApi] : []
         });
-    };
+    }
     org.spec.apps?.forEach(app => {
         if (app.spec.domainName && !domains.includes(app.spec.domainName)) {
             domains.push(app.spec.domainName);
