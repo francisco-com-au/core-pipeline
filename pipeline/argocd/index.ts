@@ -9,6 +9,7 @@ import { kustomization } from "./manifests/kustomization";
 import { argocdApplicationSetPatch } from "./manifests/argocdApplicationSetPatch";
 import { certificate } from "./manifests/certificate";
 import { service } from "./manifests/service";
+import { ingress } from "./manifests/ingress";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -140,20 +141,29 @@ Orgs.forEach(org => {
                     writeToFile(svc, join(baseDir, `svc-${containerPortName}.yaml`));
                     resources.push(`svc-${containerPortName}.yaml`);
 
-                    // Is this exposed externally?
-                    if (containerPort.ingressPath) {
-                        // Cert
-                        const cert = certificate(
-                            containerPortName, // name
-                            componentDomainName, //domain name
-                            app.spec.id // namespace
-                        )
-                        writeToFile(cert, join(baseDir, `cert-${containerPortName}.yaml`));
-                        resources.push(`cert-${containerPortName}.yaml`);
-                        // Ingress
-                    }
                 });
             });
+
+            // Is any of this component's container's ports exposed externally?
+            if (component.spec.containers?.map(c => c.spec.expose?.filter(p => p.ingressPath)).length != 0) {
+                // Cert
+                const cert = certificate(
+                    component.spec.id, // name
+                    componentDomainName, //domain name
+                    app.spec.id // namespace
+                )
+                writeToFile(cert, join(baseDir, `cert-${component.spec.id}.yaml`));
+                resources.push(`cert-${component.spec.id}.yaml`);
+                // Ingress
+                const i = ingress(
+                    component.spec.id, // name
+                    app.spec.id, // namespace
+                    componentDomainName, // domain name
+                    component.spec.containers || [],
+                );
+                writeToFile(i, join(baseDir, `ingress-${component.spec.id}.yaml`));
+                resources.push(`ingress-${component.spec.id}.yaml`);
+            };
             
             const k = kustomization(resources, []);
             writeToFile(k, join(baseDir, 'kustomization.yaml'));
