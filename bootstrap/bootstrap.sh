@@ -30,6 +30,9 @@ gcloud services enable cloudidentity.googleapis.com --project $root_project_id
 # Enable Cloud Build API (for the core pipeline)
 gcloud services enable cloudbuild.googleapis.com --project $root_project_id
 
+# Enable DNS API (for domain name resolution)
+gcloud services enable dns.googleapis.com --project $root_project_id
+
 # [deprecated] Make a bucket to use as a terraform backend
 gsutil mb \
     -b on \
