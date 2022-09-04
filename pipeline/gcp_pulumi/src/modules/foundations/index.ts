@@ -75,11 +75,13 @@ export function makeFolders(org: Org, ciProject: gcp.organizations.Project): Org
                 });
                 orgFolders[orgId].apps[appId].environments[envName].gcpFolderId = envFolder.id;
                 // Apply IAM
-                new gcp.folder.IAMMember(`${orgId}.${appId}.${envName}.serviceAccount:cicd.roles/editor`, {
-                    folder: envFolder.id,
-                    member: ciProject.projectId.apply(projectId => `serviceAccount:cicd-${appId}-${envName}@${projectId}.iam.gserviceaccount.com`),
-                    role: 'roles/editor',
-                });
+                ['roles/resourcemanager.folderEditor', 'roles/resourcemanager.projectCreator', 'roles/resourcemanager.projectDeleter', 'roles/editor'].forEach(role => {
+                    new gcp.folder.IAMMember(`${orgId}.${appId}.${envName}.serviceAccount:cicd.${role}`, {
+                        folder: envFolder.id,
+                        member: ciProject.projectId.apply(projectId => `serviceAccount:cicd-${appId}-${envName}@${projectId}.iam.gserviceaccount.com`),
+                        role: 'role',
+                    });
+                })
                 app.environments[envName].roleBindings?.forEach(roleBinding => {
                     roleBinding.roles.forEach(role => {
                         const folderIam = new gcp.folder.IAMMember(`${orgId}.${appId}.${envName}.${roleBinding.member}.${role}`, {
