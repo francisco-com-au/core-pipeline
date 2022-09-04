@@ -136,6 +136,9 @@ Orgs.forEach(org => {
                         `${containerPort.name}`, // port name
                         containerPort.port, // port
                         app.spec.id, // namespace
+                        app.spec.id, // app id
+                        component.spec.id, // component id
+                        container.spec.id // container id
                     )
                     // Service
                     writeToFile(svc, join(baseDir, `svc-${containerPortName}.yaml`));
