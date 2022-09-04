@@ -92,11 +92,52 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
         roles: ["roles/editor"],
     };
     roleBinding.roles.forEach(role => {
-        const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.platform-ops.${roleBinding.member}.${role}`, {
+        const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.platform-ops.network.${roleBinding.member}.${role}`, {
             folder: parentFolder.id,
             member: roleBinding.member,
             role: role,
         });
+    });
+
+    // Enable DNS API
+    const apis = ['dns.googleapis.com'];
+    apis.forEach(api => {
+        const dnsApi = new gcp.projects.Service(`${org.spec.id}.platform-ops.network.${api}`, {
+            disableDependentServices: true,
+            project: project.projectId,
+            service: api,
+        });
+    });
+
+    // Create DNS entries. Crawl the org to see what domains we need.
+    const domains: string[] = [];
+    if (org.spec.domain) {
+        domains.push(org.spec.domain);
+        const zone = new gcp.dns.ManagedZone(`${org.spec.id}.platform-ops.network.${org.spec.domain}`, {
+            description: `Org level domain for organization ${org.spec.name}`,
+            dnsName: org.spec.domain,
+            labels: {
+                'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
+                'app': 'platform-ops',
+                'created_by': 'pulumi',
+                'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
+            },
+        });
+    };
+    org.spec.apps?.forEach(app => {
+        if (app.spec.domainName && !domains.includes(app.spec.domainName)) {
+            domains.push(app.spec.domainName);
+            const zone = new gcp.dns.ManagedZone(`${org.spec.id}.platform-ops.network.${app.spec.domainName}`, {
+                description: `Domain for app ${app.spec.name}`,
+                dnsName: app.spec.domainName,
+                labels: {
+                    'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
+                    'app': app.spec.name.replace(/ /g, '-').toLowerCase(),
+                    'created_by': 'pulumi',
+                    'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
+                },
+            });
+        };
     });
 
     return project
@@ -108,5 +149,5 @@ export function makePlatformOps(org: Org) {
     const ciProject = makeCIProject(org, platformOpsFolder);
     return {
         ciProject, networkProject
-    }
-}
+    };
+};
