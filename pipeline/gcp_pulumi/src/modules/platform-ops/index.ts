@@ -122,7 +122,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
             name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
             project: networkProject.projectId,
             description: `Org level domain for organization ${org.spec.name}`,
-            dnsName: org.spec.domain,
+            dnsName: `${org.spec.domain}.`,
             labels: {
                 'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
                 'app': 'platform-ops',
@@ -141,7 +141,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
                 name: app.spec.name.replace(/ /g, '-').toLowerCase(),
                 project: networkProject.projectId,
                 description: `Domain for app ${app.spec.name}`,
-                dnsName: app.spec.domainName,
+                dnsName: `${app.spec.domainName}.`,
                 labels: {
                     'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
                     'app': app.spec.name.replace(/ /g, '-').toLowerCase(),
