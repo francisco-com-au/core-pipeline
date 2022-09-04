@@ -1,11 +1,12 @@
-import * as pulumi from "@pulumi/pulumi";
 import { Orgs } from "../../definitions/index"
-import { makeFolders, makeProjects } from "./src/modules/foundations"
+import * as Foundations from "./src/modules/foundations"
+import * as PlatformOps from "./src/modules/platform-ops"
+
 
 Orgs.forEach(org => {
     // Make folders
-    const orgFolders = makeFolders(org);
+    const orgFolders = Foundations.makeFolders(org);
     
     // Make projects
-    makeProjects(org, orgFolders)
+    Foundations.makeProjects(org, orgFolders)
 });

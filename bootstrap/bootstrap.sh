@@ -63,6 +63,23 @@ gcloud identity groups create \
     --display-name="💰 Billing Admins" \
     --description="Users in this group can create/update/remove billing information."
 
+# network admin
+gcloud identity groups create \
+    gcp-network-admins@$org_domain \
+    --organization="$org_domain" \
+    --display-name="🥷🏻 Network Admins" \
+    --description="Users in this group have admin access to network resources such as DNS."
+
+# devops
+gcloud identity groups create \
+    gcp-devops@$org_domain \
+    --organization="$org_domain" \
+    --display-name="🧱 DevOps" \
+    --description="Users in this group can modify build definitions."
+gcloud identity groups memberships add \
+    --group-email="gcp-developers@$org_domain" \
+    --member-email="$user_name@$org_domain"
+
 # developers
 gcloud identity groups create \
     gcp-developers@$org_domain \
