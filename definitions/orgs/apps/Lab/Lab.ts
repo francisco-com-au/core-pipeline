@@ -11,7 +11,7 @@ const Lab: App = {
         id: "lab",
         name: "Lab",
         description: "A free product to test and break things manually.",
-        domainName: "test.francisco.com.au",
+        domainName: "lab.test.francisco.com.au",
         github: {
             organization: "francisco-com-au",
         },
