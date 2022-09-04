@@ -7,6 +7,7 @@ import { join } from 'path';
 import { argocdApplicationSet } from "./manifests/argocdApplicationSet";
 import { kustomization } from "./manifests/kustomization";
 import { argocdApplicationSetPatch } from "./manifests/argocdApplicationSetPatch";
+import { certificate } from "./manifests/certificate";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -56,7 +57,13 @@ Orgs.forEach(org => {
             const applicationSet = argocdApplicationSet(app.spec.id, APPS_REPO);
             writeToFile(applicationSet, join(baseDir, 'components.yaml'));
             resources.push('components.yaml');
-        }
+        };
+        // // Certs
+        // if (app.spec.domainName) {
+        //     const cert = certificate(app.spec.id, app.spec.domainName, app.spec.name);
+        //     writeToFile(cert, join(baseDir, 'certificate.yaml'));
+        //     resources.push('certificate.yaml');
+        // }
         const k = kustomization(resources, []);
         writeToFile(k, join(baseDir, 'kustomization.yaml'));
 
@@ -97,12 +104,47 @@ Orgs.forEach(org => {
             console.log(`Making component folder "${componentDir}...`);
             makeFolder([componentDir]);
             
+            const componentDomainName = `${component.spec.domainPrefix ? `${component.spec.domainPrefix}.` : '' }${app.spec.domainName}`;
+
             // Base
             // ----------------------------------------
             const baseDir = join(componentDir, 'base');
             console.log(`Making component base folder "${baseDir}...`);
             makeFolder([baseDir]);
             const resources: string[] = [];
+
+            // // Certs
+            // if (app.spec.domainName) {
+            //     component.spec.domainPrefix
+            //     const cert = certificate(
+            //         `${component.spec.id}-${app.spec.id}`, // name
+            //         `${component.spec.domainPrefix ? `${component.spec.domainPrefix}.` : '' }${app.spec.domainName}`, // dns name
+            //         app.spec.name // namespace
+            //     );
+            //     writeToFile(cert, join(baseDir, 'certificate.yaml'));
+            //     resources.push('certificate.yaml');
+            // }
+
+            // Deployments
+            component.spec.containers?.forEach(container => {
+                container.spec.expose?.forEach(containerPort => {
+                    // Service
+
+                    // Is this exposed externally?
+                    if (containerPort.ingressPath) {
+                        // Cert
+                        const certName = `${component.spec.id}-${container.spec.id}-${containerPort.name}`;
+                        const cert = certificate(
+                            certName, // name
+                            componentDomainName, //domain name
+                            app.spec.id // namespace
+                        )
+                        writeToFile(cert, join(baseDir, `cert-${certName}.yaml`));
+                        resources.push(`cert-${certName}.yaml`);
+                        // Ingress
+                    }
+                });
+            });
             
             const k = kustomization(resources, []);
             writeToFile(k, join(baseDir, 'kustomization.yaml'));
