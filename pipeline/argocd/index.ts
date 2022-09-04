@@ -132,6 +132,7 @@ Orgs.forEach(org => {
                     const containerPortName = `${component.spec.id}-${container.spec.id}-${containerPort.name}`
                     const svc = service(
                         containerPortName, // name
+                        `${containerPort.name}`, // port name
                         `${containerPort.port}`, // port
                         app.spec.id, // namespace
                     )

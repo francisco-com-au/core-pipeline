@@ -2,6 +2,7 @@ const service = function(
     name: string,
     portName: string,
     namespace: string,
+    port: string,
     ): string {
 
     return `---
