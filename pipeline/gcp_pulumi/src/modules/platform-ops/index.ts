@@ -62,7 +62,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
         app.spec.environments?.forEach(env => {
             const serviceAccount = new gcp.serviceaccount.Account(`${org.spec.id}.cicd.${app.spec.id}.${env.name}`, {
                 project: ciProject.id,
-                accountId: `cicd.${app.spec.id}.${env.name}`,
+                accountId: `cicd-${app.spec.id}-${env.name}`,
                 displayName: `CI/CD - ${app.spec.name} / ${env.name}`,
                 description: `Service account for automated CI/CD for App "${app.spec.name}" - Environment "${env.name}"`,
             });
