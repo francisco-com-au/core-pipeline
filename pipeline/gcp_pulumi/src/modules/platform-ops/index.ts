@@ -5,6 +5,7 @@ import { Org } from "../../../../../types/Org"
 
 // Import packages
 import * as gcp from "@pulumi/gcp";
+import * as pulumi from "@pulumi/pulumi";
 import moment from 'moment'
 
 
@@ -60,9 +61,10 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     // Make a service account per app
     org.spec.apps?.forEach(app => {
         app.spec.environments?.forEach(env => {
+            const accountId = pulumi.interpolate`cicd-${app.spec.id}-${env.name}`
             const serviceAccount = new gcp.serviceaccount.Account(`${org.spec.id}.cicd.${app.spec.id}.${env.name}`, {
                 project: ciProject.id,
-                accountId: `cicd-${app.spec.id}-${env.name}`,
+                accountId: accountId,
                 displayName: `CI/CD - ${app.spec.name} / ${env.name}`,
                 description: `Service account for automated CI/CD for App "${app.spec.name}" - Environment "${env.name}"`,
             });
