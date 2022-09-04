@@ -119,7 +119,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     if (org.spec.domain) {
         domains.push(org.spec.domain);
         const zone = new gcp.dns.ManagedZone(`${org.spec.id}.platform-ops.network.${org.spec.domain}`, {
-            name: 'Org DNS zone',
+            name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
             project: networkProject.projectId,
             description: `Org level domain for organization ${org.spec.name}`,
             dnsName: org.spec.domain,
@@ -138,7 +138,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
         if (app.spec.domainName && !domains.includes(app.spec.domainName)) {
             domains.push(app.spec.domainName);
             const zone = new gcp.dns.ManagedZone(`${org.spec.id}.platform-ops.network.${app.spec.domainName}`, {
-                name: app.spec.name,
+                name: app.spec.name.replace(/ /g, '-').toLowerCase(),
                 project: networkProject.projectId,
                 description: `Domain for app ${app.spec.name}`,
                 dnsName: app.spec.domainName,
