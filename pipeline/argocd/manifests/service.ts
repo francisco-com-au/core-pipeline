@@ -1,8 +1,8 @@
 const service = function(
     name: string,
     portName: string,
+    port: number,
     namespace: string,
-    port: string,
     ): string {
 
     return `---

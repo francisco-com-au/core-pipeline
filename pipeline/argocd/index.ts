@@ -133,7 +133,7 @@ Orgs.forEach(org => {
                     const svc = service(
                         containerPortName, // name
                         `${containerPort.name}`, // port name
-                        `${containerPort.port}`, // port
+                        containerPort.port, // port
                         app.spec.id, // namespace
                     )
                     // Service
