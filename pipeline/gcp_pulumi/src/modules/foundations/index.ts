@@ -76,7 +76,7 @@ export function makeFolders(org: Org, ciProject: gcp.organizations.Project): Org
                 // Apply IAM
                 app.environments[envName].roleBindings?.push({ // add the cicd project
                     member: `serviceAccount:cicd-${appId}-${envName}@${ciProject.id}.iam.gserviceaccount.com`,
-                    roles: ['role/editor'],
+                    roles: ['roles/editor'],
                 });
                 app.environments[envName].roleBindings?.forEach(roleBinding => {
                     roleBinding.roles.forEach(role => {
