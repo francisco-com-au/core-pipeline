@@ -1,5 +1,6 @@
 import { App } from "../../../../types/App";
 import { Playground } from "./components/Playground/Playground";
+import { Echo } from "./components/Echo/Echo";
 
 const Lab: App = {
     apiVersion: "platform.io/v1alpha1",
@@ -39,5 +40,7 @@ const Lab: App = {
 }
 Playground.spec.app = Lab.spec.id;
 Lab.spec.components?.push(Playground);
+Echo.spec.app = Lab.spec.id;
+Lab.spec.components?.push(Echo);
 
 export { Lab }

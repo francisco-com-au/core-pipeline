@@ -1,6 +1,5 @@
 import { Component } from "../../../../../../types/Component";
 import { Nginx } from "./containers/Nginx";
-import { SimpleWeb } from "./containers/SimpleWeb";
 
 const Playground: Component = {
     apiVersion: "platform.io/v1alpha1",
@@ -24,7 +23,5 @@ const Playground: Component = {
 }
 Nginx.spec.component = Playground.spec.id;
 Playground.spec.containers?.push(Nginx)
-SimpleWeb.spec.component = Playground.spec.id;
-Playground.spec.containers?.push(SimpleWeb)
 
 export { Playground }
