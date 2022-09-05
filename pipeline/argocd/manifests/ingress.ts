@@ -29,9 +29,9 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - ${domainName}
-    secretName: ${name}-tls
+    - hosts:
+      - ${domainName}
+      secretName: ${name}-tls
   rules:
     - host: ${domainName}
       http:

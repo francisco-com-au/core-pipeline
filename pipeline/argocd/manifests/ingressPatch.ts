@@ -26,19 +26,20 @@ metadata:
   namespace: ${namespace}
 spec:
   tls:
-    - hosts:
-        - ${domainName}
+  - hosts:
+    - ${domainName}
+    secretName: ${name}-tls
   rules:
   - host: ${domainName}
-  http:
-    paths: ${portsToExpose.map((p, idx ) => `
-      - path: ${p.ingressPath}
-        pathType: Prefix
-        backend:
-          service:
-            name: ${svcName[idx]}
-            port:
-              number: ${p.port}`).join('')}
+    http:
+      paths: ${portsToExpose.map((p, idx ) => `
+        - path: ${p.ingressPath}
+          pathType: Prefix
+          backend:
+            service:
+              name: ${svcName[idx]}
+              port:
+                number: ${p.port}`).join('')}
 `
 }
 
