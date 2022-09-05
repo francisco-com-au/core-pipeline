@@ -1,6 +1,7 @@
 import { RoleBinding } from '../../types/GCP';
 import { Org } from '../../types/Org';
 import { Lab } from './apps/Lab/Lab';
+import { AddressAustralia } from './apps/AddressAustralia/AddressAustralia';
 
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
@@ -67,5 +68,7 @@ const Organization: Org = {
 }
 Lab.spec.organization = Organization.spec.id;
 Organization.spec.apps?.push(Lab)
+AddressAustralia.spec.organization = Organization.spec.id;
+Organization.spec.apps?.push(AddressAustralia)
 
 export { Organization }
