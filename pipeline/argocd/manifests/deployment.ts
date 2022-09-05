@@ -42,7 +42,7 @@ spec:
       app: ${appId}
       component: ${componentId}
       container: ${container.spec.id}
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -55,6 +55,16 @@ spec:
           image: ${container.spec.image}
           ${container.spec.expose ? `ports: ${container.spec.expose?.map(containerPort => `
             - containerPort: ${containerPort.port}`).join('')}` : ''}
+          ${container.spec.env ? `env: ${container.spec.env?.map(containerEnv => `
+            - name: ${containerEnv.name}
+              value: "${containerEnv.value}"`).join('')}` : ''}
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
 `
 }
 

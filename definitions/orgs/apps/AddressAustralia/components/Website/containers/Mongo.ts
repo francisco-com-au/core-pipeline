@@ -17,6 +17,12 @@ const Mongo: Container = {
                 port: 27017,
                 ingressPath: "/",
             }
+        ],
+        env: [
+            {
+                name: "ENV_TEST_KEY",
+                value: "ENV_TEST_VALUE"
+            }
         ]
     }
 }

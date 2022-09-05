@@ -36,5 +36,5 @@ const AddressAustralia: App = {
 }
 Website.spec.app = AddressAustralia.spec.id;
 AddressAustralia.spec.components?.push(Website);
-\
+
 export { AddressAustralia }
