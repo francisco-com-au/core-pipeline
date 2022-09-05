@@ -25,8 +25,8 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: ${name}
   namespace: ${namespace}
-  annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: https # ingress-nginx
+  # annotations:
+  #  nginx.ingress.kubernetes.io/backend-protocol: https # ingress-nginx
 spec:
   ingressClassName: nginx
   tls:

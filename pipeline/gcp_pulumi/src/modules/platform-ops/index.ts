@@ -118,8 +118,8 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     const domains: string[] = [];
     if (org.spec.domain) {
         domains.push(org.spec.domain);
-        const zone = new gcp.dns.ManagedZone(`${org.spec.id}.platform-ops.network.${org.spec.domain}`, {
-            name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
+        const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${org.spec.domain}`, {
+            // name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
             project: networkProject.projectId,
             description: `Org level domain for organization ${org.spec.name}`,
             dnsName: `${org.spec.domain}.`,
@@ -137,8 +137,8 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     org.spec.apps?.forEach(app => {
         if (app.spec.domainName && !domains.includes(app.spec.domainName)) {
             domains.push(app.spec.domainName);
-            const zone = new gcp.dns.ManagedZone(`${org.spec.id}.platform-ops.network.${app.spec.domainName}`, {
-                name: app.spec.name.replace(/ /g, '-').toLowerCase(),
+            const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${app.spec.domainName}`, {
+                // name: app.spec.name.replace(/ /g, '-').toLowerCase(),
                 project: networkProject.projectId,
                 description: `Domain for app ${app.spec.name}`,
                 dnsName: `${app.spec.domainName}.`,
