@@ -27,6 +27,7 @@ const deployment = function(
     namespace: string,
     appId: string,
     componentId: string,
+    image: string,
     container: Container,
     ): string {
 
@@ -52,7 +53,7 @@ spec:
     spec:
       containers:
         - name: ${container.spec.id}
-          image: ${container.spec.image}
+          image: ${image}
           ${container.spec.expose ? `ports: ${container.spec.expose?.map(containerPort => `
             - containerPort: ${containerPort.port}`).join('')}` : ''}
           ${container.spec.env ? `env: ${container.spec.env?.map(containerEnv => `

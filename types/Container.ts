@@ -11,7 +11,13 @@ interface Container extends KRM {
         /* Name of the parent component. Can be populated programatically if this container is added to the component object. */
         component?: string;
         /* Image to run. */
-        image: string;
+        image?: string;
+        /* If image is not present will create a build trigger usingg:
+            - the parent component's repo
+            - the parent application environment's branch
+            - the path to the dockerfile specified here
+        */
+        dockerFile?: string;
 
         /* Ports to expose via services */
         expose?: ContainerPort[];

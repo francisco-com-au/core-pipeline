@@ -16,6 +16,7 @@ import { ingressPatch } from "./manifests/ingressPatch";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
+const CONTAINER_REGISTRY_PROJECT = process.env.CONTAINER_REGISTRY_PROJECT || "";
 
 // Helper to create a folder
 function makeFolder(parts: string[]) {
@@ -134,11 +135,13 @@ Orgs.forEach(org => {
             component.spec.containers?.forEach(container => {
                 
                 const containerName = `${component.spec.id}-${container.spec.id}`;
+                const image = container.spec.image || `gcr.io/${CONTAINER_REGISTRY_PROJECT}/${app.spec.id}/${component.spec.id}/main/${container.spec.id}:latest`
                 const deploy = deployment(
                     containerName, // name
                     app.spec.id, // namespace
                     app.spec.id, // app id
                     component.spec.id, // component id
+                    image, // image
                     container // container
                 );
                 // Service

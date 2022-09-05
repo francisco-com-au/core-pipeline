@@ -3,6 +3,7 @@
 set -e
 
 export APPS_REPO="francisco-com-au/platform-apps"
+export CONTAINER_REGISTRY_PROJECT="placeholder"
 
 # Figure out current commit sha
 SHA=$(git rev-parse HEAD)
@@ -13,7 +14,6 @@ BRANCH=feature/core-pipeline-$SHA
 rm -rf platform-apps
 
 # Clone repo
-# git clone git@github.com:francisco-com-au/platform-apps.git
 gh repo clone $APPS_REPO
 cd platform-apps
 git checkout main

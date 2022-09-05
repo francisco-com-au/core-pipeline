@@ -9,13 +9,12 @@ const Mongo: Container = {
     spec: {
         id: "mongo",
         name: "mongo",
-        description: "Boilerplate NGINX container",
+        description: "Session store",
         image: "mongo:3.6.23",
         expose: [
             {
                 name: "mongo",
-                port: 27017,
-                ingressPath: "/",
+                port: 27017
             }
         ],
         env: [
