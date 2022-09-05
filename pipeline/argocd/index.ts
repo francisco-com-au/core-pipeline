@@ -8,9 +8,11 @@ import { argocdApplicationSet } from "./manifests/argocdApplicationSet";
 import { kustomization } from "./manifests/kustomization";
 import { argocdApplicationSetPatch } from "./manifests/argocdApplicationSetPatch";
 import { certificate } from "./manifests/certificate";
+import { certificatePatch } from "./manifests/certificatePatch";
 import { service } from "./manifests/service";
 import { ingress } from "./manifests/ingress";
 import { deployment } from "./manifests/deployment";
+import { ingressPatch } from "./manifests/ingressPatch";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -162,7 +164,9 @@ Orgs.forEach(org => {
             });
 
             // Is any of this component's container's ports exposed externally?
+            let patchIngress: boolean = false;
             if (component.spec.containers?.map(c => c.spec.expose?.filter(p => p.ingressPath)).length != 0) {
+                patchIngress = true;
                 // Cert
                 const cert = certificate(
                     component.spec.id, // name
@@ -172,13 +176,13 @@ Orgs.forEach(org => {
                 writeToFile(cert, join(baseDir, `cert-${component.spec.id}.yaml`));
                 resources.push(`cert-${component.spec.id}.yaml`);
                 // Ingress
-                const i = ingress(
+                const ing = ingress(
                     component.spec.id, // name
                     app.spec.id, // namespace
                     componentDomainName, // domain name
                     component.spec.containers || [],
                 );
-                writeToFile(i, join(baseDir, `ingress-${component.spec.id}.yaml`));
+                writeToFile(ing, join(baseDir, `ingress-${component.spec.id}.yaml`));
                 resources.push(`ingress-${component.spec.id}.yaml`);
             };
             
@@ -195,10 +199,45 @@ Orgs.forEach(org => {
                     const overlayDir = join(overlaysDir, environment.name);
                     console.log(`Making component overlay folder "${overlayDir}...`);
                     makeFolder([overlayDir]);
+                    const patchesDir = join(overlayDir, 'patches');
+                    console.log(`Making component patches folder "${patchesDir}...`);
+                    makeFolder([patchesDir]);
                     // Object to store resources to include in the kustomization
-                    const resources: string[] = [];
-                    resources.push('../../base');
-                    const k = kustomization(resources, []);
+                    const resources: string[] = ['../../base'];
+                    const patches: string[] = [];
+                    
+                    // Patch ingress
+                    if (patchIngress) {
+                        const dnsPrefix = environment.name == 'main' ? '' : `${environment.name}.`;
+                        const componentDomainName = `${component.spec.domainPrefix ? `${component.spec.domainPrefix}.` : '' }${dnsPrefix}${app.spec.domainName}`;
+                        // Cert Patch
+                        patchIngress = true;
+                        // Cert
+                        const certPatch = certificatePatch(
+                            component.spec.id, // name
+                            componentDomainName, //domain name
+                            app.spec.id // namespace
+                        )
+                        writeToFile(certPatch, join(patchesDir, `cert-${component.spec.id}.yaml`));
+                        patches.push(`patches/cert-${component.spec.id}.yaml`);        
+                        // Ingress Patch
+                        const ingPatch = ingressPatch(
+                            component.spec.id,  // name
+                            app.spec.id,        // namespace
+                            componentDomainName, // domainName
+                            component.spec.containers || [] // containers
+                        );
+                        writeToFile(ingPatch, join(patchesDir, `ingress-${component.spec.id}.yaml`));
+                        patches.push(`patches/ingress-${component.spec.id}.yaml`);
+                    }
+
+                    // const ing = ingress(
+                    //     component.spec.id, // name
+                    //     app.spec.id, // namespace
+                    //     componentDomainName, // domain name
+                    //     component.spec.containers || [],
+                    // );
+                    const k = kustomization(resources, patches);
                     writeToFile(k, join(overlayDir, 'kustomization.yaml'));
                 });
             };

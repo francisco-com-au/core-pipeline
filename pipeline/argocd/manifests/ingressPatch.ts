@@ -1,12 +1,12 @@
 import { Container, ContainerPort } from "../../../types/Container"
 
-const ingress = function(
+const ingressPatch = function(
         name: string,
         namespace: string,
         domainName: string,
         containers: Container[],
     ): string {
-
+    
     const portsToExpose: ContainerPort[] = [];
     const svcName: string[] = [];
     containers.forEach(container => {
@@ -17,33 +17,29 @@ const ingress = function(
             }
         });
     });
-    
+  
     return `---
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
   name: ${name}
   namespace: ${namespace}
-  # annotations:
-  #  nginx.ingress.kubernetes.io/backend-protocol: https # ingress-nginx
 spec:
-  ingressClassName: nginx
   tls:
-  - hosts:
-    - ${domainName}
-    secretName: ${name}-tls
+    - hosts:
+        - ${domainName}
   rules:
-    - host: ${domainName}
-      http:
-        paths: ${portsToExpose.map((p, idx ) => `
-          - path: ${p.ingressPath}
-            pathType: Prefix
-            backend:
-              service:
-                name: ${svcName[idx]}
-                port:
-                  number: ${p.port}`).join('')}
+  - host: ${domainName}
+  http:
+    paths: ${portsToExpose.map((p, idx ) => `
+      - path: ${p.ingressPath}
+        pathType: Prefix
+        backend:
+          service:
+            name: ${svcName[idx]}
+            port:
+              number: ${p.port}`).join('')}
 `
 }
 
-export { ingress }
+export { ingressPatch }
