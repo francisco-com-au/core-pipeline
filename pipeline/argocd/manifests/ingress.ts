@@ -43,8 +43,7 @@ spec:
           service:
             name: ${svcName[idx]}
             port:
-              number: ${p.port}
-      `)}
+              number: ${p.port}`).join('')}
     #   - path: /
     #     pathType: Prefix
     #     backend:

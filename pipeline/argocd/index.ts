@@ -10,6 +10,7 @@ import { argocdApplicationSetPatch } from "./manifests/argocdApplicationSetPatch
 import { certificate } from "./manifests/certificate";
 import { service } from "./manifests/service";
 import { ingress } from "./manifests/ingress";
+import { deployment } from "./manifests/deployment";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -129,8 +130,21 @@ Orgs.forEach(org => {
 
             // Deployments
             component.spec.containers?.forEach(container => {
+                
+                const containerName = `${component.spec.id}-${container.spec.id}`;
+                const deploy = deployment(
+                    containerName, // name
+                    app.spec.id, // namespace
+                    app.spec.id, // app id
+                    component.spec.id, // component id
+                    container // container
+                );
+                // Service
+                writeToFile(deploy, join(baseDir, `deploy-${containerName}.yaml`));
+                resources.push(`deploy-${containerName}.yaml`);
+
                 container.spec.expose?.forEach(containerPort => {
-                    const containerPortName = `${component.spec.id}-${container.spec.id}-${containerPort.name}`
+                    const containerPortName = `${containerName}-${containerPort.name}`
                     const svc = service(
                         containerPortName, // name
                         `${containerPort.name}`, // port name
