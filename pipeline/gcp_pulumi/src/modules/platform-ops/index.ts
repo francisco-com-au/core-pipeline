@@ -127,7 +127,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
                 'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
                 'app': 'platform-ops',
                 'created_by': 'pulumi',
-                'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
+                // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}` <- this triggers a recreate and it fails
             },
         },
         {
@@ -146,7 +146,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
                     'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
                     'app': app.spec.name.replace(/ /g, '-').toLowerCase(),
                     'created_by': 'pulumi',
-                    'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
+                    // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}` <- this triggers a recreate and it fails
                 },
             },
             {
