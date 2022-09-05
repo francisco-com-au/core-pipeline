@@ -118,7 +118,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     const domains: string[] = [];
     if (org.spec.domain) {
         domains.push(org.spec.domain);
-        const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${org.spec.domain}`.replace(/./g, '-'), {
+        const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${org.spec.domain}`.replace(/\./g, '-'), {
             // name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
             project: networkProject.projectId,
             description: `Org level domain for organization ${org.spec.name}`,
@@ -137,7 +137,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     org.spec.apps?.forEach(app => {
         if (app.spec.domainName && !domains.includes(app.spec.domainName)) {
             domains.push(app.spec.domainName);
-            const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${app.spec.domainName}`.replace(/./g, '-'), {
+            const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${app.spec.domainName}`.replace(/\./g, '-'), {
                 // name: app.spec.name.replace(/ /g, '-').toLowerCase(),
                 project: networkProject.projectId,
                 description: `Domain for app ${app.spec.name}`,
