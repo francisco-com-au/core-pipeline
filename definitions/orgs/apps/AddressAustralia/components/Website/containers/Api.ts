@@ -11,6 +11,7 @@ const Api: Container = {
         name: "api",
         description: "API for the front end",
         dockerFile: "build/Dockerfile",
+        image: "aa/website-api",
         expose: [
             {
                 name: "api",
