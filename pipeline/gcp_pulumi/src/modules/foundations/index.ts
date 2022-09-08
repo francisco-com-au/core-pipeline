@@ -6,6 +6,7 @@ import { Org } from "../../../../../types/Org"
 // Import packages
 import * as gcp from "@pulumi/gcp";
 import * as pulumi from "@pulumi/pulumi";
+import * as random from "@pulumi/random";
 // import moment from 'moment'
 
 
@@ -109,6 +110,13 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
             Object.keys(environments).forEach(envName => {
                 // Calculate project ID
                 const projectId = `${org.spec.id}-${app.spec.id}-${component.spec.id}-${envName}`;
+                const randomId = new random.RandomId(projectId, {
+                    byteLength: 3,
+                    keepers: {
+                        org: `${org.spec.id}`,
+                    },
+                });    
+            
                 // Calculate APIs to enable (inherit from org and app)
                 const apis: Apis = [];
                 org.spec.gcp?.apis?.forEach(api => apis.indexOf(api) === -1 ? apis.push(api) : null);
@@ -119,7 +127,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                 const project = new gcp.organizations.Project(projectId, {
                     folderId: environments[envName].gcpFolderId?.apply(folderId => `${folderId}`),
                     // name: projectId,
-                    projectId: projectId,
+                    projectId: randomId.hex.apply(id => `${projectId}-${id}`),
                     billingAccount: org.spec.gcp.billingId,
                     labels: {
                         'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),

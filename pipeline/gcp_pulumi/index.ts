@@ -15,7 +15,7 @@ Orgs.forEach(org => {
     orgFolders = Foundations.makeFolders(org, ciProject);
     
     // Make projects
-    // Foundations.makeProjects(org, orgFolders);
+    Foundations.makeProjects(org, orgFolders);
 });
 
 // export const readme = Readme(orgFolders);
