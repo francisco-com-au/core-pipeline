@@ -65,7 +65,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
             disableDependentServices: true,
             project: ciProject.projectId,
             service: api,
-        });
+        }, {dependsOn: [ciProject]});
         enabledApis.set(api, enabledApi);
         e = enabledApi;
     });

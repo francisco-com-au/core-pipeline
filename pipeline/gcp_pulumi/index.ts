@@ -9,13 +9,13 @@ let orgFolders: OrgFolders = {};
 
 Orgs.forEach(org => {
     // Make ops
-    const {networkProject, ciProject} = Ops.makePlatformOps(org);
+    // const {networkProject, ciProject} = Ops.makePlatformOps(org);
 
     // Make folders
-    orgFolders = Foundations.makeFolders(org, ciProject);
+    // orgFolders = Foundations.makeFolders(org, ciProject);
     
     // Make projects
-    Foundations.makeProjects(org, orgFolders);
+    // Foundations.makeProjects(org, orgFolders);
 });
 
 // export const readme = Readme(orgFolders);

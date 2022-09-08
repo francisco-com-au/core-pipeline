@@ -136,7 +136,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                         disableDependentServices: true,
                         project: project.projectId,
                         service: api,
-                    });
+                    }, {dependsOn: [project]});
                 })
             });
         });
