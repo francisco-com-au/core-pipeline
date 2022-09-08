@@ -73,14 +73,16 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     const cloudbuildApi = enabledApis.get('cloudbuild.googleapis.com');
 
     // Create topic for repo changes
-    const repoEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`, {
-        projectId: ciProject,
-        name: `${org.spec.id}-repo-events`,
-        messageRetentionDuration: "86600s",
-    },
-    {
-        dependsOn: pubsubApi ? [pubsubApi] : []
-    });
+    const repoEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`,
+        {
+            projectId: ciProject,
+            name: `${org.spec.id}-repo-events`,
+            messageRetentionDuration: "86600s",
+        },
+        {
+            dependsOn: pubsubApi ? [pubsubApi] : []
+        }
+    );
 
     // Make a service account per app
     org.spec.apps?.forEach(app => {
@@ -103,34 +105,36 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 const branch = env.branch || env.name;
 
                 // Push trigger
-                const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.${app.spec.id}.${component.spec.id}.${env.name}.pr`, {
-                    project: ciProject.projectId,
-                    name: `repo-events-${repoOrg ? `${repoOrg}/` : ''}-${repoName}-${branch}-${env}-push`,
-                    github: {
-                        name: repoName,
-                        owner: org,
-                        push: {
-                            branch: `"^${branch}$"`,
+                const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.${app.spec.id}.${component.spec.id}.${env.name}.pr`,
+                    {
+                        project: ciProject.projectId,
+                        name: `repo-events-${repoOrg ? `${repoOrg}/` : ''}-${repoName}-${branch}-${env}-push`,
+                        github: {
+                            name: repoName,
+                            owner: org,
+                            push: {
+                                branch: `"^${branch}$"`,
+                            },
+                            // pull_request: {
+                            //     branch: ".*"
+                            // },
                         },
-                        // pull_request: {
-                        //     branch: ".*"
-                        // },
+                        includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
+                        filename: "cloudbuild.yaml",
+                        substitutions: {
+                            _APP: app.spec.id,
+                            _COMPONENT: component.spec.id,
+                            _ENV: env,
+                            _BRANCH: branch,
+                            _REPO: `${repoOrg}/${repoName}`,
+                            _EVENT: "push"
+                        },
                     },
-                    includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
-
-                    filename: "cloudbuild.yaml",
-                    substitutions: {
-                        _APP: app.spec.id,
-                        _COMPONENT: component.spec.id,
-                        _ENV: env,
-                        _BRANCH: branch,
-                        _REPO: `${repoOrg}/${repoName}`,
-                        _EVENT: "push"
-                    },
-                },
-                {
-                    dependsOn: cloudbuildApi ? [cloudbuildApi] : []
-                });
+                    {
+                        dependsOn: cloudbuildApi ? [cloudbuildApi] : []
+                    }
+                );
+            });
         });
     });
     // const filename_trigger = new gcp.cloudbuild.Trigger("filename-trigger", {
