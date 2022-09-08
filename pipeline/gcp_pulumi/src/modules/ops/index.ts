@@ -9,7 +9,7 @@ import moment from 'moment'
 
 // Create folder for ops
 export function makeFolders(org: Org): gcp.organizations.Folder {    
-    const platformOpsFolder = new gcp.organizations.Folder(`${org.spec}.$platform-ops`, {
+    const platformOpsFolder = new gcp.organizations.Folder(`${org.spec}.ops`, {
         displayName: "Platform Ops",
         parent: `organizations/${org.spec.gcp.orgId}`
     });
@@ -19,7 +19,7 @@ export function makeFolders(org: Org): gcp.organizations.Folder {
         roles: ["roles/viewer"],
     };
     roleBinding.roles.forEach(role => {
-        const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.platform-ops.${roleBinding.member}.${role}`, {
+        const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.ops.${roleBinding.member}.${role}`, {
             folder: platformOpsFolder.id,
             member: roleBinding.member,
             role: role,
@@ -30,7 +30,7 @@ export function makeFolders(org: Org): gcp.organizations.Folder {
 
 // Create project for CI
 export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder): gcp.organizations.Project {
-    const projectId = `${org.spec.id}-platform-ops-cicd`;
+    const projectId = `${org.spec.id}-ops-cicd`;
     const ciProject = new gcp.organizations.Project(projectId, {
         folderId: parentFolder.id,
         // name: projectId,
@@ -38,7 +38,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
         billingAccount: org.spec.gcp.billingId,
         labels: {
             'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
-            'app': 'platform-ops',
+            'app': 'ops',
             'created_by': 'pulumi',
             'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
         },
@@ -49,7 +49,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
         roles: ["roles/editor"],
     };
     roleBinding.roles.forEach(role => {
-        const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.platform-ops.${roleBinding.member}.${role}`, {
+        const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.ops.${roleBinding.member}.${role}`, {
             folder: parentFolder.id,
             member: roleBinding.member,
             role: role,
@@ -61,7 +61,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     const enabledApis = new Map<string, gcp.projects.Service>();
     let e: gcp.projects.Service;
     apis.forEach(api => {
-        const enabledApi = new gcp.projects.Service(`${org.spec.id}.platform-ops.cicd.${api}`, {
+        const enabledApi = new gcp.projects.Service(`${org.spec.id}.ops.cicd.${api}`, {
             disableDependentServices: true,
             project: ciProject.projectId,
             service: api,
@@ -153,7 +153,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
 
 // Create project for network
 export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Folder): gcp.organizations.Project {
-    const projectId = `${org.spec.id}-platform-ops-network`;
+    const projectId = `${org.spec.id}-ops-network`;
     const networkProject = new gcp.organizations.Project(projectId, {
         folderId: parentFolder.id,
         // name: projectId,
@@ -161,7 +161,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
         billingAccount: org.spec.gcp.billingId,
         labels: {
             'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
-            'app': 'platform-ops',
+            'app': 'ops',
             'created_by': 'pulumi',
             'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
         },
@@ -172,7 +172,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
         roles: ["roles/editor"],
     };
     roleBinding.roles.forEach(role => {
-        const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.platform-ops.network.${roleBinding.member}.${role}`, {
+        const folderRole = new gcp.folder.IAMMember(`${org.spec.id}.ops.network.${roleBinding.member}.${role}`, {
             folder: parentFolder.id,
             member: roleBinding.member,
             role: role,
@@ -184,7 +184,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     const enabledApis = new Map<string, gcp.projects.Service>();
     let e: gcp.projects.Service;
     apis.forEach(api => {
-        const enabledApi = new gcp.projects.Service(`${org.spec.id}.platform-ops.network.${api}`, {
+        const enabledApi = new gcp.projects.Service(`${org.spec.id}.ops.network.${api}`, {
             disableDependentServices: true,
             project: networkProject.projectId,
             service: api,
@@ -205,7 +205,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
             dnsName: `${org.spec.domain}.`,
             labels: {
                 'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
-                'app': 'platform-ops',
+                'app': 'ops',
                 'created_by': 'pulumi',
                 // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}` <- this triggers a recreate and it fails
             },

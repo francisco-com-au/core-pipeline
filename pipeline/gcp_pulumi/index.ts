@@ -1,6 +1,6 @@
 import { Orgs } from "../../definitions/index"
 import * as Foundations from "./src/modules/foundations"
-import * as PlatformOps from "./src/modules/platform-ops"
+import * as Ops from "./src/modules/ops"
 // import { Readme } from "./src/modules/Readme"
 import { OrgFolders } from "./src/types/folders";
 
@@ -8,8 +8,8 @@ import { OrgFolders } from "./src/types/folders";
 let orgFolders: OrgFolders = {};
 
 Orgs.forEach(org => {
-    // Make platform-ops
-    const {networkProject, ciProject} = PlatformOps.makePlatformOps(org);
+    // Make ops
+    const {networkProject, ciProject} = Ops.makePlatformOps(org);
 
     // Make folders
     orgFolders = Foundations.makeFolders(org, ciProject);
