@@ -80,6 +80,16 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     const cloudbuildApi = enabledApis.get('cloudbuild.googleapis.com');
 
     // Create topic for repo changes
+    const repoAllEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-all-events`,
+        {
+            project: ciProject.projectId,
+            name: `${org.spec.id}-repo-all-events`,
+            messageRetentionDuration: "86600s",
+        },
+        {
+            dependsOn: pubsubApi ? [pubsubApi] : []
+        }
+    );
     const repoEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`,
         {
             project: ciProject.projectId,
@@ -106,29 +116,92 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     // Create a trigger for each repo
     org.spec.apps?.forEach(app => {
         app.spec.components?.forEach(component => {
+            const repoOrg = component.spec.source.organization || app.spec.github.organization;
+            const repoName = component.spec.source.repo;
+    
+            // Publish on all changes
+            const messageBody = '{org:"$_ORG",app:"$_APP",component:"$_COMPONENT",branch:"$BRANCH_NAME",repo:"$REPO_NAME",sha:"$SHORT_SHA",event:"$_EVENT"}'
+            const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.repo-all-events.push.${app.spec.id}.${component.spec.id}`,
+                {
+                    project: ciProject.projectId,
+                    name: `repo-all-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}`,
+                    github: {
+                        name: repoName,
+                        owner: repoOrg,
+                        push: {
+                            branch: `.*`, // matches all branches
+                        },
+                    },
+                    includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
+                    build: {
+                        steps: [
+                            {
+                                name: "gcr.io/cloud-builders/gcloud",
+                                args: [
+                                    'pubsub',
+                                    'topics',
+                                    'publish',
+                                    repoAllEventsTopic.id.apply(t => t),
+                                    '--message',
+                                    messageBody
+                                ]
+                            }
+                        ]
+                    },
+                    substitutions: {
+                        _ORG: org.spec.id,
+                        _APP: app.spec.id,
+                        _COMPONENT: component.spec.id,
+                        _REPO: `${repoOrg}/${repoName}`,
+                        _EVENT: "push"
+                    },
+                },
+                {
+                    dependsOn: cloudbuildApi ? [cloudbuildApi] : []
+                }
+            );
+
+            
             app.spec.environments.forEach(env => {
-                const repoOrg = component.spec.source.organization || app.spec.github.organization;
-                const repoName = component.spec.source.repo;
                 const branch = env.branch || env.name;
 
+                // Publish on changes that match the org-app-component-env branch
+
                 // Push trigger
+                console.log(`repo-events-${repoOrg ? `${repoOrg}/` : ''}${repoName}-${branch}-${env.name}-push`)
+                console.log(`repoName: ${repoName}`)
+                console.log(`owner: ${repoOrg}`)
+                ciProject.projectId.apply(p => console.log(`projectId: ${p}`))
+                const messageBody = '{org:"$_ORG",app:"$_APP",component:"$_COMPONENT",env:"$_ENV",branch:"$BRANCH_NAME",repo:"$REPO_NAME",sha:"$SHORT_SHA",event:"$_EVENT"}'
                 const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.${app.spec.id}.${component.spec.id}.${env.name}.pr`,
                     {
                         project: ciProject.projectId,
-                        name: `repo-events-${repoOrg ? `${repoOrg}/` : ''}-${repoName}-${branch}-${env}-push`,
+                        name: `repo-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}-${branch}-${env.name}`,
                         github: {
                             name: repoName,
                             owner: repoOrg,
                             push: {
-                                branch: `"^${branch}$"`,
+                                branch: `^${branch}$`,
                             },
-                            // pull_request: {
-                            //     branch: ".*"
-                            // },
                         },
                         includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
-                        filename: "cloudbuild.yaml",
+                        build: {
+                            steps: [
+                                {
+                                    name: "gcr.io/cloud-builders/gcloud",
+                                    args: [
+                                        'pubsub',
+                                        'topics',
+                                        'publish',
+                                        repoEventsTopic.id.apply(t => t),
+                                        '--message',
+                                        messageBody
+                                    ]
+                                }
+                            ]
+                        },
                         substitutions: {
+                            _ORG: org.spec.id,
                             _APP: app.spec.id,
                             _COMPONENT: component.spec.id,
                             _ENV: env.name,
@@ -144,17 +217,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
             });
         });
     });
-    // const filename_trigger = new gcp.cloudbuild.Trigger("filename-trigger", {
-    //     filename: "cloudbuild.yaml",
-    //     substitutions: {
-    //         _BAZ: "qux",
-    //         _FOO: "bar",
-    //     },
-    //     triggerTemplate: {
-    //         branchName: "main",
-    //         repoName: "my-repo",
-    //     },
-    // });
+
     return ciProject
 }
 
