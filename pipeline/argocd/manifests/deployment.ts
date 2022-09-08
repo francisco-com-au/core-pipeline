@@ -54,6 +54,7 @@ spec:
       containers:
         - name: ${container.spec.id}
           image: ${image}
+          imagePullPolicy: Always
           ${container.spec.expose ? `ports: ${container.spec.expose?.map(containerPort => `
             - containerPort: ${containerPort.port}`).join('')}` : ''}
           ${container.spec.env ? `env: ${container.spec.env?.map(containerEnv => `
