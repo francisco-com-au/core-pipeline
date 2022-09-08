@@ -6,7 +6,7 @@ import { Org } from "../../../../../types/Org"
 // Import packages
 import * as gcp from "@pulumi/gcp";
 import * as pulumi from "@pulumi/pulumi";
-import moment from 'moment'
+// import moment from 'moment'
 
 
 /*
@@ -118,7 +118,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                 console.log(`Org: ${org.spec.id} - App: ${app.spec.id} - Component: ${component.spec.id} - Env: ${envName}`)
                 const project = new gcp.organizations.Project(projectId, {
                     folderId: environments[envName].gcpFolderId?.apply(folderId => `${folderId}`),
-                    name: projectId,
+                    // name: projectId,
                     projectId: projectId,
                     billingAccount: org.spec.gcp.billingId,
                     labels: {
@@ -127,7 +127,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                         'environment_name': `${app.spec.environments.find(e => e.name == envName)?.name}`.toLowerCase(),
                         'environment_type': `${app.spec.environments.find(e => e.name == envName)?.type}`.toLowerCase(),
                         'created_by': 'pulumi',
-                        'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
+                        // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
                     },
                 });
                 // Enable APIs
