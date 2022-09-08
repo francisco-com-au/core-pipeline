@@ -57,7 +57,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     });
 
     // Enable DNS API
-    const apis = ['pubsub.googleapis.com'];
+    const apis = ['pubsub.googleapis.com', 'cloudbuild.googleapis.com'];
     const enabledApis = new Map<string, gcp.projects.Service>();
     let e: gcp.projects.Service;
     apis.forEach(api => {
