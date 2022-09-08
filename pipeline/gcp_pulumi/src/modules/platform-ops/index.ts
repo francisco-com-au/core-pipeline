@@ -56,7 +56,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
         });
     });
 
-    // Enable DNS API
+    // Enable Pubsub and Cloudbuild APIs
     const apis = ['pubsub.googleapis.com', 'cloudbuild.googleapis.com'];
     const enabledApis = new Map<string, gcp.projects.Service>();
     let e: gcp.projects.Service;
@@ -70,9 +70,10 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
         e = enabledApi;
     });
     const pubsubApi = enabledApis.get('pubsub.googleapis.com');
+    const cloudbuildApi = enabledApis.get('cloudbuild.googleapis.com');
 
     // Create topic for repo changes
-    const topic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`, {
+    const repoEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`, {
         projectId: ciProject,
         name: `${org.spec.id}-repo-events`,
         messageRetentionDuration: "86600s",
@@ -93,6 +94,56 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
         });
     });
 
+    // Create a trigger for each repo
+    org.spec.apps?.forEach(app => {
+        app.spec.components?.forEach(component => {
+            app.spec.environments.forEach(env => {
+                const repoOrg = component.spec.source.organization || app.spec.github.organization;
+                const repoName = component.spec.source.repo;
+                const branch = env.branch || env.name;
+
+                // Push trigger
+                const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.${app.spec.id}.${component.spec.id}.${env.name}.pr`, {
+                    project: ciProject.projectId,
+                    name: `repo-events-${repoOrg ? `${repoOrg}/` : ''}-${repoName}-${branch}-${env}-push`,
+                    github: {
+                        name: repoName,
+                        owner: org,
+                        push: {
+                            branch: `"^${branch}$"`,
+                        },
+                        // pull_request: {
+                        //     branch: ".*"
+                        // },
+                    },
+                    includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
+
+                    filename: "cloudbuild.yaml",
+                    substitutions: {
+                        _APP: app.spec.id,
+                        _COMPONENT: component.spec.id,
+                        _ENV: env,
+                        _BRANCH: branch,
+                        _REPO: `${repoOrg}/${repoName}`,
+                        _EVENT: "push"
+                    },
+                },
+                {
+                    dependsOn: cloudbuildApi ? [cloudbuildApi] : []
+                });
+        });
+    });
+    // const filename_trigger = new gcp.cloudbuild.Trigger("filename-trigger", {
+    //     filename: "cloudbuild.yaml",
+    //     substitutions: {
+    //         _BAZ: "qux",
+    //         _FOO: "bar",
+    //     },
+    //     triggerTemplate: {
+    //         branchName: "main",
+    //         repoName: "my-repo",
+    //     },
+    // });
     return ciProject
 }
 
