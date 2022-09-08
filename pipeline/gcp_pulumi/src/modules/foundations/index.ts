@@ -118,7 +118,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                 console.log(`Org: ${org.spec.id} - App: ${app.spec.id} - Component: ${component.spec.id} - Env: ${envName}`)
                 const project = new gcp.organizations.Project(projectId, {
                     folderId: environments[envName].gcpFolderId?.apply(folderId => `${folderId}`),
-                    // name: projectId,
+                    name: projectId,
                     projectId: projectId,
                     billingAccount: org.spec.gcp.billingId,
                     labels: {
