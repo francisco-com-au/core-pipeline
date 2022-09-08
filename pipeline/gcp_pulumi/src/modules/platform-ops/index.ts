@@ -33,7 +33,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     const projectId = `${org.spec.id}-platform-ops-cicd`;
     const ciProject = new gcp.organizations.Project(projectId, {
         folderId: parentFolder.id,
-        name: projectId,
+        // name: projectId,
         projectId: projectId,
         billingAccount: org.spec.gcp.billingId,
         labels: {
@@ -56,6 +56,31 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
         });
     });
 
+    // Enable DNS API
+    const apis = ['pubsub.googleapis.com'];
+    const enabledApis = new Map<string, gcp.projects.Service>();
+    let e: gcp.projects.Service;
+    apis.forEach(api => {
+        const enabledApi = new gcp.projects.Service(`${org.spec.id}.platform-ops.cicd.${api}`, {
+            disableDependentServices: true,
+            project: ciProject.projectId,
+            service: api,
+        });
+        enabledApis.set(api, enabledApi);
+        e = enabledApi;
+    });
+    const pubsubApi = enabledApis.get('pubsub.googleapis.com');
+
+    // Create topic for repo changes
+    const topic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`, {
+        projectId: ciProject,
+        name: `${org.spec.id}-repo-events`,
+        messageRetentionDuration: "86600s",
+    },
+    {
+        dependsOn: pubsubApi ? [pubsubApi] : []
+    });
+
     // Make a service account per app
     org.spec.apps?.forEach(app => {
         app.spec.environments?.forEach(env => {
@@ -76,7 +101,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
     const projectId = `${org.spec.id}-platform-ops-network`;
     const networkProject = new gcp.organizations.Project(projectId, {
         folderId: parentFolder.id,
-        name: projectId,
+        // name: projectId,
         projectId: projectId,
         billingAccount: org.spec.gcp.billingId,
         labels: {
