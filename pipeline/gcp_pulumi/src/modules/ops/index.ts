@@ -9,7 +9,7 @@ import moment from 'moment'
 
 // Create folder for ops
 export function makeFolders(org: Org): gcp.organizations.Folder {    
-    const platformOpsFolder = new gcp.organizations.Folder(`${org.spec}.ops`, {
+    const platformOpsFolder = new gcp.organizations.Folder(`${org.spec}.$platform-ops`, {
         displayName: "Platform Ops",
         parent: `organizations/${org.spec.gcp.orgId}`
     });
