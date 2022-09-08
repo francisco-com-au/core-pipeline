@@ -166,14 +166,9 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 const branch = env.branch || env.name;
 
                 // Publish on changes that match the org-app-component-env branch
-
-                // Push trigger
-                console.log(`repo-events-${repoOrg ? `${repoOrg}/` : ''}${repoName}-${branch}-${env.name}-push`)
-                console.log(`repoName: ${repoName}`)
-                console.log(`owner: ${repoOrg}`)
                 ciProject.projectId.apply(p => console.log(`projectId: ${p}`))
                 const messageBody = '{org:"$_ORG",app:"$_APP",component:"$_COMPONENT",env:"$_ENV",branch:"$BRANCH_NAME",repo:"$REPO_NAME",sha:"$SHORT_SHA",event:"$_EVENT"}'
-                const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.${app.spec.id}.${component.spec.id}.${env.name}.pr`,
+                const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.repo-events.push.${app.spec.id}.${component.spec.id}.${env.name}`,
                     {
                         project: ciProject.projectId,
                         name: `repo-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}-${branch}-${env.name}`,
@@ -200,6 +195,35 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                 }
                             ]
                         },
+                        substitutions: {
+                            _ORG: org.spec.id,
+                            _APP: app.spec.id,
+                            _COMPONENT: component.spec.id,
+                            _ENV: env.name,
+                            _BRANCH: branch,
+                            _REPO: `${repoOrg}/${repoName}`,
+                            _EVENT: "push"
+                        },
+                    },
+                    {
+                        dependsOn: cloudbuildApi ? [cloudbuildApi] : []
+                    }
+                );
+
+                // Build image
+                const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.${app.spec.id}.${component.spec.id}.${env.name}`,
+                    {
+                        project: ciProject.projectId,
+                        name: `build-${repoOrg ? `${repoOrg}-` : ''}${repoName}-${branch}-${env.name}`,
+                        github: {
+                            name: repoName,
+                            owner: repoOrg,
+                            push: {
+                                branch: `^${branch}$`,
+                            },
+                        },
+                        includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
+                        filename: 'build/cloudbuild.yaml',
                         substitutions: {
                             _ORG: org.spec.id,
                             _APP: app.spec.id,
