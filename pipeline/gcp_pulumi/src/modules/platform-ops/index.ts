@@ -124,7 +124,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                         substitutions: {
                             _APP: app.spec.id,
                             _COMPONENT: component.spec.id,
-                            _ENV: env,
+                            _ENV: env.name,
                             _BRANCH: branch,
                             _REPO: `${repoOrg}/${repoName}`,
                             _EVENT: "push"
