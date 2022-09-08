@@ -1,6 +1,5 @@
 import { App } from "../../../../types/App";
 import { CiCd } from "./components/CiCd/CiCd";
-import { Echo } from "./components/Echo/Echo";
 
 const Ops: App = {
     apiVersion: "platform.io/v1alpha1",
