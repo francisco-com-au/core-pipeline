@@ -66,8 +66,8 @@ const Organization: Org = {
         apps: []
     }
 }
-Lab.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Lab)
+// Lab.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(Lab)
 AddressAustralia.spec.organization = Organization.spec.id;
 Organization.spec.apps?.push(AddressAustralia)
 
