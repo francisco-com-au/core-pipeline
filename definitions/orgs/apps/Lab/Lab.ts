@@ -38,9 +38,9 @@ const Lab: App = {
         components: []
     }
 }
-Playground.spec.app = Lab.spec.id;
-Lab.spec.components?.push(Playground);
-Echo.spec.app = Lab.spec.id;
-Lab.spec.components?.push(Echo);
+// Playground.spec.app = Lab.spec.id;
+// Lab.spec.components?.push(Playground);
+// Echo.spec.app = Lab.spec.id;
+// Lab.spec.components?.push(Echo);
 
 export { Lab }
