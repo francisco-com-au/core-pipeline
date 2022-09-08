@@ -75,7 +75,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     // Create topic for repo changes
     const repoEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`,
         {
-            projectId: ciProject,
+            project: ciProject.projectId,
             name: `${org.spec.id}-repo-events`,
             messageRetentionDuration: "86600s",
         },
@@ -111,7 +111,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                         name: `repo-events-${repoOrg ? `${repoOrg}/` : ''}-${repoName}-${branch}-${env}-push`,
                         github: {
                             name: repoName,
-                            owner: org,
+                            owner: repoOrg,
                             push: {
                                 branch: `"^${branch}$"`,
                             },
