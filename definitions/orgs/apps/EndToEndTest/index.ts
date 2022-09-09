@@ -57,3 +57,5 @@ const Application: App = {
         }]
     }
 }
+
+export { Application }
