@@ -9,10 +9,11 @@ steps:
       - '-c'
       - |
         # Install GitHub cli
-        curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output gh.tar.gz
-        mkdir /gh
-        tar -xf gh.tar.gz -C /gh
-        PATH=$$PATH:/gh/$$(ls /gh)/bin
+        mkdir .tools
+        mkdir .tools/gh
+        curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output .tools/gh/gh.tar.gz
+        tar -xf .tools/gh/gh.tar.gz -C .tools/gh
+        PATH=$$PATH:.tools/gh/bin
 
         # Login
         echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
@@ -43,7 +44,7 @@ steps:
         # curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output gh.tar.gz
         # mkdir /gh
         # tar -xf gh.tar.gz -C /gh
-        PATH=$$PATH:/gh/$$(ls /gh)/bin
+        PATH=$$PATH:.tools/gh/bin
 
         # Login
         echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
