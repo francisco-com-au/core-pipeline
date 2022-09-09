@@ -208,6 +208,59 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                     }
                 );
 
+                // If this component has an infrastructure folder, create a trigger
+                const buildInfra = false;
+                if (buildInfra && component.spec.source.infraPath) {
+                    const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.infra.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
+                            project: ciProject.projectId,
+                            name: `component-infra-${app.spec.id}-${component.spec.id}-${env.name}`.substring(0, 63),
+                            github: {
+                                name: repoName,
+                                owner: repoOrg,
+                                push: {
+                                    branch: `^${branch}$`,
+                                },
+                            },
+                            includedFiles: [`${component.spec.source.infraPath}/**`],
+                            includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
+                            build: {
+                                steps: [
+                                    {
+                                        id: "Infra 🔧",
+                                        name: "pulumi/pulumi",
+                                        entrypoint: "/bin/bash",
+                                        args: [
+                                            "-c", `
+                                            set -e -x
+                                            cd ${component.spec.source.infraPath}
+                                            npm install
+                                            pulumi login
+                                            pulumi stack select ${env.name} -c
+                                            pulumi config set gcp:project $COMPONENT_PROJECT_ID
+                                            pulumi up -y
+                                            `
+                                        ],
+                                        envs: [
+                                            'COMPONENT_PROJECT_ID=$_COMPONENT_PROJECT_ID',
+                                            'PULUMI_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN',
+                                        ]
+                                    }
+                                ]
+                            },
+                            substitutions: {
+                                _COMPONENT_PROJECT_ID: '',
+                                _INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN: process.env.PULUMI_ACCESS_TOKEN || '',
+                                _ORG: org.spec.id,
+                                _APP: app.spec.id,
+                                _COMPONENT: component.spec.id,
+                                _ENV: env.name,
+                            },
+                        }, {
+                            dependsOn: cloudbuildApi ? [cloudbuildApi] : []
+                        }
+                    );
+                }
+
                 // Build image
                 let buildComponent = false
                 if (buildComponent) {

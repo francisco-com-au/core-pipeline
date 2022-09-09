@@ -7,6 +7,7 @@ import { Org } from "../../../../../types/Org"
 import * as gcp from "@pulumi/gcp";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
+import { Project } from "@pulumi/gcp/organizations";
 // import moment from 'moment'
 
 
@@ -102,7 +103,7 @@ export function makeFolders(org: Org, ciProject: gcp.organizations.Project): Org
 
 
 
-export function makeProjects(org: Org, orgFolders: OrgFolders) {
+export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Project) {
     org.spec.apps?.forEach(app => {
         app.spec.components?.forEach(component => {
             // Find environment folders
@@ -122,6 +123,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                 org.spec.gcp?.apis?.forEach(api => apis.indexOf(api) === -1 ? apis.push(api) : null);
                 app.spec.gcp?.apis?.forEach(api => apis.indexOf(api) === -1 ? apis.push(api) : null);
                 component.spec.gcp?.apis?.forEach(api => apis.indexOf(api) === -1 ? apis.push(api) : null);
+                
                 // Make the project 🔥
                 console.log(`Org: ${org.spec.id} - App: ${app.spec.id} - Component: ${component.spec.id} - Env: ${envName}`)
                 const project = new gcp.organizations.Project(projectId, {
@@ -138,6 +140,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                         // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
                     },
                 });
+
                 // Enable APIs
                 apis.forEach(api => {
                     new gcp.projects.Service(`${org.spec.id}.${app.spec.id}.${component.spec.id}.${envName}.${api}`, {
@@ -145,7 +148,61 @@ export function makeProjects(org: Org, orgFolders: OrgFolders) {
                         project: project.projectId,
                         service: api,
                     }, {dependsOn: [project]});
-                })
+                });
+
+                // Create build trigger for infra components
+                if (component.spec.source.infraPath) {
+                    const repoOrg = component.spec.source.organization || app.spec.github.organization;
+                    const repoName = component.spec.source.repo;
+                    const env = app.spec.environments.filter(e => e.name == envName)[0];
+                    const branch = env?.branch || envName;
+                    const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.infra.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
+                            project: ciProject.projectId,
+                            name: `component-infra-${app.spec.id}-${component.spec.id}-${env.name}`.substring(0, 63),
+                            github: {
+                                name: repoName,
+                                owner: repoOrg,
+                                push: {
+                                    branch: `^${branch}$`,
+                                },
+                            },
+                            includedFiles: [`${component.spec.source.infraPath}/**`],
+                            includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
+                            build: {
+                                steps: [
+                                    {
+                                        id: "Infra 🔧",
+                                        name: "pulumi/pulumi",
+                                        entrypoint: "/bin/bash",
+                                        args: [
+                                            "-c", `
+                                            set -e -x
+                                            cd ${component.spec.source.infraPath}
+                                            npm install
+                                            pulumi login
+                                            pulumi stack select ${envName} -c
+                                            pulumi config set gcp:project $COMPONENT_PROJECT_ID
+                                            pulumi up -y
+                                            `
+                                        ],
+                                        envs: [
+                                            'COMPONENT_PROJECT_ID=$_COMPONENT_PROJECT_ID',
+                                            'PULUMI_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN',
+                                        ]
+                                    }
+                                ]
+                            },
+                            substitutions: {
+                                _COMPONENT_PROJECT_ID: project.projectId,
+                                _INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN: process.env.PULUMI_ACCESS_TOKEN || '',
+                                _ORG: org.spec.id,
+                                _APP: app.spec.id,
+                                _COMPONENT: component.spec.id,
+                                _ENV: envName
+                            },
+                        },
+                    );
+                };
             });
         });
     });
