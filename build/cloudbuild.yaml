@@ -98,4 +98,4 @@ steps:
         pulumi up -y
 
 options:
-  logging: INCLUDE_BUILD_LOGS_WITH_STATUS
+  logging: CLOUD_LOGGING_ONLY
