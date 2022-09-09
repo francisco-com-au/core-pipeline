@@ -3,7 +3,7 @@
 set -e
 
 export APPS_REPO="francisco-com-au/platform-apps"
-export CONTAINER_REGISTRY_PROJECT="placeholder"
+# export CONTAINER_REGISTRY_PROJECT="placeholder"
 
 # Figure out current commit sha
 SHA=$(git rev-parse HEAD)
