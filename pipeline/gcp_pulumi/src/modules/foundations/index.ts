@@ -151,6 +151,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                 });
 
                 // Create build trigger for infra components
+                console.log(`component.spec.source ${JSON.stringify(component.spec.source)}`)
                 if (component.spec.source.infraPath) {
                     const repoOrg = component.spec.source.organization || app.spec.github.organization;
                     const repoName = component.spec.source.repo;
