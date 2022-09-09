@@ -11,10 +11,11 @@ steps:
         set -e -x
         # Install GitHub cli
         mkdir .tools
-        mkdir .tools/gh
-        curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output .tools/gh/gh.tar.gz
-        tar -xf .tools/gh/gh.tar.gz -C .tools/gh
-        PATH=$$PATH:.tools/gh/bin
+        curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output /tmp/gh.tar.gz
+        tar -xf /tmp/gh.tar.gz -C /tmp
+        rm /tmp/gh.tar.gz
+        mv /tmp/gh*/bin/gh .tools/
+        PATH=$$PATH:$$(pwd)/.tools/
 
         # Login
         echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
@@ -43,11 +44,11 @@ steps:
       - |
         set -e -x
         # Install GitHub cli
-        mkdir .tools
-        mkdir .tools/gh
-        curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output .tools/gh/gh.tar.gz
-        tar -xf .tools/gh/gh.tar.gz -C .tools/gh
-        PATH=$$PATH:.tools/gh/bin
+        # mkdir .tools
+        # mkdir .tools/gh
+        # curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output .tools/gh/gh.tar.gz
+        # tar -xf .tools/gh/gh.tar.gz -C .tools/gh
+        PATH=$$PATH:$$(pwd)/.tools/
 
         # Login
         echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
