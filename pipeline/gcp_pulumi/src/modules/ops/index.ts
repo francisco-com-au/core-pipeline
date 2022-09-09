@@ -248,7 +248,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                     if (!container.spec.dockerFile) {
                         return
                     }
-                    const imageName = `gcr.io/$PROJECT_ID/${app.spec.id}/${component.spec.id}/${env.name}/${container.spec.id}:$SHORT_SHA`;
+                    const imageName = `gcr.io/$PROJECT_ID/${app.spec.id}/${component.spec.id}/${env.name}/${container.spec.id}`;
                     const includedFiles = `${container.spec.dockerContext ? `${container.spec.dockerContext}/` : ''}**`
                     const containerBuildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.container.${app.spec.id}.${component.spec.id}.${container.spec.id}.${env.name}`, {
                         project: ciProject.projectId,
@@ -271,18 +271,28 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                     args: [
                                         "build",
                                         "-t",
-                                        imageName,
+                                        `${imageName}:$SHORT_SHA`,
+                                        "-t",
+                                        `${imageName}:latest`,
                                         "-f",
                                         container.spec.dockerFile || "Dockerfile",
                                         container.spec.dockerContext || "."
                                     ]
                                 },{
-                                    id: "Push 🚀",
+                                    id: "Push [sha] 🚀",
                                     name: "gcr.io/cloud-builders/docker",
                                     entrypoint: "docker",
                                     args: [
                                         "push",
-                                        imageName,
+                                        `${imageName}:$SHORT_SHA`,
+                                    ]
+                                },{
+                                    id: "Push [latest] 🚀",
+                                    name: "gcr.io/cloud-builders/docker",
+                                    entrypoint: "docker",
+                                    args: [
+                                        "push",
+                                        `${imageName}:latest`,
                                     ]
                                 }
                             ],
