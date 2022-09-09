@@ -242,14 +242,14 @@ Orgs.forEach(org => {
                         // Deployments
                         const containerName = `${component.spec.id}-${container.spec.id}`;
                         const image = container.spec.image || `gcr.io/${CONTAINER_REGISTRY_PROJECT}/${app.spec.id}/${component.spec.id}/${environment.name}/${container.spec.id}:latest`
-                        const deploy = deploymentPatch(
+                        const deployPatch = deploymentPatch(
                             containerName, // name
                             app.spec.id, // namespace
                             image, // image
                             container // container
                         );
-                        writeToFile(deploy, join(patchesDir, `deploy-${containerName}.yaml`));
-                        resources.push(`patches/deploy-${containerName}.yaml`);
+                        writeToFile(deployPatch, join(patchesDir, `deploy-${containerName}.yaml`));
+                        patches.push(`patches/deploy-${containerName}.yaml`);
                         });
                     
                     // const ing = ingress(
