@@ -18,7 +18,7 @@ const Application: App = {
             organization: 'galarzafrancisco',
         },
         environments: [{
-            name: 'develop',
+            name: 'dev',
             type: 'dev',
             branch: 'develop'
         }],

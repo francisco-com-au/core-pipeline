@@ -124,7 +124,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
             const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.repo-all-events.push.${app.spec.id}.${component.spec.id}`,
                 {
                     project: ciProject.projectId,
-                    name: `repo-all-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}`,
+                    name: `repo-all-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}`.substring(0, 63),
                     github: {
                         name: repoName,
                         owner: repoOrg,
@@ -170,7 +170,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 const messageBody = '{org:"$_ORG",app:"$_APP",component:"$_COMPONENT",env:"$_ENV",branch:"$BRANCH_NAME",repo:"$REPO_NAME",sha:"$SHORT_SHA",event:"$_EVENT"}'
                 const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.repo-events.push.${app.spec.id}.${component.spec.id}.${env.name}`, {
                         project: ciProject.projectId,
-                        name: `repo-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}-${branch}-${env.name}`,
+                        name: `repo-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}-${branch}-${env.name}`.substring(0, 63),
                         github: {
                             name: repoName,
                             owner: repoOrg,
@@ -213,7 +213,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 if (buildComponent) {
                     const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
                             project: ciProject.projectId,
-                            name: `component-build-${app.spec.id}-${component.spec.id}-${env.name}`,
+                            name: `component-build-${app.spec.id}-${component.spec.id}-${env.name}`.substring(0, 63),
                             github: {
                                 name: repoName,
                                 owner: repoOrg,
@@ -252,7 +252,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                     const includedFiles = `${container.spec.dockerContext ? `${container.spec.dockerContext}/` : ''}**`
                     const containerBuildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.container.${app.spec.id}.${component.spec.id}.${container.spec.id}.${env.name}`, {
                         project: ciProject.projectId,
-                        name: `container-build-${app.spec.id}-${component.spec.id}-${container.spec.id}-${env.name}`,
+                        name: `container-build-${app.spec.id}-${component.spec.id}-${container.spec.id}-${env.name}`.substring(0, 63),
                         github: {
                             name: repoName,
                             owner: repoOrg,
