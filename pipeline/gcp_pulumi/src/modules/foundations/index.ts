@@ -182,7 +182,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                                             npm install
                                             pulumi login
                                             pulumi stack select ${envName} -c
-                                            pulumi config set gcp:project $COMPONENT_PROJECT_ID
+                                            pulumi config set gcp:project $$COMPONENT_PROJECT_ID
                                             pulumi up -y
                                             `
                                         ],

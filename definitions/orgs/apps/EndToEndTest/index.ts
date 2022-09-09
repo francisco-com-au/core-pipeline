@@ -46,7 +46,8 @@ const Application: App = {
                         id: 'static',
                         name: 'static',
                         description: "NGINX serving static content",
-                        dockerFile: 'Dockerfile',
+                        dockerFile: 'src/Dockerfile',
+                        dockerContext: 'src',
                         expose: [{
                             name: 'webserver',
                             port: 80,
