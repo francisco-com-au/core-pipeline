@@ -34,6 +34,7 @@ const Application: App = {
                 description: 'Simple web app',
                 source: {
                     repo: 'end-to-end-portal',
+                    infraPath: 'infra',
                 },
                 containers: [{
                     apiVersion: "platform.io/v1alpha1",

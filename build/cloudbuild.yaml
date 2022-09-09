@@ -95,7 +95,7 @@ steps:
         pulumi login
         
         # Select stack
-        pulumi stack select $BRANCH_NAME
+        pulumi stack select $BRANCH_NAME -c
 
         # Set project
         pulumi config set gcp:project $PROJECT_ID

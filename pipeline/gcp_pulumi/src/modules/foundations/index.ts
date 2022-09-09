@@ -156,9 +156,9 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                     const repoName = component.spec.source.repo;
                     const env = app.spec.environments.filter(e => e.name == envName)[0];
                     const branch = env?.branch || envName;
-                    const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.infra.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
+                    const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.infra.component.${app.spec.id}.${component.spec.id}.${envName}`, {
                             project: ciProject.projectId,
-                            name: `component-infra-${app.spec.id}-${component.spec.id}-${env.name}`.substring(0, 63),
+                            name: `component-infra-${app.spec.id}-${component.spec.id}-${envName}`.substring(0, 63),
                             github: {
                                 name: repoName,
                                 owner: repoOrg,
@@ -190,7 +190,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                                             'PULUMI_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN',
                                         ]
                                     }
-                                ]
+                                ],
                             },
                             substitutions: {
                                 _COMPONENT_PROJECT_ID: project.projectId,
@@ -200,6 +200,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                                 _COMPONENT: component.spec.id,
                                 _ENV: envName
                             },
+                            serviceAccount: ciProject.projectId.apply(projectId => `serviceAccount:cicd-${app.spec.id}-${envName}@${projectId}.iam.gserviceaccount.com`)
                         },
                     );
                 };

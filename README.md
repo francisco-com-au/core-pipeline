@@ -32,7 +32,7 @@ application
 |:-----------------:|:------------:|:----------:|:------------:|:-----------:|:-------------:|
 | App               | Folder       | Namespace  | Organization | Project     | domain name   |
 | Environment       | Project      | Cluster    | Branch       |             | ?             |
-| Component         |              |            | Repository   | Application | domain prefix |
+| Component         | Project      |            | Repository   | Application | domain prefix |
 | Container         |              | Manifests  | Subfolder    |             | path          |
 
 # Dependencies
