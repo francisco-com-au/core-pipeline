@@ -13,6 +13,7 @@ import { service } from "./manifests/service";
 import { ingress } from "./manifests/ingress";
 import { deployment } from "./manifests/deployment";
 import { ingressPatch } from "./manifests/ingressPatch";
+import { deploymentPatch } from "./manifests/deploymentPatch";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -131,9 +132,10 @@ Orgs.forEach(org => {
             //     resources.push('certificate.yaml');
             // }
 
-            // Deployments
+            // Containers
             component.spec.containers?.forEach(container => {
                 
+                // Deployments
                 const containerName = `${component.spec.id}-${container.spec.id}`;
                 const image = container.spec.image || `gcr.io/${CONTAINER_REGISTRY_PROJECT}/${app.spec.id}/${component.spec.id}/main/${container.spec.id}:latest`
                 const deploy = deployment(
@@ -144,10 +146,10 @@ Orgs.forEach(org => {
                     image, // image
                     container // container
                 );
-                // Service
                 writeToFile(deploy, join(baseDir, `deploy-${containerName}.yaml`));
                 resources.push(`deploy-${containerName}.yaml`);
-
+                
+                // Service
                 container.spec.expose?.forEach(containerPort => {
                     const containerPortName = `${containerName}-${containerPort.name}`
                     const svc = service(
@@ -234,6 +236,22 @@ Orgs.forEach(org => {
                         patches.push(`patches/ingress-${component.spec.id}.yaml`);
                     }
 
+                    // Containers
+                    component.spec.containers?.forEach(container => {
+                        
+                        // Deployments
+                        const containerName = `${component.spec.id}-${container.spec.id}`;
+                        const image = container.spec.image || `gcr.io/${CONTAINER_REGISTRY_PROJECT}/${app.spec.id}/${component.spec.id}/${environment.name}/${container.spec.id}:latest`
+                        const deploy = deploymentPatch(
+                            containerName, // name
+                            app.spec.id, // namespace
+                            image, // image
+                            container // container
+                        );
+                        writeToFile(deploy, join(patchesDir, `deploy-${containerName}.yaml`));
+                        resources.push(`patches/deploy-${containerName}.yaml`);
+                        });
+                    
                     // const ing = ingress(
                     //     component.spec.id, // name
                     //     app.spec.id, // namespace
