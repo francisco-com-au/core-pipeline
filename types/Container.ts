@@ -12,12 +12,14 @@ interface Container extends KRM {
         component?: string;
         /* Image to run. */
         image?: string;
-        /* If image is not present will create a build trigger usingg:
+        /* If image is not present will create a build trigger using:
             - the parent component's repo
             - the parent application environment's branch
             - the path to the dockerfile specified here
         */
         dockerFile?: string;
+        dockerContext?: string;
+        
 
         /* Ports to expose via services */
         expose?: ContainerPort[];

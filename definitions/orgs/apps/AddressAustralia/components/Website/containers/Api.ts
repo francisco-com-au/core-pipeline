@@ -10,8 +10,9 @@ const Api: Container = {
         id: "api",
         name: "api",
         description: "API for the front end",
-        dockerFile: "build/Dockerfile",
-        image: "aa/website-api:f9a4f15",
+        dockerFile: "api/build/Dockerfile",
+        dockerContext: "api",
+        // image: "aa/website-api:f9a4f15",
         expose: [
             {
                 name: "api",

@@ -168,8 +168,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 // Publish on changes that match the org-app-component-env branch
                 ciProject.projectId.apply(p => console.log(`projectId: ${p}`))
                 const messageBody = '{org:"$_ORG",app:"$_APP",component:"$_COMPONENT",env:"$_ENV",branch:"$BRANCH_NAME",repo:"$REPO_NAME",sha:"$SHORT_SHA",event:"$_EVENT"}'
-                const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.repo-events.push.${app.spec.id}.${component.spec.id}.${env.name}`,
-                    {
+                const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.repo-events.push.${app.spec.id}.${component.spec.id}.${env.name}`, {
                         project: ciProject.projectId,
                         name: `repo-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}-${branch}-${env.name}`,
                         github: {
@@ -204,17 +203,15 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                             _REPO: `${repoOrg}/${repoName}`,
                             _EVENT: "push"
                         },
-                    },
-                    {
+                    }, {
                         dependsOn: cloudbuildApi ? [cloudbuildApi] : []
                     }
                 );
 
                 // Build image
-                const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.${app.spec.id}.${component.spec.id}.${env.name}`,
-                    {
+                const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
                         project: ciProject.projectId,
-                        name: `build-${repoOrg ? `${repoOrg}-` : ''}${repoName}-${branch}-${env.name}`,
+                        name: `component-build-${app.spec.id}-${component.spec.id}-${env.name}`,
                         github: {
                             name: repoName,
                             owner: repoOrg,
@@ -233,11 +230,74 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                             _REPO: `${repoOrg}/${repoName}`,
                             _EVENT: "push"
                         },
-                    },
-                    {
+                    }, {
                         dependsOn: cloudbuildApi ? [cloudbuildApi] : []
                     }
                 );
+
+                // Actually I need to build one image per container, not just at the component level
+                component.spec.containers?.forEach(container => {
+                    // If the container has an image in the spec, don't create a build trigger
+                    if (container.spec.image) {
+                        return
+                    }
+                    // If the container doesn't have a dockerfile in the spec, don't create a build trigger
+                    if (!container.spec.dockerFile) {
+                        return
+                    }
+                    const imageName = `gcr.io/$PROJECT_ID/${app.spec.id}/${component.spec.id}/${env.name}/${container.spec.id}:$SHORT_SHA`;
+                    const includedFiles = `${container.spec.dockerContext ? `${container.spec.dockerContext}/` : ''}**`
+                    const containerBuildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.container.${app.spec.id}.${component.spec.id}.${container.spec.id}.${env.name}`, {
+                        project: ciProject.projectId,
+                        name: `container-build-${app.spec.id}-${component.spec.id}-${env.name}`,
+                        github: {
+                            name: repoName,
+                            owner: repoOrg,
+                            push: {
+                                branch: `^${branch}$`,
+                            },
+                        },
+                        includedFiles: [includedFiles],
+                        includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
+                        build: {
+                            steps: [
+                                {
+                                    id: "Build 🐳",
+                                    name: "gcr.io/cloud-builders/docker",
+                                    entrypoint: "docker",
+                                    args: [
+                                        "build",
+                                        "-t",
+                                        imageName,
+                                        "-f",
+                                        container.spec.dockerFile || "Dockerfile",
+                                        container.spec.dockerContext || "."
+                                    ]
+                                },{
+                                    id: "Push 🚀",
+                                    name: "gcr.io/cloud-builders/docker",
+                                    entrypoint: "docker",
+                                    args: [
+                                        "push",
+                                        imageName,
+                                    ]
+                                }
+                            ],
+                            // images: [ciProject.projectId.apply(projectId => `gcr://${projectId}/`)],
+                        },
+                        substitutions: {
+                            _ORG: org.spec.id,
+                            _APP: app.spec.id,
+                            _COMPONENT: component.spec.id,
+                            _ENV: env.name,
+                            _BRANCH: branch,
+                            _REPO: `${repoOrg}/${repoName}`,
+                        },
+                    }, {
+                        dependsOn: cloudbuildApi ? [cloudbuildApi] : []
+                    });
+                    
+                });
             });
         });
     });

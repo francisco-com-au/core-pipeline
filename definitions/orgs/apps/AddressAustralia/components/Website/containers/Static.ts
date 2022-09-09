@@ -10,8 +10,9 @@ const Static: Container = {
         id: "static",
         name: "static",
         description: "NGINX serving static content",
-        dockerFile: "build/Dockerfile",
-        image: "aa/website-static:f9a4f15",
+        dockerFile: "static/build/Dockerfile",
+        dockerContext: "static",
+        // image: "aa/website-static:f9a4f15",
         expose: [
             {
                 name: "webserver",
