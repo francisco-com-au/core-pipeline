@@ -37,7 +37,7 @@ steps:
   - id: argocd
     env:
       - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
-      - CONTAINER_REGISTRY_PROJECT=$PROJECT_ID
+      - CONTAINER_REGISTRY_PROJECT=$_CONTAINER_REGISTRY_PROJECT
     name: 'pulumi/pulumi'
     entrypoint: /bin/bash
     args:
