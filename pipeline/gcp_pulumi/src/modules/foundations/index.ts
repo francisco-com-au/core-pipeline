@@ -201,7 +201,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                                 _COMPONENT: component.spec.id,
                                 _ENV: envName
                             },
-                            // serviceAccount: ciProject.projectId.apply(projectId => `serviceAccount:cicd-${app.spec.id}-${envName}@${projectId}.iam.gserviceaccount.com`)
+                            serviceAccount: ciProject.projectId.apply(projectId => `cicd-${app.spec.id}-${envName}@${projectId}.iam.gserviceaccount.com`)
                         },
                     );
                 };
