@@ -71,9 +71,9 @@ spec:
             - configMapRef:
                 name: env-level-config
             - configMapRef:
-                name: component-level-config
+                name: component-level-config-${componentId}
             - configMapRef:
-                name: container-level-config-${container.spec.id}
+                name: container-level-config-${componentId}-${container.spec.id}
 `
 }
 

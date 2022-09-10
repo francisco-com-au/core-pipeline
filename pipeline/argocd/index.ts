@@ -147,7 +147,7 @@ Orgs.forEach(org => {
 
             // Component level configmap
             const componentConfigMap = configMap(
-                'component-level-config',
+                `component-level-config-${component.spec.id}`,
                 app.spec.id,
                 [
                     ['COMPONENT_ID', component.spec.id],
@@ -155,23 +155,23 @@ Orgs.forEach(org => {
                     ['COMPONENT_DOMAIN_NAME', componentDomainName],
                 ]
             );
-            writeToFile(componentConfigMap, join(baseDir, 'component-level-config.yaml'))
-            resources.push('component-level-config.yaml')
+            writeToFile(componentConfigMap, join(baseDir, `component-level-config-${component.spec.id}.yaml`))
+            resources.push(`component-level-config-${component.spec.id}.yaml`)
 
             // Containers
             component.spec.containers?.forEach(container => {
 
                 // Container level configmap
                 const containerConfigMap = configMap(
-                    `container-level-config-${container.spec.id}`,
+                    `container-level-config-${component.spec.id}-${container.spec.id}`,
                     app.spec.id,
                     [
                         ['CONTAINER_ID', container.spec.id],
                         ['CONTAINER_NAME', container.spec.name],
                     ]
                 );
-                writeToFile(containerConfigMap, join(baseDir, `container-level-config-${container.spec.id}.yaml`))
-                resources.push(`container-level-config-${container.spec.id}.yaml`)
+                writeToFile(containerConfigMap, join(baseDir, `container-level-config-${component.spec.id}-${container.spec.id}.yaml`))
+                resources.push(`container-level-config-${component.spec.id}-${container.spec.id}.yaml`)
                 
                 // Deployments
                 const containerName = `${component.spec.id}-${container.spec.id}`;
