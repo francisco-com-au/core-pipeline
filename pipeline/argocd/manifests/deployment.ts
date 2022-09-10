@@ -1,5 +1,3 @@
-// import * as k8s from "@pulumi/kubernetes";
-
 import { Container } from "../../../types/Container"
 
 // const customImage = "node-app";

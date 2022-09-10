@@ -1,4 +1,3 @@
-import * as k8s from "@pulumi/kubernetes";
 import { argocdProject } from "./manifests/argocdProject";
 var fs = require('fs');
 import { Orgs } from "../../definitions"
