@@ -113,6 +113,25 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
         });
     });
 
+    // Make a service account to pull docker images
+    const pullServiceAccount = new gcp.serviceaccount.Account(`${org.spec.id}.cicd.pull`, {
+        project: ciProject.projectId,
+        accountId: `container-registry-pull`,
+        displayName: `Container Registry - Pull`,
+        description: "Service account to pull images from the Container Registry"
+    });
+    // Grant the service account with pull access to gcr
+    [
+        "roles/storage.objectViewer"
+    ].forEach(role => {
+        new gcp.projects.IAMMember(`${org.spec.id}.cicd.pull.${roleBinding.member}.${role}`, {
+            project: ciProject.projectId,
+            member: pullServiceAccount.accountId.apply(sa => `serviceAccount:${sa}`),
+            role: role,
+        });
+    });
+    // Grant devs with access to the service account
+
     // Create a trigger for each repo
     org.spec.apps?.forEach(app => {
         app.spec.components?.forEach(component => {
