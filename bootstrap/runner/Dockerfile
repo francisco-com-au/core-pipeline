@@ -4,6 +4,7 @@
 
 FROM pulumi/pulumi as pulumi
 
+# Download Github
 RUN curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output /tmp/gh.tar.gz
 RUN tar -xf /tmp/gh.tar.gz -C /tmp
 RUN mv /tmp/gh*/bin/gh /tmp
@@ -25,6 +26,7 @@ COPY --from=pulumi /tmp/gh /usr/local/bin/gh
 
 # Borrow the Pulumi CLI from the base image
 COPY --from=pulumi /usr/bin/pulumi /usr/bin/pulumi
+COPY --from=pulumi /usr/bin/pulumi-language-nodejs /usr/bin/pulumi-language-nodejs
 
 # Install npm packages
 RUN npm install -G @pulumi/gcp@">=6.36.0"

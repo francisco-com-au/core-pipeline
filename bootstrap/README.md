@@ -3,6 +3,10 @@ This will take you from zero to having a GCP organization up and running followi
 
 By the end of this guide you will be able to commit code to a repo and have GCP resources created automatically 🤘🏼
 
+# 0. Dependencies
+- Docker running
+- docker buildx if you're on Apple silicon
+
 # 1. Organisation setup 🏛
 
 ## Description
