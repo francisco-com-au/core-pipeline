@@ -13,6 +13,8 @@ import { ingress } from "./manifests/ingress";
 import { deployment } from "./manifests/deployment";
 import { ingressPatch } from "./manifests/ingressPatch";
 import { deploymentPatch } from "./manifests/deploymentPatch";
+import { configMap } from "./manifests/configMap";
+import { write } from "fs";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -42,6 +44,7 @@ makeFolder(managedDir.split('/'))
 Orgs.forEach(org => {
     org.spec.apps?.forEach(app => {
         console.log(`Processing app ${app.spec.name}...`);
+        
         // Render app level base
         const appDir = join(managedDir, app.spec.id);
         console.log(`Making app folder "${appDir}...`);
@@ -58,18 +61,27 @@ Orgs.forEach(org => {
         const project = argocdProject(app.spec.id, app.spec.description);
         writeToFile(project, join(baseDir, 'project.yaml'));
         resources.push('project.yaml');
+        
         // ArgoCD ApplicationSet for components
         if (app.spec.components?.length) {
             const applicationSet = argocdApplicationSet(app.spec.id, APPS_REPO);
             writeToFile(applicationSet, join(baseDir, 'components.yaml'));
             resources.push('components.yaml');
         };
-        // // Certs
-        // if (app.spec.domainName) {
-        //     const cert = certificate(app.spec.id, app.spec.domainName, app.spec.name);
-        //     writeToFile(cert, join(baseDir, 'certificate.yaml'));
-        //     resources.push('certificate.yaml');
-        // }
+
+        // App level configmap
+        const appConfigMap = configMap(
+            'app-level-config',
+            app.spec.id,
+            [
+                ['APP_ID', app.spec.id],
+                ['APP_NAME', app.spec.name],
+                ['DOMAIN', app.spec.domainName || ''],
+            ]
+        )
+        writeToFile(appConfigMap, join(baseDir, 'app-level-config.yaml'))
+        resources.push('app-level-config.yaml');
+        
         const k = kustomization(resources, []);
         writeToFile(k, join(baseDir, 'kustomization.yaml'));
 
@@ -94,6 +106,20 @@ Orgs.forEach(org => {
                 const componentsPatch = argocdApplicationSetPatch(app.spec.id, APPS_REPO, 'main', environment.name);
                 writeToFile(componentsPatch, join(patchesDir, 'components.yaml'));
                 patches.push('patches/components.yaml');
+                
+                // Env level configmap
+                const envConfigMap = configMap(
+                    'env-level-config',
+                    app.spec.id,
+                    [
+                        ['ENV', environment.name],
+                        ['ENV_TYPE', environment.type],
+                        ['BRANCH', environment.branch || ''],
+                    ]
+                );
+                writeToFile(envConfigMap, join(overlayDir, 'env-level-config.yaml'))
+                resources.push('env-level-config.yaml')
+
                 // Write kustomization
                 const k = kustomization(resources, patches);
                 writeToFile(k, join(overlayDir, 'kustomization.yaml'));
@@ -119,20 +145,33 @@ Orgs.forEach(org => {
             makeFolder([baseDir]);
             const resources: string[] = [];
 
-            // // Certs
-            // if (app.spec.domainName) {
-            //     component.spec.domainPrefix
-            //     const cert = certificate(
-            //         `${component.spec.id}-${app.spec.id}`, // name
-            //         `${component.spec.domainPrefix ? `${component.spec.domainPrefix}.` : '' }${app.spec.domainName}`, // dns name
-            //         app.spec.name // namespace
-            //     );
-            //     writeToFile(cert, join(baseDir, 'certificate.yaml'));
-            //     resources.push('certificate.yaml');
-            // }
+            // Component level configmap
+            const componentConfigMap = configMap(
+                'component-level-config',
+                app.spec.id,
+                [
+                    ['COMPONENT_ID', component.spec.id],
+                    ['COMPONENT_NAME', component.spec.name],
+                    ['COMPONENT_DOMAIN_NAME', componentDomainName],
+                ]
+            );
+            writeToFile(componentConfigMap, join(baseDir, 'component-level-config.yaml'))
+            resources.push('component-level-config.yaml')
 
             // Containers
             component.spec.containers?.forEach(container => {
+
+                // Container level configmap
+                const containerConfigMap = configMap(
+                    `container-level-config-${container.spec.id}`,
+                    app.spec.id,
+                    [
+                        ['CONTAINER_ID', container.spec.id],
+                        ['CONTAINER_NAME', container.spec.name],
+                    ]
+                );
+                writeToFile(containerConfigMap, join(baseDir, `container-level-config-${container.spec.id}.yaml`))
+                resources.push(`container-level-config-${container.spec.id}.yaml`)
                 
                 // Deployments
                 const containerName = `${component.spec.id}-${container.spec.id}`;

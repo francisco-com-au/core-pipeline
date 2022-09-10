@@ -65,6 +65,15 @@ spec:
             limits:
               cpu: "250m"
               memory: "256Mi"
+          envFrom:
+            - configMapRef:
+                name: app-level-config
+            - configMapRef:
+                name: env-level-config
+            - configMapRef:
+                name: component-level-config
+            - configMapRef:
+                name: container-level-config-${container.spec.id}
 `
 }
 
