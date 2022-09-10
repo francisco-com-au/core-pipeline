@@ -50,7 +50,7 @@ const Application: App = {
                         dockerContext: 'src',
                         expose: [{
                             name: 'webserver',
-                            port: 80,
+                            port: 8080,
                             ingressPath: '/'
                         }]
                     }
