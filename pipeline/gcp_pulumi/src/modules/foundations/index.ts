@@ -157,6 +157,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                     const repoName = component.spec.source.repo;
                     const env = app.spec.environments.filter(e => e.name == envName)[0];
                     const branch = env?.branch || envName;
+                    ciProject.projectId.apply(projectId => console.log(`Service Account: cicd-${app.spec.id}-${envName}@${projectId}.iam.gserviceaccount.com`))
                     const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.infra.component.${app.spec.id}.${component.spec.id}.${envName}`, {
                             project: ciProject.projectId,
                             name: `component-infra-${app.spec.id}-${component.spec.id}-${envName}`.substring(0, 63),
@@ -201,7 +202,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                                 _COMPONENT: component.spec.id,
                                 _ENV: envName
                             },
-                            serviceAccount: ciProject.projectId.apply(projectId => `cicd-${app.spec.id}-${envName}@${projectId}.iam.gserviceaccount.com`)
+                            serviceAccount: ciProject.projectId.apply(projectId => `projects/${projectId}/serviceAccounts/cicd-${app.spec.id}-${envName}@${projectId}.iam.gserviceaccount.com`)
                         },
                     );
                 };
