@@ -228,7 +228,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                     {
                                         id: "Infra 🔧",
                                         name: "pulumi/pulumi",
-                                        entrypoint: "/bin/bash",
+                                        entrypoint: "/bin/sh",
                                         args: [
                                             "-c", `
                                             set -e -x

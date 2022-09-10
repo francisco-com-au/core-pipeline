@@ -264,9 +264,12 @@ gcloud organizations add-iam-policy-binding $org_id \
 
 tag=0.0.0
 runner_image_name="gcr.io/$root_project_id/core-pipeline-runner"
-docker build \
+# docker buildx build --platform linux/amd64,linux/arm64 \
+docker buildx build \
+    --platform linux/amd64 \
+    --push \
     -t $runner_image_name:$tag \
     -t $runner_image_name":latest" \
     -f runner/Dockerfile runner
-docker push $runner_image_name:$tag
-docker push $runner_image_name":latest"
+# docker push $runner_image_name:$tag
+# docker push $runner_image_name":latest"

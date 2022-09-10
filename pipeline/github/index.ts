@@ -23,7 +23,7 @@ function syncWriteFile(filename: string, data: any) {
 }
 
 // Initiate a store
-let repoFileContent = "#!/bin/bash\n";
+let repoFileContent = "#!/bin/sh\n";
 
 // Read
 Orgs.forEach(org => {

@@ -174,7 +174,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                                     {
                                         id: "Infra 🔧",
                                         name: "pulumi/pulumi",
-                                        entrypoint: "/bin/bash",
+                                        entrypoint: "/bin/sh",
                                         args: [
                                             "-c", `
                                             set -e -x
