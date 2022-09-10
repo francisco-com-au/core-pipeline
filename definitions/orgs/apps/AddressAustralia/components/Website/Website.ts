@@ -14,7 +14,8 @@ const Website: Component = {
         name: "website",
         description: "Front end stuff.",
         source: {
-            repo: "website"
+            repo: "website",
+            infraPath: 'infra',
         },
         containers: [],
         gcp: {

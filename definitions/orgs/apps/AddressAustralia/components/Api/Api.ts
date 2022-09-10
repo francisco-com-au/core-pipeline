@@ -10,9 +10,10 @@ const Api: Component = {
     spec: {
         id: "api",
         name: "api",
-        description: "Front end stuff.",
+        description: "Customer facing API to search.",
         source: {
-            repo: "api"
+            repo: "api",
+            infraPath: 'infra',
         },
         domainPrefix: "api",
         containers: [],
