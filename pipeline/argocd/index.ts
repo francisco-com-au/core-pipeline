@@ -76,7 +76,7 @@ Orgs.forEach(org => {
             [
                 ['APP_ID', app.spec.id],
                 ['APP_NAME', app.spec.name],
-                ['DOMAIN', app.spec.domainName || ''],
+                ['APP_DOMAIN', app.spec.domainName || ''],
             ]
         )
         writeToFile(appConfigMap, join(baseDir, 'app-level-config.yaml'))
