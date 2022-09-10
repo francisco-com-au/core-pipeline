@@ -29,6 +29,10 @@ const deployment = function(
     container: Container,
     ): string {
 
+    const plainEnv = container.spec.env?.filter(e => !e.secret && !e.configMap) || [];
+    const secretEnv = container.spec.env?.filter(e => e.secret) || [];
+    const configMapEnv = container.spec.env?.filter(e => !e.secret && e.configMap) || [];
+
     return`---
 apiVersion: apps/v1
 kind: Deployment
@@ -55,9 +59,19 @@ spec:
           imagePullPolicy: Always
           ${container.spec.expose ? `ports: ${container.spec.expose?.map(containerPort => `
             - containerPort: ${containerPort.port}`).join('')}` : ''}
-          ${container.spec.env ? `env: ${container.spec.env?.map(containerEnv => `
-            - name: ${containerEnv.name}
-              value: "${containerEnv.value}"`).join('')}` : ''}
+          ${container.spec.env ? `env: ${plainEnv.map(e => `
+            - name: ${e.name}
+              value: "${e.value}"`).join('')}${secretEnv.map(e => `
+            - name: ${e.name}
+              valueFrom:
+                secretKeyRef:
+                  name: ${e.secret}
+                  key: ${e.value}`).join('')}${configMapEnv.map(e => `
+            - name: ${e.name}
+              valueFrom:
+                configMapKeyRef:
+                  name: ${e.configMap}
+                  key: ${e.value}`).join('')}` : ''}
           resources:
             requests:
               cpu: "100m"
