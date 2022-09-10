@@ -321,7 +321,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                         return
                     }
                     const imageName = `gcr.io/$PROJECT_ID/${app.spec.id}/${component.spec.id}/${env.name}/${container.spec.id}`;
-                    const includedFiles = `${container.spec.dockerContext ? `${container.spec.dockerContext}/` : ''}**`
+                    const includedFiles = `${container.spec.dockerContext && container.spec.dockerContext != '.' ? `${container.spec.dockerContext}/` : ''}**`
                     const containerBuildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.container.${app.spec.id}.${component.spec.id}.${container.spec.id}.${env.name}`, {
                         project: ciProject.projectId,
                         name: `container-build-${app.spec.id}-${component.spec.id}-${container.spec.id}-${env.name}`.substring(0, 63),
