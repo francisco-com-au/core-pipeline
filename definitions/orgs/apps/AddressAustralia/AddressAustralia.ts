@@ -1,5 +1,6 @@
 import { App } from "../../../../types/App";
 import { Website } from "./components/Website/Website";
+import { Api } from "./components/Api/Api";
 
 const AddressAustralia: App = {
     apiVersion: "platform.io/v1alpha1",
@@ -36,5 +37,7 @@ const AddressAustralia: App = {
 }
 Website.spec.app = AddressAustralia.spec.id;
 AddressAustralia.spec.components?.push(Website);
+Api.spec.app = AddressAustralia.spec.id;
+AddressAustralia.spec.components?.push(Api);
 
 export { AddressAustralia }
