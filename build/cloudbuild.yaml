@@ -4,7 +4,7 @@ steps:
     env:
       - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
     name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
-    entrypoint: /bin/bash
+    # entrypoint: /bin/bash
     args:
       - '-c'
       - |
@@ -39,7 +39,7 @@ steps:
       - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
       - CONTAINER_REGISTRY_PROJECT=$_CONTAINER_REGISTRY_PROJECT
     name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
-    entrypoint: /bin/bash
+    # entrypoint: /bin/bash
     args:
       - '-c'
       - |
@@ -78,7 +78,7 @@ steps:
       - ORG_DESCRIPTION=$_ORG_DESCRIPTION
       - ORG_DOMAIN=$_ORG_DOMAIN
     name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
-    entrypoint: /bin/bash
+    # entrypoint: /bin/bash
     args:
       - '-c'
       - |
