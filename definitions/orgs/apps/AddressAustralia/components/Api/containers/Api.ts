@@ -23,11 +23,17 @@ const Api: Container = {
                 name: "PORT",
                 value: "8080"
             },{
+                name: "GOOGLE_APPLICATION_CREDENTIALS",
+                value: "/var/secrets/google/key.json"
+            },{
                 name: "SOLR_PORT",
                 value: "8985"
             },{
                 name: "SOLR_PROTOCOL",
                 value: "http"
+            },{
+                name: 'MONGO_PORT',
+                value: '27017'
             },{
                 name: "MONGO_COLLECTION",
                 secret: "website-sessions-mongo",
