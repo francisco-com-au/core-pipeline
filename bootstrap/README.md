@@ -53,7 +53,8 @@ This step will configure the project `gcp-fran-root` created on the previous ste
 - `[deprecated: using Pulumi now]` ~~Terraform service account with permissions at the organisation level to create/delete resources.~~
 - `core-pipeline` service account. This permission will be used by the Core Pipeline to deploy org level stuff. As such it has very sensitive permissions.
 - Cloud Build service account used by the build pipeline. This account will impersonate the ~~`Terraform`~~ `core-pipeline` service account mentioned above. ~~The only other permission it will have is access to the Terraform state bucket mentioned above.~~
-- Cloud Build pipeline to deploy Infrastructure as Code based on this repo.
+- Build and push a core-pipeline-runner image to be used by the core pipeline.
+- Cloud Build pipeline to deploy Infrastructure as Code based on this repo. [this is a manual process]
 
 This is a very sensitive project and only members of the `gcp-organization-admins` group should have access to it.
 </details>

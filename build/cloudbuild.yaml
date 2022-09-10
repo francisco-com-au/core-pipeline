@@ -3,19 +3,19 @@ steps:
   - id: github
     env:
       - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
-    name: 'pulumi/pulumi'
+    name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
     entrypoint: /bin/bash
     args:
       - '-c'
       - |
         set -e -x
-        # Install GitHub cli
-        mkdir .tools
-        curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output /tmp/gh.tar.gz
-        tar -xf /tmp/gh.tar.gz -C /tmp
-        rm /tmp/gh.tar.gz
-        mv /tmp/gh*/bin/gh .tools/
-        PATH=$$PATH:$$(pwd)/.tools/
+        # # Install GitHub cli
+        # mkdir .tools
+        # curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output /tmp/gh.tar.gz
+        # tar -xf /tmp/gh.tar.gz -C /tmp
+        # rm /tmp/gh.tar.gz
+        # mv /tmp/gh*/bin/gh .tools/
+        # PATH=$$PATH:$$(pwd)/.tools/
 
         # Login
         echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
@@ -38,18 +38,18 @@ steps:
     env:
       - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
       - CONTAINER_REGISTRY_PROJECT=$_CONTAINER_REGISTRY_PROJECT
-    name: 'pulumi/pulumi'
+    name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
     entrypoint: /bin/bash
     args:
       - '-c'
       - |
         set -e -x
-        # Install GitHub cli
-        # mkdir .tools
-        # mkdir .tools/gh
-        # curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output .tools/gh/gh.tar.gz
-        # tar -xf .tools/gh/gh.tar.gz -C .tools/gh
-        PATH=$$PATH:$$(pwd)/.tools/
+        # # Install GitHub cli
+        # # mkdir .tools
+        # # mkdir .tools/gh
+        # # curl -L https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_linux_386.tar.gz --output .tools/gh/gh.tar.gz
+        # # tar -xf .tools/gh/gh.tar.gz -C .tools/gh
+        # PATH=$$PATH:$$(pwd)/.tools/
 
         # Login
         echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
@@ -77,7 +77,7 @@ steps:
       - ORG_SHORT_NAME=$_ORG_SHORT_NAME
       - ORG_DESCRIPTION=$_ORG_DESCRIPTION
       - ORG_DOMAIN=$_ORG_DOMAIN
-    name: 'pulumi/pulumi'
+    name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
     entrypoint: /bin/bash
     args:
       - '-c'

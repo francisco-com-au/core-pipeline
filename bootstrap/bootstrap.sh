@@ -205,40 +205,40 @@ gcloud organizations add-iam-policy-binding $org_id \
 #     --role=roles/storage.admin
 
 
-##############################################################################
-#
-# Make a Service Account used by cloud build to deploy resources.
-# This account will impersonate the Terraform service account created above.
-#
-##############################################################################
+# ##############################################################################
+# #
+# # Make a Service Account used by cloud build to deploy resources.
+# # This account will impersonate the Terraform service account created above.
+# #
+# ##############################################################################
 
-# Create cloud build service account
-gcloud iam service-accounts create $cloud_build_sa_name \
-    --description="Used by cloud build to deploy resources. Will impersonate the core pipeline service account." \
-    --display-name="$cloud_build_sa_name" \
-    --project $root_project_id
-# Allow it to impersonate the core pipeline service account. This is done by modifying the policy of the host service account (that is, the core pipeline service account).
-etag_line=$(gcloud iam service-accounts get-iam-policy $core_pipeline_sa_name@$root_project_id.iam.gserviceaccount.com --format json | grep etag)
-new_policy="{
-    \"bindings\": [
-        {
-            \"role\": \"roles/iam.serviceAccountUser\",
-            \"members\": [
-                \"serviceAccount:$cloud_build_sa_name@$root_project_id.iam.gserviceaccount.com\"
-            ]
-        },
-        {
-            \"role\": \"roles/iam.serviceAccountTokenCreator\",
-            \"members\": [
-                \"serviceAccount:$cloud_build_sa_name@$root_project_id.iam.gserviceaccount.com\"
-            ]
-        }
-    ],
-    $etag_line
-}"
-echo $new_policy > policy.json
-gcloud iam service-accounts set-iam-policy $core_pipeline_sa_name@$root_project_id.iam.gserviceaccount.com policy.json
-rm policy.json
+# # Create cloud build service account
+# gcloud iam service-accounts create $cloud_build_sa_name \
+#     --description="Used by cloud build to deploy resources. Will impersonate the core pipeline service account." \
+#     --display-name="$cloud_build_sa_name" \
+#     --project $root_project_id
+# # Allow it to impersonate the core pipeline service account. This is done by modifying the policy of the host service account (that is, the core pipeline service account).
+# etag_line=$(gcloud iam service-accounts get-iam-policy $core_pipeline_sa_name@$root_project_id.iam.gserviceaccount.com --format json | grep etag)
+# new_policy="{
+#     \"bindings\": [
+#         {
+#             \"role\": \"roles/iam.serviceAccountUser\",
+#             \"members\": [
+#                 \"serviceAccount:$cloud_build_sa_name@$root_project_id.iam.gserviceaccount.com\"
+#             ]
+#         },
+#         {
+#             \"role\": \"roles/iam.serviceAccountTokenCreator\",
+#             \"members\": [
+#                 \"serviceAccount:$cloud_build_sa_name@$root_project_id.iam.gserviceaccount.com\"
+#             ]
+#         }
+#     ],
+#     $etag_line
+# }"
+# echo $new_policy > policy.json
+# gcloud iam service-accounts set-iam-policy $core_pipeline_sa_name@$root_project_id.iam.gserviceaccount.com policy.json
+# rm policy.json
 # # Grant it access to the terraform state bucket
 # gsutil iam ch \
 #     serviceAccount:$cloud_build_sa_name@$root_project_id.iam.gserviceaccount.com:roles/storage.objectAdmin \
@@ -247,9 +247,26 @@ rm policy.json
 #     serviceAccount:$core_pipeline_sa_name@$root_project_id.iam.gserviceaccount.com:roles/storage.objectAdmin \
 #     gs://$root_project_id-terraform-backend
 
-# Make key
-mkdir -p ~/credentials/$root_project_id
-gcloud iam service-accounts keys create ~/credentials/$root_project_id/$cloud_build_sa_name.json \
-    --iam-account $cloud_build_sa_name@$root_project_id.iam.gserviceaccount.com \
-    --project $root_project_id
-cp ~/credentials/$root_project_id/$cloud_build_sa_name.json ../$org_abbreviation-cloud-build-key.json
+# # Make key
+# mkdir -p ~/credentials/$root_project_id
+# gcloud iam service-accounts keys create ~/credentials/$root_project_id/$cloud_build_sa_name.json \
+#     --iam-account $cloud_build_sa_name@$root_project_id.iam.gserviceaccount.com \
+#     --project $root_project_id
+# cp ~/credentials/$root_project_id/$cloud_build_sa_name.json ../$org_abbreviation-cloud-build-key.json
+
+
+##############################################################################
+#
+# Make an image to run the core pipeline
+# This will save time as a bunch of stuff will be preinstalled
+#
+##############################################################################
+
+tag=0.0.0
+runner_image_name="gcr.io/$root_project_id/core-pipeline-runner"
+docker build \
+    -t $runner_image_name:$tag \
+    -t $runner_image_name:latest \
+    -f runner/Dockerfile runner
+docker push $runner_image_name:$tag
+docker push $runner_image_name:latest
