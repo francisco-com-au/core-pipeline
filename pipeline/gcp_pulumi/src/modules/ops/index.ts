@@ -126,7 +126,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     ].forEach(role => {
         new gcp.projects.IAMMember(`${org.spec.id}.cicd.pull.${roleBinding.member}.${role}`, {
             project: ciProject.projectId,
-            member: pullServiceAccount.id.apply(sa => `serviceAccount:${sa}`),
+            member: pullServiceAccount.email.apply(sa => `serviceAccount:${sa}`),
             role: role,
         });
     });
