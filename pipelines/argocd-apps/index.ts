@@ -1,3 +1,9 @@
+/*
+This is pretty awful and needs to be split into modules.
+Takes app definitions and creates kube resources to deploy such applications.
+It uses ArgoCD applications and kustomize to apply environment specific config.
+*/
+
 import { argocdProject } from "./manifests/argocdProject";
 var fs = require('fs');
 import { Orgs } from "../../definitions"
@@ -14,9 +20,6 @@ import { deployment } from "./manifests/deployment";
 import { ingressPatch } from "./manifests/ingressPatch";
 import { deploymentPatch } from "./manifests/deploymentPatch";
 import { configMap } from "./manifests/configMap";
-import { write } from "fs";
-import { env } from "process";
-import { imageKustomization } from "./manifests/image";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";

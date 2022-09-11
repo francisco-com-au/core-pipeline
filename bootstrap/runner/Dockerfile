@@ -11,7 +11,7 @@ RUN mv /tmp/gh*/bin/gh /tmp
 
 
 # ---------------------------------------------------------------
-# Funal image based on alpine
+# Final image based on alpine
 # ---------------------------------------------------------------
 
 FROM node:16-alpine

@@ -1,3 +1,9 @@
+/*
+I need to split this into modules. This creates the ops side of the platform,
+mainly CI/CD components such as automated builds of compoentes, automated deployment
+of new images and (coming later) automated deployment of app level infra.
+*/
+
 // Import types
 import {Apis, RoleBinding} from "../../../../../types/GCP";
 import { Org } from "../../../../../types/Org"

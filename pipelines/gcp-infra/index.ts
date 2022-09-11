@@ -1,7 +1,6 @@
 import { Orgs } from "../../definitions/index"
 import * as Foundations from "./src/modules/foundations"
 import * as Ops from "./src/modules/ops"
-// import { Readme } from "./src/modules/Readme"
 import { OrgFolders } from "./src/types/folders";
 
 
@@ -17,5 +16,3 @@ Orgs.forEach(org => {
     // Make projects
     Foundations.makeProjects(org, orgFolders, ciProject);
 });
-
-// export const readme = Readme(orgFolders);

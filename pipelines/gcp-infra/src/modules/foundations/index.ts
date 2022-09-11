@@ -1,3 +1,8 @@
+/*
+I need to split this into modules.
+This creates basic folders, projects and IAM based on app definitions.
+*/
+
 // Import types
 import { OrgFolders } from "../../types/folders";
 import {Apis, RoleBinding} from "../../../../../types/GCP";
@@ -5,7 +10,6 @@ import { Org } from "../../../../../types/Org"
 
 // Import packages
 import * as gcp from "@pulumi/gcp";
-import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import { Project } from "@pulumi/gcp/organizations";
 // import moment from 'moment'
