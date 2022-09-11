@@ -39,6 +39,8 @@ kind: Deployment
 metadata:
   name: ${name}
   namespace: ${namespace}
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   selector:
     matchLabels:
