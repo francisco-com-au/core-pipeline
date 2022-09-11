@@ -17,7 +17,7 @@ spec:
         repoURL: https://github.com/${repo}.git
         revision: main
         directories:
-          - path: 'managed/${appName}/components/*'
+          - path: 'managed/apps/${appName}/components/*'
   template:
     metadata:
       name: '${appName}-{{path.basename}}'

@@ -17,7 +17,7 @@ spec:
         repoURL: https://github.com/${repo}.git
         revision: ${branch}
         directories:
-          - path: 'managed/${appName}/components/*'
+          - path: 'managed/apps/${appName}/components/*'
   template:
     spec:
       source:
