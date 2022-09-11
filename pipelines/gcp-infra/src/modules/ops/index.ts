@@ -96,12 +96,21 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
             messageRetentionDuration: "86600s", // 1 day and a bit
         }, { dependsOn: pubsubApi ? [pubsubApi] : [] }
     );
+    // Create a topic for only events related to environments that we care about (build containers)
     const repoEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`, {
             project: ciProject.projectId,
             name: `${org.spec.id}-repo-events`,
             messageRetentionDuration: "86600s",
         }, { dependsOn: pubsubApi ? [pubsubApi] : [] }
     );
+    // Create a topic for only events related to environments that we care about (build containers)
+    const imageUpdatedTopic = new gcp.pubsub.Topic(`${org.spec.id}-image-events`, {
+            project: ciProject.projectId,
+            name: `${org.spec.id}-image-events`,
+            messageRetentionDuration: "86600s",
+        }, { dependsOn: pubsubApi ? [pubsubApi] : [] }
+    );
+
 
     // Make a service account per app
     org.spec.apps?.forEach(app => {
@@ -324,6 +333,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                     }
                     const imageName = `gcr.io/$PROJECT_ID/${app.spec.id}/${component.spec.id}/${env.name}/${container.spec.id}`;
                     const includedFiles = `${container.spec.dockerContext && container.spec.dockerContext != '.' ? `${container.spec.dockerContext}/` : ''}**`
+                    const messageBody = '{event:"New image available"}';
                     const containerBuildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.container.${app.spec.id}.${component.spec.id}.${container.spec.id}.${env.name}`, {
                         project: ciProject.projectId,
                         name: `container-build-${app.spec.id}-${component.spec.id}-${container.spec.id}-${env.name}`.substring(0, 63),
@@ -422,6 +432,17 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         `APPS_REPO=$_APPS_REPO`,
                                     ]
 
+                                },{
+                                    id: "Publish new tag available",
+                                    name: "gcr.io/cloud-builders/gcloud",
+                                    args: [
+                                        'pubsub',
+                                        'topics',
+                                        'publish',
+                                        imageUpdatedTopic.id.apply(t => t),
+                                        '--message',
+                                        messageBody
+                                    ]
                                 }
                             ],
                             // images: [ciProject.projectId.apply(projectId => `gcr://${projectId}/`)],
