@@ -1,9 +1,0 @@
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: portal
-  namespace: e2e
-spec:
-  dnsNames:
-    - dev.american-broomstick.com

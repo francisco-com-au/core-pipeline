@@ -1,9 +1,0 @@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: container-level-config-api-api
-  namespace: aa
-data:
-  CONTAINER_ID: api
-  CONTAINER_NAME: api
