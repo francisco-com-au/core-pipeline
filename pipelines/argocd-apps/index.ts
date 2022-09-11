@@ -15,6 +15,8 @@ import { ingressPatch } from "./manifests/ingressPatch";
 import { deploymentPatch } from "./manifests/deploymentPatch";
 import { configMap } from "./manifests/configMap";
 import { write } from "fs";
+import { env } from "process";
+import { imageKustomization } from "./manifests/image";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -29,16 +31,21 @@ function makeFolder(parts: string[]) {
 };
 
 const managedDir = join("platform-apps", "managed");
-console.log(managedDir)
+const appsDir = join(managedDir, "apps");
+const imagesDir = join(managedDir, "images");
 
-// Remove managed folder
-console.log(`Removing managed directory "${managedDir}"...`)
-fs.rmSync(managedDir, { recursive: true, force: true });
+// Remove apps folder
+console.log(`Removing apps directory "${appsDir}"...`)
+fs.rmSync(appsDir, { recursive: true, force: true });
 // Recreate managed folder
-console.log(`Recreating managed directory "${managedDir}"...`)
-makeFolder(managedDir.split('/'))
+console.log(`Recreating apps directory "${appsDir}"...`)
+makeFolder(appsDir.split('/'))
+
+// Make folder for images (if not exists)
+makeFolder(imagesDir.split('/'))
 
 // k8s.apps.v1.Deployment
+process.exit
 
 // Loop orgs
 Orgs.forEach(org => {
@@ -46,9 +53,11 @@ Orgs.forEach(org => {
         console.log(`Processing app ${app.spec.name}...`);
         
         // Render app level base
-        const appDir = join(managedDir, app.spec.id);
+        const appDir = join(appsDir, app.spec.id);
         console.log(`Making app folder "${appDir}...`);
         makeFolder([appDir]);
+        const imageAppDir = join(imagesDir, app.spec.id);
+        makeFolder([imageAppDir]);
 
         // Base
         // ----------------------------------------
@@ -135,7 +144,9 @@ Orgs.forEach(org => {
             const componentDir = join(componentsDir, component.spec.id);
             console.log(`Making component folder "${componentDir}...`);
             makeFolder([componentDir]);
-            
+            const imageComponentDir = join(imageAppDir, component.spec.id);
+            makeFolder([imageComponentDir]);
+
             const componentDomainName = `${component.spec.domainPrefix ? `${component.spec.domainPrefix}.` : '' }${app.spec.domainName}`;
 
             // Base
@@ -242,6 +253,9 @@ Orgs.forEach(org => {
                     const overlayDir = join(overlaysDir, environment.name);
                     console.log(`Making component overlay folder "${overlayDir}...`);
                     makeFolder([overlayDir]);
+                    const imageEnvDir = join(imageComponentDir, environment.name);
+                    makeFolder([imageEnvDir]);
+
                     const patchesDir = join(overlayDir, 'patches');
                     console.log(`Making component patches folder "${patchesDir}...`);
                     makeFolder([patchesDir]);
@@ -278,8 +292,17 @@ Orgs.forEach(org => {
                     component.spec.containers?.forEach(container => {
                         
                         // Deployments
+                        const imageQualifier = `${app.spec.id}/${component.spec.id}/${environment.name}/${container.spec.id}`
+                        let tag = 'latest';
+                        const imageFile = join(imagesDir, imageQualifier)
+                        console.log(`imageFile: ${imageFile}`)
+                        if (fs.existsSync(imageFile)) {
+                            tag = fs.readFileSync(imageFile, {encoding:'utf8', flag:'r'});
+                            console.log(`tag: ${tag}`)
+                        }
                         const containerName = `${component.spec.id}-${container.spec.id}`;
-                        const image = container.spec.image || `gcr.io/${CONTAINER_REGISTRY_PROJECT}/${app.spec.id}/${component.spec.id}/${environment.name}/${container.spec.id}:latest`
+                        const composedImageName = `gcr.io/${CONTAINER_REGISTRY_PROJECT}/${imageQualifier}:${tag}`;
+                        const image = container.spec.image || composedImageName
                         const deployPatch = deploymentPatch(
                             containerName, // name
                             app.spec.id, // namespace
@@ -288,8 +311,19 @@ Orgs.forEach(org => {
                         );
                         writeToFile(deployPatch, join(patchesDir, `deploy-${containerName}.yaml`));
                         patches.push(`patches/deploy-${containerName}.yaml`);
-                        });
+
+                        // const imageContainerDir = join(imageEnvDir, container.spec.id);
+                        // makeFolder([imageContainerDir]);
+                        // if (!fs.existsSync(join(imageContainerDir, 'kustomization.yaml'))) {
+                        //     // There is no kustomization here, probably the first time running this pipeline for this container/env.
+                        //     // Means that no image has been built yet. Tag with latest.
+                        //     const iK = imageKustomization(composedImageName, 'latest');
+                        //     writeToFile(iK, join(imageContainerDir, 'kustomization.yaml'));
+                        // };
+                        // resources.push(`../../../../../../images/${imageQualifier}`);
+                    });
                     
+
                     // const ing = ingress(
                     //     component.spec.id, // name
                     //     app.spec.id, // namespace
