@@ -381,7 +381,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                 
                                         # Configure git
                                         gh auth setup-git
-                                        git config --global user.email "image-updater-$BRANCH_NAME@$$ORG_DOMAIN"
+                                        git config --global user.email "image-updater-$BRANCH_NAME@${process.env.ORG_DOMAIN || 'automation.com'}"
                                         git config --global user.name "image-updater-$BRANCH_NAME"
                                 
                                         # Move to the folder with the GitHub code
