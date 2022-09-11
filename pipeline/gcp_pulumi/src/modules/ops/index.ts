@@ -31,13 +31,15 @@ export function makeFolders(org: Org): gcp.organizations.Folder {
 
 // Create project for CI
 export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder): gcp.organizations.Project {
+    
+    // Create project
     const projectId = `${org.spec.id}-ops-cicd`;
     const randomId = new random.RandomId(projectId, {
         byteLength: 3,
         keepers: {
             org: `${org.spec.id}`,
         },
-    });    
+    });
     const ciProject = new gcp.organizations.Project(projectId, {
         folderId: parentFolder.id,
         name: projectId,
@@ -50,6 +52,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
             // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}`
         },
     });
+
     // Grant roles to devops
     const roleBinding: RoleBinding = {
         member: `group:gcp-devops@${process.env.ORG_DOMAIN}`,
@@ -79,26 +82,25 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     const pubsubApi = enabledApis.get('pubsub.googleapis.com');
     const cloudbuildApi = enabledApis.get('cloudbuild.googleapis.com');
 
+    // Create a topic for GCR notificaitons (when new images are built)
+    const gcrTopic = new gcp.pubsub.Topic(`${org.spec.id}-gcr-events`, {
+            project: ciProject.projectId,
+            name: 'gcr',
+            messageRetentionDuration: "86600s", // 1 day and a bit
+        }, { dependsOn: pubsubApi ? [pubsubApi] : []}
+    );
     // Create topic for repo changes
-    const repoAllEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-all-events`,
-        {
+    const repoAllEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-all-events`, {
             project: ciProject.projectId,
             name: `${org.spec.id}-repo-all-events`,
-            messageRetentionDuration: "86600s",
-        },
-        {
-            dependsOn: pubsubApi ? [pubsubApi] : []
-        }
+            messageRetentionDuration: "86600s", // 1 day and a bit
+        }, { dependsOn: pubsubApi ? [pubsubApi] : [] }
     );
-    const repoEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`,
-        {
+    const repoEventsTopic = new gcp.pubsub.Topic(`${org.spec.id}-repo-events`, {
             project: ciProject.projectId,
             name: `${org.spec.id}-repo-events`,
             messageRetentionDuration: "86600s",
-        },
-        {
-            dependsOn: pubsubApi ? [pubsubApi] : []
-        }
+        }, { dependsOn: pubsubApi ? [pubsubApi] : [] }
     );
 
     // Make a service account per app
