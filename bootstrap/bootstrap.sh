@@ -273,3 +273,7 @@ docker buildx build \
     -f runner/Dockerfile runner
 # docker push $runner_image_name:$tag
 # docker push $runner_image_name":latest"
+
+# docker pull $runner_image_name:$tag
+# docker tag $runner_image_name:$tag "gcr.io/tf-ops-cicd-97aadd/core-pipeline-runner:$tag"
+# docker tag $runner_image_name":latest" "gcr.io/tf-ops-cicd-97aadd/core-pipeline-runner:latest"
