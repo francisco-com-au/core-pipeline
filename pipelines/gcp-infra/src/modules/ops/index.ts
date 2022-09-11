@@ -381,7 +381,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                 
                                         # Configure git
                                         gh auth setup-git
-                                        git config --global user.email "image-updater-$BRANCH_NAME@${process.env.ORG_DOMAIN || 'automation.com'}"
+                                        git config --global user.email "image-updater-$BRANCH_NAME@$$ORG_DOMAIN"
                                         git config --global user.name "image-updater-$BRANCH_NAME"
                                 
                                         # Move to the folder with the GitHub code
@@ -391,7 +391,9 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         ./main.sh`
                                     ],
                                     envs: [
-                                        `GITHUB_ACCESS_TOKEN=${process.env.GITHUB_ACCESS_TOKEN}`
+                                        `GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN`,
+                                        `ORG_DOMAIN=$_ORG_DOMAIN`,
+                                        `ROOT_PROJECT_ID=$_ROOT_PROJECT_ID`
                                     ]
 
                                 }
@@ -406,6 +408,9 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                             _ENV: env.name,
                             _BRANCH: branch,
                             _REPO: `${repoOrg}/${repoName}`,
+                            _INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN: process.env.GITHUB_ACCESS_TOKEN || '',
+                            _ORG_DOMAIN: process.env.ORG_DOMAIN || 'placeholder.com',
+                            _ROOT_PROJECT_ID: process.env.PROJECT_ID || '',
                         },
                     }, {
                         dependsOn: cloudbuildApi ? [cloudbuildApi] : []
