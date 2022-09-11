@@ -369,7 +369,8 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                     args: [
                                         "push",
                                         `${imageName}:$SHORT_SHA`,
-                                    ]
+                                    ],
+                                    waitFors: ["Build 🐳"],
                                 },{
                                     id: "Push [latest] 🚀",
                                     name: "gcr.io/cloud-builders/docker",
@@ -377,7 +378,8 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                     args: [
                                         "push",
                                         `${imageName}:latest`,
-                                    ]
+                                    ],
+                                    waitFors: ["Build 🐳"],
                                 },{
                                     id: "Update tag",
                                     name: `gcr.io/$PROJECT_ID/core-pipeline-runner:latest`,
@@ -430,8 +432,8 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         `GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN`,
                                         `ORG_DOMAIN=$_ORG_DOMAIN`,
                                         `APPS_REPO=$_APPS_REPO`,
-                                    ]
-
+                                    ],
+                                    waitFors: ["Push [sha] 🚀"]
                                 },{
                                     id: "Publish new tag available",
                                     name: "gcr.io/cloud-builders/gcloud",
@@ -442,7 +444,8 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         imageUpdatedTopic.id.apply(t => t),
                                         '--message',
                                         messageBody,
-                                    ]
+                                    ],
+                                    waitFors: ["Update tag"]
                                 }
                             ],
                             // images: [ciProject.projectId.apply(projectId => `gcr://${projectId}/`)],
