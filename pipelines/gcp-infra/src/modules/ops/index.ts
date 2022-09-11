@@ -383,17 +383,43 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         gh auth setup-git
                                         git config --global user.email "image-updater-$BRANCH_NAME@$$ORG_DOMAIN"
                                         git config --global user.name "image-updater-$BRANCH_NAME"
-                                
-                                        # Move to the folder with the GitHub code
-                                        cd pipelines/image-updater
-                                
-                                        # Execute
-                                        ./main.sh`
+
+                                        # Define name of the branch to use
+                                        BRANCH=feature/image-updater-$COMMIT_SHA
+
+                                        # Clean up cloned repo
+                                        rm -rf platform-apps
+
+                                        # Clone repo
+                                        gh repo clone $$APPS_REPO
+                                        cd platform-apps
+                                        git checkout main
+                                        git checkout -b $$BRANCH
+
+                                        # Apply tag
+                                        mkdir -p managed/images/${app.spec.id}/${component.spec.id}/${env.name}/
+                                        echo -n $SHORT_SHA > managed/images/${app.spec.id}/${component.spec.id}/${env.name}/${container.spec.id}
+
+                                        git add .
+
+                                        function has_changes() {
+                                            # Push to branch
+                                            git push --set-upstream origin $$BRANCH
+
+                                            # Merge to master
+                                            git checkout main
+                                            git pull
+                                            git merge $$BRANCH
+                                            git push
+                                        }
+
+                                        git commit -m "Automated commit from the image updater. $SHORT_SHA" && has_changes
+`
                                     ],
                                     envs: [
                                         `GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN`,
                                         `ORG_DOMAIN=$_ORG_DOMAIN`,
-                                        `ROOT_PROJECT_ID=$_ROOT_PROJECT_ID`
+                                        `APPS_REPO=$_APPS_REPO`,
                                     ]
 
                                 }
@@ -407,10 +433,12 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                             _CONTAINER: container.spec.id,
                             _ENV: env.name,
                             _BRANCH: branch,
+                            _IMAGE_TAG: "$SHORT_SHA",
                             _REPO: `${repoOrg}/${repoName}`,
                             _INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN: process.env.GITHUB_ACCESS_TOKEN || '',
                             _ORG_DOMAIN: process.env.ORG_DOMAIN || 'placeholder.com',
                             _ROOT_PROJECT_ID: process.env.PROJECT_ID || '',
+                            _APPS_REPO: process.env.APPS_REPO || '',
                         },
                     }, {
                         dependsOn: cloudbuildApi ? [cloudbuildApi] : []
