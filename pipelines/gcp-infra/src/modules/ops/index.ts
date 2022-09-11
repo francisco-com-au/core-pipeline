@@ -389,6 +389,9 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                 
                                         # Execute
                                         ./main.sh`
+                                    ],
+                                    envs: [
+                                        `GITHUB_ACCESS_TOKEN=${process.env.GITHUB_ACCESS_TOKEN}`
                                     ]
 
                                 }
