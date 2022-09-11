@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-level-config
+  namespace: aa
+data:
+  APP_ID: aa
+  APP_NAME: Address Australia
+  APP_DOMAIN: addressaustralia.com.au

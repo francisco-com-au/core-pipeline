@@ -1,0 +1,33 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: aa-components
+  namespace: argocd
+  # finalizers:
+  #   - resources-finalizer.argocd.argoproj.io
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/.git
+        revision: main
+        directories:
+          - path: 'managed/aa/components/*'
+  template:
+    metadata:
+      name: 'aa-{{path.basename}}'
+    spec:
+      project: aa
+      source:
+        repoURL: https://github.com/.git
+        targetRevision: main
+        path: '{{path}}/overlays/prod'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: aa
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true

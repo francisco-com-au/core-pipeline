@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: container-level-config-website-mongo
+  namespace: aa
+data:
+  CONTAINER_ID: mongo
+  CONTAINER_NAME: mongo

@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: portal
+  namespace: e2e
+spec:
+  dnsNames:
+    - american-broomstick.com
+  secretName: portal-tls
+  issuerRef:
+    name: letsencrypt-cluster-issuer
+    kind: ClusterIssuer

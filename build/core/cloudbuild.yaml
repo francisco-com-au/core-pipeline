@@ -1,6 +1,6 @@
 steps:
 
-  - id: github
+  - id: github-repos
     env:
       - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
     name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
@@ -26,7 +26,7 @@ steps:
         git config --global user.name "core-pipeline-$BRANCH_NAME"
 
         # Move to the folder with the GitHub code
-        cd pipeline/github
+        cd pipelines/github-repos
         
         # Install dependencies
         npm install
@@ -34,7 +34,7 @@ steps:
         # Execute
         ./main.sh
 
-  - id: argocd
+  - id: argocd-apps
     env:
       - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
       - CONTAINER_REGISTRY_PROJECT=$_CONTAINER_REGISTRY_PROJECT
@@ -60,7 +60,7 @@ steps:
         git config --global user.name "core-pipeline-$BRANCH_NAME"
 
         # Move to the folder with the GitHub code
-        cd pipeline/argocd
+        cd pipelines/argocd-apps
 
         # Install dependencies
         npm install
@@ -68,7 +68,7 @@ steps:
         # Execute
         ./main.sh
 
-  - id: gcp_pulumi
+  - id: gcp-infra
     env:
       - PULUMI_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN
       - ORG_ID=$_INSECURE_SUBSTITUTION_ORG_ID
@@ -86,7 +86,7 @@ steps:
         set -e -x
 
         # Move to the folder with the Pulumi code
-        cd pipeline/gcp_pulumi
+        cd pipelines/gcp-infra
 
         # Restore npm dependencies for our infra app.
         npm install

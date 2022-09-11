@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: container-level-config-website-static
+  namespace: aa
+data:
+  CONTAINER_ID: static
+  CONTAINER_NAME: static

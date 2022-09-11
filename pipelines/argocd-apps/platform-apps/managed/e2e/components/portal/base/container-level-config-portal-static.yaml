@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: container-level-config-portal-static
+  namespace: e2e
+data:
+  CONTAINER_ID: static
+  CONTAINER_NAME: static

@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: component-level-config-website
+  namespace: aa
+data:
+  COMPONENT_ID: website
+  COMPONENT_NAME: website
+  COMPONENT_DOMAIN_NAME: addressaustralia.com.au

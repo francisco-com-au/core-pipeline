@@ -1,0 +1,12 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-api
+  namespace: aa
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          image: gcr.io//aa/api/dev/api:latest

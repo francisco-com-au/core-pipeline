@@ -1,0 +1,15 @@
+---
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  name: "website-static-webserver"
+  namespace: aa
+spec:
+  selector:
+    app: aa
+    component: website
+    container: static
+  ports:
+    - name: "webserver"
+      protocol: "TCP"
+      port: 80

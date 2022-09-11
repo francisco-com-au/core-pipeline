@@ -1,0 +1,18 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: aa-components
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/.git
+        revision: main
+        directories:
+          - path: 'managed/aa/components/*'
+  template:
+    spec:
+      source:
+        targetRevision: main
+        path: '{{path}}/overlays/dev'
