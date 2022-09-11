@@ -441,7 +441,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         'publish',
                                         imageUpdatedTopic.id.apply(t => t),
                                         '--message',
-                                        messageBody
+                                        messageBody,
                                     ]
                                 }
                             ],
