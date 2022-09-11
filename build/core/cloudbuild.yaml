@@ -78,6 +78,7 @@ steps:
       - ORG_DESCRIPTION=$_ORG_DESCRIPTION
       - ORG_DOMAIN=$_ORG_DOMAIN
       - PROJECT_ID=$PROJECT_ID
+      - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
     name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
     entrypoint: /bin/sh
     args:
