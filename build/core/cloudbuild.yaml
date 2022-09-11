@@ -1,0 +1,97 @@
+steps:
+
+  - id: github-repos
+    env:
+      - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
+    name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
+    entrypoint: /bin/sh
+    args:
+      - '-c'
+      - |
+        set -e -x
+
+        # Login
+        echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
+
+        # Configure git
+        gh auth setup-git
+        git config --global user.email "core-pipeline-$BRANCH_NAME@$$ORG_DOMAIN"
+        git config --global user.name "core-pipeline-$BRANCH_NAME"
+
+        # Move to the folder with the GitHub code
+        cd pipelines/github-repos
+        
+        # Install dependencies
+        npm install
+        
+        # Execute
+        ./main.sh
+
+  - id: argocd-apps
+    env:
+      - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
+      - CONTAINER_REGISTRY_PROJECT=$_CONTAINER_REGISTRY_PROJECT
+    name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
+    entrypoint: /bin/sh
+    args:
+      - '-c'
+      - |
+        set -e -x
+
+        # Login
+        echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
+
+        # Configure git
+        gh auth setup-git
+        git config --global user.email "core-pipeline-$BRANCH_NAME@$$ORG_DOMAIN"
+        git config --global user.name "core-pipeline-$BRANCH_NAME"
+
+        # Move to the folder with the GitHub code
+        cd pipelines/argocd-apps
+
+        # Install dependencies
+        npm install
+        
+        # Execute
+        ./main.sh
+
+  - id: gcp-infra
+    env:
+      - PULUMI_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN
+      - ORG_ID=$_INSECURE_SUBSTITUTION_ORG_ID
+      - BILLING_ID=$_INSECURE_SUBSTITUTION_BILLING_ID
+      - ORG_NAME=$_ORG_NAME
+      - ORG_SHORT_NAME=$_ORG_SHORT_NAME
+      - ORG_DESCRIPTION=$_ORG_DESCRIPTION
+      - ORG_DOMAIN=$_ORG_DOMAIN
+      - PROJECT_ID=$PROJECT_ID
+      - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
+      - APPS_REPO=$_APPS_REPO
+    name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
+    entrypoint: /bin/sh
+    args:
+      - '-c'
+      - |
+        # exit if a command returns a non-zero exit code and also print the commands and their args as they are executed.
+        set -e -x
+
+        # Move to the folder with the Pulumi code
+        cd pipelines/gcp-infra
+
+        # Restore npm dependencies for our infra app.
+        npm install
+
+        # Login
+        pulumi login
+        
+        # Select stack
+        pulumi stack select $BRANCH_NAME -c
+
+        # Set project
+        pulumi config set gcp:project $PROJECT_ID
+
+        # Up
+        pulumi up -y
+
+options:
+  logging: CLOUD_LOGGING_ONLY

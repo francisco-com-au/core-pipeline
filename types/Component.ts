@@ -23,6 +23,8 @@ interface Component extends KRM {
             repo: string;
             /* Name of the GitHub organization to use. If omitted the App's configuration applies. */
             organization?: string;
+            /* Folder to put the infrastructure */
+            infraPath?: string;
         }
 
         /* GCP configuration */

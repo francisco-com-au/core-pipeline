@@ -7,8 +7,18 @@ policy.json
 *.js
 
 # Pulumi sensitive config
-pulumi-key
+pulumi-token
 Pulumi.*.yaml
+
+# GitHub token
+github-token
+makeRepos.sh
+
+# ArgoCD pipeline
+pipelines/argocd-apps/platform-apps
+
+# Image Updater pipeline
+pipelines/image-updater/platform-apps
 
 # Logs
 logs

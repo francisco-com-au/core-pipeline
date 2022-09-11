@@ -3,6 +3,10 @@ This will take you from zero to having a GCP organization up and running followi
 
 By the end of this guide you will be able to commit code to a repo and have GCP resources created automatically 🤘🏼
 
+# 0. Dependencies
+- Docker running
+- docker buildx if you're on Apple silicon
+
 # 1. Organisation setup 🏛
 
 ## Description
@@ -53,7 +57,8 @@ This step will configure the project `gcp-fran-root` created on the previous ste
 - `[deprecated: using Pulumi now]` ~~Terraform service account with permissions at the organisation level to create/delete resources.~~
 - `core-pipeline` service account. This permission will be used by the Core Pipeline to deploy org level stuff. As such it has very sensitive permissions.
 - Cloud Build service account used by the build pipeline. This account will impersonate the ~~`Terraform`~~ `core-pipeline` service account mentioned above. ~~The only other permission it will have is access to the Terraform state bucket mentioned above.~~
-- Cloud Build pipeline to deploy Infrastructure as Code based on this repo.
+- Build and push a core-pipeline-runner image to be used by the core pipeline.
+- Cloud Build pipeline to deploy Infrastructure as Code based on this repo. [this is a manual process]
 
 This is a very sensitive project and only members of the `gcp-organization-admins` group should have access to it.
 </details>
@@ -95,6 +100,15 @@ export cloud_build_sa_name="cloud-build"
 ```bash
 ./bootstrap.sh
 ```
+### 2.3 Add yourself to some groups
+This will give you access to see and work on projects from your own personal gmail account.
+- Navigate to the [Google Admin](https://admin.google.com/) console
+- Sign in with your `gcp-admin` account
+- Add your personal gmail account to some groups. Recommendations are:
+    - Developres
+    - Viewers
+
+
 
 
 # 3. Continuous delivery with Infra as Code
@@ -134,8 +148,13 @@ In this part you will configure a pipeline to automatically provision GCP resour
     - configuration location: `build/cloudbuild.yaml` 
     - Fill in the substitutions:
         - `_INSECURE_SUBSTITUTION_PULUMI_ACCESS_TOKEN`: your Pulumi token
+        - `_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN`: github token used to create repos. It needs `read:org, repo`
         - `_INSECURE_SUBSTITUTION_ORG_ID`: The ID of the organization you created on step 1
         - `_INSECURE_SUBSTITUTION_BILLING_ID`: billing id of the org created on 1.2
+        - `_ORG_NAME`: full name
+        - `_ORG_SHORT_NAME`: short prefix to be added to all projects
+        - `_ORG_DESCRIPTION`: useful description
+        - `_ORG_DOMAIN`: domain name
     - Send build logs to GitHub
     - Select the `core-pipeline` service account
     - Click Create

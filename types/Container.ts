@@ -11,7 +11,15 @@ interface Container extends KRM {
         /* Name of the parent component. Can be populated programatically if this container is added to the component object. */
         component?: string;
         /* Image to run. */
-        image: string;
+        image?: string;
+        /* If image is not present will create a build trigger using:
+            - the parent component's repo
+            - the parent application environment's branch
+            - the path to the dockerfile specified here
+        */
+        dockerFile?: string;
+        dockerContext?: string;
+        
 
         /* Ports to expose via services */
         expose?: ContainerPort[];
@@ -36,8 +44,14 @@ interface ContainerPort {
 interface ContainerEnv {
     /* Name of the environment variable */
     name: string;
-    /* Value of the environment variable */
+    /* If present, the value will come from a secret with this name. */
+    secret?: string;
+    /* If present, the value will come from a configMap with this name. Secret takes priority. */
+    configMap?: string;
+    /* Literal value of the environment variable.
+    If secret or configMap are present, this becomes the key used to find the value. */
     value: string;
 }
+
 
 export { Container, ContainerPort, ContainerEnv }

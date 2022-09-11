@@ -14,6 +14,9 @@ interface App extends KRM {
         /* Name of the parent organization. Can be populated programatically. */
         organization?: string;
 
+        /* Domain name of the app. If present will create an ingress and tls certs. */
+        domainName?: string;
+
         /* GitHub configuration */
         github: {
             /* Name of the GitHub organization containing repos */
