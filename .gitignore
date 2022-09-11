@@ -15,7 +15,7 @@ github-token
 makeRepos.sh
 
 # ArgoCD pipeline
-# pipelines/argocd-apps/platform-apps
+pipelines/argocd-apps/platform-apps
 
 # Image Updater pipeline
 pipelines/image-updater/platform-apps
