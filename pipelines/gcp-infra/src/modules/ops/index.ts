@@ -370,7 +370,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                     ]
                                 },{
                                     id: "Update tag",
-                                    name: "gcr:/$PROJECT_ID/core-pipeline-runner:latest",
+                                    name: `gcr:/${process.env.$PROJECT_ID}/core-pipeline-runner:latest`,
                                     entrypoint: "sh",
                                     args: [
                                         "-c",
