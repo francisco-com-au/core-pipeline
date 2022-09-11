@@ -8,7 +8,7 @@ export APPS_REPO="francisco-com-au/platform-apps"
 # Figure out current commit sha
 SHA=$(git rev-parse HEAD)
 
-BRANCH=feature/core-pipeline-$SHA
+BRANCH=feature/image-updater-$SHA
 
 # Clear up cloned repo
 rm -rf platform-apps
@@ -18,16 +18,12 @@ gh repo clone $APPS_REPO
 cd platform-apps
 git checkout main
 git checkout -b $BRANCH
-cd ..
 
-# Compile app
-npx tsc
-
-# Run app
-node index.js
+# Apply tag
+mkdir -p managed/images/$APP_ID/$COMPONENT_ID/$ENV/
+echo -n $IMAGE_TAG > managed/images/$APP_ID/$COMPONENT_ID/$ENV/$CONTAINER
 
 # Add changes
-cd platform-apps
 git add .
 
 function has_changes () {
@@ -36,13 +32,13 @@ function has_changes () {
 
     # Merge to master
     git checkout main
+    git pull
     git merge $BRANCH
     git push
 }
 
-git commit -m "Automated commit from the core pipeline. $SHA" && has_changes
+git commit -m "Automated commit from the image updater. $SHA" && has_changes
 cd ..
 
 # Clear up cloned repo
 rm -rf platform-apps
-

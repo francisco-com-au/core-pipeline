@@ -3,7 +3,11 @@ steps:
   - id: argocd-apps
     env:
       - GITHUB_ACCESS_TOKEN=$_INSECURE_SUBSTITUTION_GITHUB_ACCESS_TOKEN
-      - CONTAINER_REGISTRY_PROJECT=$_CONTAINER_REGISTRY_PROJECT
+      - APP_ID=$_APP_ID
+      - COMPONENT_ID=$_COMPONENT
+      - ENV=$_ENV
+      - CONTAINER=$_CONTAINER
+      - IMAGE_TAG=$SHORT_SHA
     name: 'gcr.io/$PROJECT_ID/core-pipeline-runner:latest'
     entrypoint: /bin/sh
     args:

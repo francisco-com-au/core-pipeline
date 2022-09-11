@@ -368,6 +368,29 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         "push",
                                         `${imageName}:latest`,
                                     ]
+                                },{
+                                    id: "Update tag",
+                                    name: "gcr:/$PROJECT_ID/core-pipeline-runner:latest",
+                                    entrypoint: "sh",
+                                    args: [
+                                        "-c",
+                                        `set -e -x
+      
+                                        # Login to github
+                                        echo "$$GITHUB_ACCESS_TOKEN" | gh auth login --with-token
+                                
+                                        # Configure git
+                                        gh auth setup-git
+                                        git config --global user.email "image-updater-$BRANCH_NAME@$$ORG_DOMAIN"
+                                        git config --global user.name "image-updater-$BRANCH_NAME"
+                                
+                                        # Move to the folder with the GitHub code
+                                        cd pipelines/image-updater
+                                
+                                        # Execute
+                                        ./main.sh`
+                                    ]
+
                                 }
                             ],
                             // images: [ciProject.projectId.apply(projectId => `gcr://${projectId}/`)],
@@ -376,6 +399,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                             _ORG: org.spec.id,
                             _APP: app.spec.id,
                             _COMPONENT: component.spec.id,
+                            _CONTAINER: container.spec.id,
                             _ENV: env.name,
                             _BRANCH: branch,
                             _REPO: `${repoOrg}/${repoName}`,
