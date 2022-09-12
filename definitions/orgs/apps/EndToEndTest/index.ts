@@ -55,7 +55,7 @@ const Application: App = {
                         }],
                         secrets: [{
                             name: 'test',
-                            onePasswordPath: 'vaults/automaton/items/test',
+                            onePasswordPath: 'vaults/automation/items/test',
                             type: 'file'
                         }]
                     }
