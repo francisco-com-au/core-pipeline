@@ -77,6 +77,10 @@ spec:
             - mountPath: "/etc/secrets/${s.name}"
               name: ${s.name}
               readOnly: true`).join('')}
+      ${container.spec.secrets? 'volumes:' : ''}${container.spec.secrets?.map(s => `
+        - name: ${s.name}
+          secret:
+            secretName: ${s.name}`).join('')}
 `
 }
 
