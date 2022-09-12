@@ -73,14 +73,14 @@ spec:
                 name: component-level-config-${componentId}
             - configMapRef:
                 name: container-level-config-${componentId}-${container.spec.id}
-          ${container.spec.secrets? 'volumeMounts:' : ''}${container.spec.secrets?.map(s => `
+          ${container.spec.secrets? `volumeMounts:${container.spec.secrets?.map(s => `
             - mountPath: "/etc/secrets/${s.name}"
               name: ${s.name}
-              readOnly: true`).join('')}
-      ${container.spec.secrets? 'volumes:' : ''}${container.spec.secrets?.map(s => `
+              readOnly: true`).join('')}` : ''}
+      ${container.spec.secrets? `volumes:${container.spec.secrets?.map(s => `
         - name: ${s.name}
           secret:
-            secretName: ${s.name}`).join('')}
+            secretName: ${s.name}`).join('')}` : ''}
 `
 }
 
