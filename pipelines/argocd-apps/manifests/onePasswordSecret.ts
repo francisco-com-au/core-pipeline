@@ -6,7 +6,7 @@ const onePasswordSecret = function(
 
     return`---
 apiVersion: onepassword.com/v1
-    kind: OnePasswordItem
+kind: OnePasswordItem
 metadata:
     name: ${name}
     namespace: ${namespace}
