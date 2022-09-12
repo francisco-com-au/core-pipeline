@@ -26,6 +26,9 @@ interface Container extends KRM {
         
         /* Environment variables to inject in the container */
         env?: ContainerEnv[];
+
+        /* Secrets to mount */
+        secrets?: ContainerSecret[];
     }
 }
 
@@ -48,9 +51,20 @@ interface ContainerEnv {
     secret?: string;
     /* If present, the value will come from a configMap with this name. Secret takes priority. */
     configMap?: string;
+    /* If present, the secret will be retrieved from 1 Password. */
+    onePassword?: string;
     /* Literal value of the environment variable.
     If secret or configMap are present, this becomes the key used to find the value. */
     value: string;
+}
+
+interface ContainerSecret {
+    /* Name of the secret */
+    name: string;
+    /* Path within 1 password */
+    onePasswordPath: string;
+    /* Mount the secret as a file or as env variables? */
+    type: 'file' | 'environment'
 }
 
 

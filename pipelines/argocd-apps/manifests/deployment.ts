@@ -12,6 +12,9 @@ const deployment = function(
     const plainEnv = container.spec.env?.filter(e => !e.secret && !e.configMap) || [];
     const secretEnv = container.spec.env?.filter(e => e.secret) || [];
     const configMapEnv = container.spec.env?.filter(e => !e.secret && e.configMap) || [];
+    // const volumens = container.spec.secrets?.map(s => {return {
+    //   a: s.
+    // }}) || [];
 
     return`---
 apiVersion: apps/v1
@@ -70,6 +73,10 @@ spec:
                 name: component-level-config-${componentId}
             - configMapRef:
                 name: container-level-config-${componentId}-${container.spec.id}
+          ${container.spec.secrets? 'volumeMounts:' : ''}${container.spec.secrets?.map(s => `
+            - mountPath: "/etc/secrets/${s.name}"
+              name: ${s.name}
+              readOnly: true`).join('')}
 `
 }
 

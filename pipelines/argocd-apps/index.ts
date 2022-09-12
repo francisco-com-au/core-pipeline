@@ -20,6 +20,7 @@ import { deployment } from "./manifests/deployment";
 import { ingressPatch } from "./manifests/ingressPatch";
 import { deploymentPatch } from "./manifests/deploymentPatch";
 import { configMap } from "./manifests/configMap";
+import { onePasswordSecret } from "./manifests/onePasswordSecret";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -213,10 +214,19 @@ Orgs.forEach(org => {
                         component.spec.id, // component id
                         container.spec.id // container id
                     )
-                    // Service
                     writeToFile(svc, join(baseDir, `svc-${containerPortName}.yaml`));
                     resources.push(`svc-${containerPortName}.yaml`);
+                });
 
+                // Secrets
+                container.spec.secrets?.forEach(containerSecret => {
+                    const secret = onePasswordSecret(
+                        containerSecret.name, // name
+                        containerSecret.onePasswordPath, // path
+                        app.spec.id, // namespace
+                    )
+                    writeToFile(secret, join(baseDir, `secret-${containerSecret.name}.yaml`));
+                    resources.push(`secret-${containerSecret.name}.yaml`);
                 });
             });
 

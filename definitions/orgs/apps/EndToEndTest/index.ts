@@ -52,6 +52,11 @@ const Application: App = {
                             name: 'webserver',
                             port: 8080,
                             ingressPath: '/'
+                        }],
+                        secrets: [{
+                            name: 'test',
+                            onePasswordPath: 'vaults/automaton/items/test',
+                            type: 'file'
                         }]
                     }
                 }]
