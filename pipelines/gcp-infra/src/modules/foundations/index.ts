@@ -154,9 +154,17 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                     }, {dependsOn: [project]});
                 });
 
-                // Create build trigger for infra components
                 console.log(`component.spec.source ${JSON.stringify(component.spec.source)}`)
                 if (component.spec.source.infraPath) {
+                    // Create a service account for each component
+                    const serviceAccount = new gcp.serviceaccount.Account(`${org.spec.id}.${app.spec.id}.${component.spec.id}.${envName}`, {
+                        project: project.projectId,
+                        accountId: `editor-${app.spec.id}-${component.spec.id}-${envName}`,
+                        displayName: `Editor`,
+                        description: `General purpose account.`,
+                    });
+                    
+                    // Create build trigger for infra components
                     const repoOrg = component.spec.source.organization || app.spec.github.organization;
                     const repoName = component.spec.source.repo;
                     const env = app.spec.environments.filter(e => e.name == envName)[0];
