@@ -136,6 +136,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                     member: serviceAccount.email.apply(sa => `serviceAccount:${sa}`),
                     role: role,
                 });
+            });
         });
     });
 
