@@ -6,6 +6,7 @@ By the end of this guide you will be able to commit code to a repo and have GCP 
 # 0. Dependencies
 - Docker running
 - docker buildx if you're on Apple silicon
+- 1password installed and authenticated
 
 # 1. Organisation setup 🏛
 
