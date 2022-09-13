@@ -163,6 +163,16 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                         displayName: `Editor`,
                         description: `General purpose account.`,
                     });
+                    [
+                        "roles/editor"
+                    ].forEach(role => {
+                        new gcp.projects.IAMMember(`${org.spec.id}.${app.spec.id}.${component.spec.id}.${envName}.${role}`, {
+                            project: ciProject.projectId,
+                            member: serviceAccount.email.apply(sa => `serviceAccount:${sa}`),
+                            role: role,
+                        });
+                    });
+
                     
                     // Create build trigger for infra components
                     const repoOrg = component.spec.source.organization || app.spec.github.organization;
