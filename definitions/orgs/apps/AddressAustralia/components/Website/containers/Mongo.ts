@@ -19,10 +19,32 @@ const Mongo: Container = {
         ],
         env: [
             {
-                name: "ENV_TEST_KEY",
-                value: "ENV_TEST_VALUE"
-            }
-        ]
+                name: "MONGO_INITDB_ROOT_USERNAME",
+                secret: "website-sessions-mongo",
+                value: "username"
+            },{
+                name: "MONGO_INITDB_ROOT_PASSWORD",
+                secret: "website-sessions-mongo",
+                value: "password"
+            },{
+                name: "MONGODB_USER",
+                secret: "website-sessions-mongo",
+                value: "username"
+            },{
+                name: "MONGODB_PASS",
+                secret: "website-sessions-mongo",
+                value: "password"
+            },{
+                name: "MONGO_INITDB_DATABASE",
+                secret: "website-sessions-mongo",
+                value: "db"
+            },
+        ],
+        secrets: [{
+            name: 'website-sessions-mongo',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.mongo',
+            type: 'environment'
+        }]
     }
 }
 
