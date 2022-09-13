@@ -411,7 +411,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         # Clone repo
                                         gh repo clone $$APPS_REPO
                                         cd platform-apps
-                                        git checkout main
+                                        git checkout ${process.env.PLATFORM_BRANCH}
                                         git checkout -b $$BRANCH
 
                                         # Apply tag
@@ -425,7 +425,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                             git push --set-upstream origin $$BRANCH
 
                                             # Merge to master
-                                            git checkout main
+                                            git checkout ${process.env.PLATFORM_BRANCH}
                                             git pull
                                             git merge $$BRANCH
                                             git push
