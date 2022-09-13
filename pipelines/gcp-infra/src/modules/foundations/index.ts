@@ -196,7 +196,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                                 steps: [
                                     {
                                         id: "Infra 🔧",
-                                        name: "pulumi/pulumi",
+                                        name: "gcr.io/$PROJECT_ID/core-pipeline-runner:latest",
                                         entrypoint: "/bin/sh",
                                         args: [
                                             "-c", `
