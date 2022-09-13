@@ -83,10 +83,6 @@ const Api: Container = {
             onePasswordPath: 'vaults/automation/items/tf.aa.website.api.google',
             type: 'file'
         },{
-            name: 'website-sessions-mongo',
-            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.mongo',
-            type: 'environment'
-        },{
             name: 'sendgrid-key',
             onePasswordPath: 'vaults/automation/items/tf.aa.website.api.sendgrid',
             type: 'environment'
