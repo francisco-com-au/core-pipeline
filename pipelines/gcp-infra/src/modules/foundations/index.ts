@@ -167,7 +167,7 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                         "roles/editor"
                     ].forEach(role => {
                         new gcp.projects.IAMMember(`${org.spec.id}.${app.spec.id}.${component.spec.id}.${envName}.${role}`, {
-                            project: ciProject.projectId,
+                            project: project.projectId,
                             member: serviceAccount.email.apply(sa => `serviceAccount:${sa}`),
                             role: role,
                         });
