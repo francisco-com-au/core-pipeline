@@ -25,7 +25,7 @@ const Api: Container = {
                 value: "8080"
             },{
                 name: "GOOGLE_APPLICATION_CREDENTIALS",
-                value: "/var/secrets/google/key.json"
+                value: "/etc/secrets/google/key.json"
             },{
                 name: 'MONGO_PORT',
                 value: '27017'
@@ -74,7 +74,28 @@ const Api: Container = {
                 secret: "mail-key",
                 value: "MAIL_PASSWORD"
             }
-        ]
+        ],
+        secrets: [{
+            name: 'google',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api',
+            type: 'file'
+        },{
+            name: 'website-sessions-mongo',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.mongo',
+            type: 'environment'
+        },{
+            name: 'sendgrid-key',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.sendgrid',
+            type: 'environment'
+        },{
+            name: 'stripe-key',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.stripe',
+            type: 'environment'
+        },{
+            name: 'main-key',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.main',
+            type: 'environment'
+        }]
     }
 }
 
