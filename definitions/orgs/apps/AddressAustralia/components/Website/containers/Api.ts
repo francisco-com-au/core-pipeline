@@ -77,7 +77,7 @@ const Api: Container = {
         ],
         secrets: [{
             name: 'google',
-            onePasswordPath: 'vaults/automation/items/tf.aa.website.api',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.google',
             type: 'file'
         },{
             name: 'website-sessions-mongo',
