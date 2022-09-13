@@ -19,7 +19,7 @@ const Website: Component = {
         },
         containers: [],
         gcp: {
-            apis: ['dns.googleapis.com']
+            apis: ['dns.googleapis.com','pubsub.googleapis.com','firestore.googleapis.com']
         }
     }
 }
