@@ -387,7 +387,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                     ],
                                     waitFors: ["Build 🐳"],
                                 },{
-                                    id: "Update tag",
+                                    id: "Update tag 🏷",
                                     name: `gcr.io/$PROJECT_ID/core-pipeline-runner:latest`,
                                     entrypoint: "sh",
                                     args: [
@@ -441,7 +441,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                     ],
                                     waitFors: ["Push [sha] 🚀"]
                                 },{
-                                    id: "Publish new tag available",
+                                    id: "Publish new tag available 📝",
                                     name: "gcr.io/cloud-builders/gcloud",
                                     args: [
                                         'pubsub',
@@ -451,7 +451,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         '--message',
                                         messageBody,
                                     ],
-                                    waitFors: ["Update tag"]
+                                    waitFors: ["Update tag 🏷"]
                                 }
                             ],
                             // images: [ciProject.projectId.apply(projectId => `gcr://${projectId}/`)],
