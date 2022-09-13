@@ -92,8 +92,8 @@ const Api: Container = {
             onePasswordPath: 'vaults/automation/items/tf.aa.website.api.stripe',
             type: 'environment'
         },{
-            name: 'main-key',
-            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.main',
+            name: 'mail-key',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.mail',
             type: 'environment'
         }]
     }
