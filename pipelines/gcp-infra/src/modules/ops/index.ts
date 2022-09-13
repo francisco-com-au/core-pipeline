@@ -276,7 +276,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                 steps: [
                                     {
                                         id: "Infra 🔧",
-                                        name: "pulumi/pulumi",
+                                        name: "gcr.io/$PROJECT_ID/core-pipeline-runner:latest",
                                         entrypoint: "/bin/sh",
                                         args: [
                                             "-c", `
