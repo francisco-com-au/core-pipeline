@@ -247,7 +247,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 // If this component has an infrastructure folder, create a trigger
                 const buildInfra = false;
                 if (buildInfra && component.spec.source.infraPath) {
-                    const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.infra.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
+                    const infraTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.infra.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
                             project: ciProject.projectId,
                             name: `component-infra-${app.spec.id}-${component.spec.id}-${env.name}`.substring(0, 63),
                             github: {
@@ -260,6 +260,9 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                             includedFiles: [`${component.spec.source.infraPath}/**`],
                             includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
                             build: {
+                                options: {
+                                    logging: 'CLOUD_LOGGING_ONLY'
+                                },
                                 steps: [
                                     {
                                         id: "Infra 🔧",
