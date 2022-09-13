@@ -191,13 +191,18 @@ Orgs.forEach(org => {
                 // Deployments
                 const containerName = `${component.spec.id}-${container.spec.id}`;
                 const image = container.spec.image || `gcr.io/${CONTAINER_REGISTRY_PROJECT}/${app.spec.id}/${component.spec.id}/main/${container.spec.id}:latest`
+                const pullSecrets = ['image-pull-secret'];
+                // if (!container.spec.image) {
+                //     pullSecrets.push('image-pull-secret');
+                // }
                 const deploy = deployment(
                     containerName, // name
                     app.spec.id, // namespace
                     app.spec.id, // app id
                     component.spec.id, // component id
                     image, // image
-                    container // container
+                    container, // container
+                    pullSecrets // pull secret
                 );
                 writeToFile(deploy, join(baseDir, `deploy-${containerName}.yaml`));
                 resources.push(`deploy-${containerName}.yaml`);

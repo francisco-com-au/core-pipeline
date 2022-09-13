@@ -7,6 +7,7 @@ const deployment = function(
     componentId: string,
     image: string,
     container: Container,
+    pullSecrets: string[],
     ): string {
 
     const plainEnv = container.spec.env?.filter(e => !e.secret && !e.configMap) || [];
@@ -81,6 +82,8 @@ spec:
         - name: ${s.name}
           secret:
             secretName: ${s.name}`).join('')}` : ''}
+      ${pullSecrets.length ? `imagePullSecrets:${pullSecrets.map(p => `
+        - name: ${p}`).join('')}` : ''}
 `
 }
 
