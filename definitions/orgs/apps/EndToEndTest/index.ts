@@ -54,8 +54,8 @@ const Application: App = {
                             ingressPath: '/'
                         }],
                         secrets: [{
-                            name: 'pull-key',
-                            onePasswordPath: 'vaults/automation/items/tf.ops.cicd.gcr.pull',
+                            name: 'demo',
+                            onePasswordPath: 'vaults/automation/items/tf.e2e.portal.demo',
                             type: 'file'
                         }]
                     }
