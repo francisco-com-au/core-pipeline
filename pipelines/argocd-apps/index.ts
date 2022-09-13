@@ -116,7 +116,7 @@ Orgs.forEach(org => {
                 const patches: string[] = [];
 
                 // Render applicationSet patch
-                const componentsPatch = argocdApplicationSetPatch(app.spec.id, APPS_REPO, 'main', environment.name);
+                const componentsPatch = argocdApplicationSetPatch(app.spec.id, APPS_REPO, process.env.PLATFORM_BRANCH || 'main', environment.name);
                 writeToFile(componentsPatch, join(patchesDir, 'components.yaml'));
                 patches.push('patches/components.yaml');
                 
