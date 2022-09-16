@@ -20,23 +20,23 @@ const Mongo: Container = {
         env: [
             {
                 name: "MONGO_INITDB_ROOT_USERNAME",
-                secret: "website-api-mongo-sessions",
+                secret: "website-mongo-sessions",
                 value: "username"
             },{
                 name: "MONGO_INITDB_ROOT_PASSWORD",
-                secret: "website-api-mongo-sessions",
+                secret: "website-mongo-sessions",
                 value: "password"
             },{
                 name: "MONGODB_USER",
-                secret: "website-api-mongo-sessions",
+                secret: "website-mongo-sessions",
                 value: "username"
             },{
                 name: "MONGODB_PASS",
-                secret: "website-api-mongo-sessions",
+                secret: "website-mongo-sessions",
                 value: "password"
             },{
                 name: "MONGO_INITDB_DATABASE",
-                secret: "website-api-mongo-sessions",
+                secret: "website-mongo-sessions",
                 value: "db"
             },
         ],
