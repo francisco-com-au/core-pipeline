@@ -45,8 +45,3 @@ const Api: Container = {
 }
 
 export { Api }
-
-
-
-FIRESTORE_PROJECT_ID
-GOOGLE_APPLICATION_CREDENTIALS
