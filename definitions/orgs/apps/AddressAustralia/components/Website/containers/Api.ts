@@ -34,47 +34,47 @@ const Api: Container = {
                 value: '27017'
             },{
                 name: "MONGO_COLLECTION",
-                secret: "website-mongo-sessions",
+                secret: "website-api-mongo-sessions",
                 value: "db"
             },{
                 name: "MONGO_USER_NAME",
-                secret: "website-mongo-sessions",
+                secret: "website-api-mongo-sessions",
                 value: "username"
             },{
                 name: "MONGO_PASSWORD",
-                secret: "website-mongo-sessions",
+                secret: "website-api-mongo-sessions",
                 value: "password"
             },{
                 name: "COOKIE_NAME",
-                secret: "website-mongo-sessions",
+                secret: "website-api-mongo-sessions",
                 value: "cookie_name"
             },{
                 name: "COOKIE_SECRET",
-                secret: "website-mongo-sessions",
+                secret: "website-api-mongo-sessions",
                 value: "cookie_secret"
             },{
                 name: "SENDGRID_API_KEY",
-                secret: "website-sendgrid-key",
+                secret: "website-api-sendgrid-key",
                 value: "key"
             },{
                 name: "STRIPE_SECRET_KEY",
-                secret: "website-stripe-key",
+                secret: "website-api-stripe-key",
                 value: "secret_key"
             },{
                 name: "STRIPE_PUBLISHABLE_KEY",
-                secret: "website-stripe-key",
+                secret: "website-api-stripe-key",
                 value: "publishable_key"
             },{
                 name: "STRIPE_WEBHOOK_SECRET",
-                secret: "website-stripe-key",
+                secret: "website-api-stripe-key",
                 value: "webhook_secret"
             },{
                 name: "MAIL_USERNAME",
-                secret: "website-mail-key",
+                secret: "website-api-mail-key",
                 value: "MAIL_USERNAME"
             },{
                 name: "MAIL_PASSWORD",
-                secret: "website-mail-key",
+                secret: "website-api-mail-key",
                 value: "MAIL_PASSWORD"
             }
         ],
