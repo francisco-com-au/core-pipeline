@@ -37,8 +37,10 @@ const Api: Container = {
             }
         ],
         secrets: [{
+            // Using the website's api key since Firestore is hosted in the website project and I ran out of quota
+            // to enable billing and create service accounts in the API project. But this is wrong!
             name: 'google',
-            onePasswordPath: 'vaults/automation/items/tf.aa.api.api.google',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.google', 
             type: 'file'
         }]
     }
