@@ -36,6 +36,7 @@ const Api: Container = {
                 value: "http"
             }, {
                 name: "API_TOKEN",
+                secret: "api-api-token",
                 value: "token"
             }
         ],
@@ -46,7 +47,7 @@ const Api: Container = {
             onePasswordPath: 'vaults/automation/items/tf.aa.website.api.google', 
             type: 'file'
         },{
-            name: 'api-token',
+            name: 'token',
             onePasswordPath: 'vaults/automation/items/tf.aa.api.token.dev',
             type: 'environment'
         }]
