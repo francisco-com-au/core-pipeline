@@ -225,13 +225,14 @@ Orgs.forEach(org => {
 
                 // Secrets
                 container.spec.secrets?.forEach(containerSecret => {
+                    const secretName = `${component.spec.id}-${container.spec.id}-${containerSecret.name}`
                     const secret = onePasswordSecret(
-                        containerSecret.name, // name
+                        secretName, // name
                         containerSecret.onePasswordPath, // path
                         app.spec.id, // namespace
                     )
-                    writeToFile(secret, join(baseDir, `secret-${containerSecret.name}.yaml`));
-                    resources.push(`secret-${containerSecret.name}.yaml`);
+                    writeToFile(secret, join(baseDir, `secret-${secretName}.yaml`));
+                    resources.push(`secret-${secretName}.yaml`);
                 });
             });
 

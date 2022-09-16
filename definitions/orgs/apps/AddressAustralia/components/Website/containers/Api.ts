@@ -34,23 +34,23 @@ const Api: Container = {
                 value: '27017'
             },{
                 name: "MONGO_COLLECTION",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "db"
             },{
                 name: "MONGO_USER_NAME",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "username"
             },{
                 name: "MONGO_PASSWORD",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "password"
             },{
                 name: "COOKIE_NAME",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "cookie_name"
             },{
                 name: "COOKIE_SECRET",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "cookie_secret"
             },{
                 name: "SENDGRID_API_KEY",

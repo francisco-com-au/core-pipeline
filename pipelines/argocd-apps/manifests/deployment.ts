@@ -81,7 +81,7 @@ spec:
       ${container.spec.secrets? `volumes:${container.spec.secrets?.map(s => `
         - name: ${s.name}
           secret:
-            secretName: ${s.name}`).join('')}` : ''}
+            secretName: ${componentId}-${container.spec.id}-${s.name}`).join('')}` : ''}
       ${pullSecrets.length ? `imagePullSecrets:${pullSecrets.map(p => `
         - name: ${p}`).join('')}` : ''}
 `
