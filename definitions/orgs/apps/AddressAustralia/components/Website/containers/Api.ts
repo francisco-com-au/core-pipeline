@@ -76,6 +76,10 @@ const Api: Container = {
                 name: "MAIL_PASSWORD",
                 secret: "website-api-mail-key",
                 value: "MAIL_PASSWORD"
+            }, {
+                name: "API_TOKEN",
+                secret: "website-api-token",
+                value: "token"
             }
         ],
         secrets: [{
@@ -93,6 +97,10 @@ const Api: Container = {
         },{
             name: 'mail-key',
             onePasswordPath: 'vaults/automation/items/tf.aa.website.api.mail',
+            type: 'environment'
+        },{
+            name: 'token',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.token.dev',
             type: 'environment'
         }]
     }
