@@ -34,6 +34,9 @@ const Api: Container = {
             },{
                 name: "SOLR_PROTOCOL",
                 value: "http"
+            }, {
+                name: "API_TOKEN",
+                value: "token"
             }
         ],
         secrets: [{
@@ -42,6 +45,10 @@ const Api: Container = {
             name: 'google',
             onePasswordPath: 'vaults/automation/items/tf.aa.website.api.google', 
             type: 'file'
+        },{
+            name: 'api-token',
+            onePasswordPath: 'vaults/automation/items/tf.aa.api.token.dev',
+            type: 'environment'
         }]
     }
 }
