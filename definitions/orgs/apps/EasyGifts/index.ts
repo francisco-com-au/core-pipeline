@@ -22,6 +22,11 @@ const EasyGifts: App = {
             type: 'dev',
             branch: 'develop'
         }],
+        gcp: {
+            apis: [
+                'firestore.googleapis.com'
+            ],
+        },
         components: [{
             apiVersion: "platform.io/v1alpha1",
             kind: "component",
