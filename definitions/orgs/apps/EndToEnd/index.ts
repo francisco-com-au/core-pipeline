@@ -14,6 +14,11 @@ const EndToEnd: App = {
         github: {
             organization: 'galarzafrancisco',
         },
+        gcp: {
+            apis: [
+                'firestore.googleapis.com',
+            ],
+        },
         environments: [{
             name: 'dev',
             type: 'dev',
