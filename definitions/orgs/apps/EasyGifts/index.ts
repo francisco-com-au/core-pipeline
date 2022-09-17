@@ -76,7 +76,23 @@ const EasyGifts: App = {
                                 name: 'nginx',
                                 port: 8080,
                                 ingressPath: '/api'
-                            }]
+                            }],
+                            env: [
+                                {
+                                    name: "PORT",
+                                    value: "8080"
+                                },{
+                                    name: "GOOGLE_APPLICATION_CREDENTIALS",
+                                    value: "/etc/secrets/google/key.json"
+                                }
+                            ],
+                            secrets: [
+                                {
+                                  name: 'google',
+                                  onePasswordPath: 'vaults/automation/items/tf.eg.website.api.google',
+                                  type: 'file'
+                                }
+                            ]
                         }
                     }
                 ]
