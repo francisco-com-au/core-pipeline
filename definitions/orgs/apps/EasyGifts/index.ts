@@ -70,8 +70,8 @@ const EasyGifts: App = {
                             id: 'api',
                             name: 'api',
                             description: "website's api",
-                            dockerFile: 'backend/Dockerfile',
-                            dockerContext: 'backend',
+                            dockerFile: 'api/Dockerfile',
+                            dockerContext: 'api',
                             expose: [{
                                 name: 'nginx',
                                 port: 8080,
