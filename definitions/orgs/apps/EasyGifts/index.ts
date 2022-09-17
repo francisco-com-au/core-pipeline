@@ -7,12 +7,12 @@ const EasyGifts: App = {
     apiVersion: "platform.io/v1alpha1",
     kind: "app",
     metadata: {
-        name: "end-to-end-test",
+        name: "easy-gifts",
     },
     spec: {
-        id: 'e2e',
-        name: 'End to end',
-        description: 'End to end testing, from definition to container built',
+        id: 'eg',
+        name: 'Easy Gifts',
+        description: 'Gift recommender',
         domainName: 'gifts.american-broomstick.com',
         github: {
             organization: 'galarzafrancisco',
@@ -31,7 +31,7 @@ const EasyGifts: App = {
             spec: {
                 id: 'website',
                 name: 'website',
-                description: 'Simple web app',
+                description: 'Front end',
                 source: {
                     repo: 'easy.gifts-front-end',
                     // infraPath: 'infra',
