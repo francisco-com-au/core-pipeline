@@ -127,9 +127,9 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 displayName: `CI/CD - ${app.spec.name} / ${env.name}`,
                 description: `Service account for automated CI/CD for App "${app.spec.name}" - Environment "${env.name}"`,
             });
-            // Give it access to write logs            
+            // Give it access to write logs and pull artifacts            
             [
-                "roles/logging.logWriter"
+                'roles/logging.logWriter', 'roles/storage.objectViewer'
             ].forEach(role => {
                 new gcp.projects.IAMMember(`${org.spec.id}.cicd.${app.spec.id}.${env.name}.${role}`, {
                     project: ciProject.projectId,
