@@ -34,7 +34,7 @@ const EasyGifts: App = {
                 description: 'Front end',
                 source: {
                     repo: 'easy.gifts-front-end',
-                    // infraPath: 'infra',
+                    infraPath: 'infra',
                 },
                 containers: [
                     {
