@@ -193,6 +193,9 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                             includedFiles: [`${component.spec.source.infraPath}/**`],
                             includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
                             build: {
+                                options: {
+                                    logging: 'CLOUD_LOGGING_ONLY'
+                                },
                                 steps: [
                                     {
                                         id: "Infra 🔧",
