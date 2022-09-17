@@ -73,7 +73,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     });
 
     // Enable Pubsub and Cloudbuild APIs
-    const apis = ['pubsub.googleapis.com', 'cloudbuild.googleapis.com', 'iam.googleapis.com'];
+    const apis = ['pubsub.googleapis.com', 'cloudbuild.googleapis.com', 'iam.googleapis.com', 'cloudresourcemanager.googleapis.com'];
     const enabledApis = new Map<string, gcp.projects.Service>();
     let e: gcp.projects.Service;
     apis.forEach(api => {
