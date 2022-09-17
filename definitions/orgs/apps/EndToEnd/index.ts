@@ -1,9 +1,6 @@
 import { App } from "../../../../types/App";
-import { Component } from "../../../../types/Component";
-import { Container } from "../../../../types/Container";
 
-
-const Application: App = {
+const EndToEnd: App = {
     apiVersion: "platform.io/v1alpha1",
     kind: "app",
     metadata: {
@@ -65,4 +62,4 @@ const Application: App = {
     }
 }
 
-export { Application }
+export { EndToEnd }

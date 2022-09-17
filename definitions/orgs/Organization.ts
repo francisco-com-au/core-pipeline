@@ -2,7 +2,8 @@ import { RoleBinding } from '../../types/GCP';
 import { Org } from '../../types/Org';
 // import { Ops } from './apps/Ops/Ops';
 import { AddressAustralia } from './apps/AddressAustralia/AddressAustralia';
-import { Application } from './apps/EndToEndTest';
+import { EndToEnd } from './apps/EndToEnd';
+import { EasyGifts } from './apps/EasyGifts';
 
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
@@ -69,9 +70,15 @@ const Organization: Org = {
 }
 // Ops.spec.organization = Organization.spec.id;
 // Organization.spec.apps?.push(Ops)
+
+// Mount Easy Gifts
+EasyGifts.spec.organization = Organization.spec.id;
+Organization.spec.apps?.push(EasyGifts)
+// Mount Address Auastralia
 AddressAustralia.spec.organization = Organization.spec.id;
 Organization.spec.apps?.push(AddressAustralia)
-Application.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Application)
+// Mount End To End
+EndToEnd.spec.organization = Organization.spec.id;
+Organization.spec.apps?.push(EndToEnd)
 
 export { Organization }
