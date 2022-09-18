@@ -547,24 +547,24 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
 
     // Create DNS entries. Crawl the org to see what domains we need.
     const domains: string[] = [];
-    if (org.spec.domain) {
-        domains.push(org.spec.domain);
-        const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${org.spec.domain}`.replace(/\./g, '-'), {
-            // name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
-            project: networkProject.projectId,
-            description: `Org level domain for organization ${org.spec.name}`,
-            dnsName: `${org.spec.domain}.`,
-            labels: {
-                'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
-                'app': 'ops',
-                'created_by': 'pulumi',
-                // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}` <- this triggers a recreate and it fails
-            },
-        },
-        {
-            dependsOn: dnsApi ? [dnsApi] : []
-        });
-    };
+    // if (org.spec.domain) {
+    //     domains.push(org.spec.domain);
+    //     const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${org.spec.domain}`.replace(/\./g, '-'), {
+    //         // name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
+    //         project: networkProject.projectId,
+    //         description: `Org level domain for organization ${org.spec.name}`,
+    //         dnsName: `${org.spec.domain}.`,
+    //         labels: {
+    //             'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
+    //             'app': 'ops',
+    //             'created_by': 'pulumi',
+    //             // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}` <- this triggers a recreate and it fails
+    //         },
+    //     },
+    //     {
+    //         dependsOn: dnsApi ? [dnsApi] : []
+    //     });
+    // };
     org.spec.apps?.forEach(app => {
         if (app.spec.domainName && !domains.includes(app.spec.domainName)) {
             domains.push(app.spec.domainName);
