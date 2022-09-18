@@ -553,7 +553,7 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
             // name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
             project: networkProject.projectId,
             description: `Org level domain for organization ${org.spec.name}`,
-            dnsName: `${org.spec.domain}`,
+            dnsName: `${org.spec.domain}.`,
             labels: {
                 'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
                 'app': 'ops',
