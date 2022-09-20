@@ -84,13 +84,21 @@ const EasyGifts: App = {
                                 },{
                                     name: "GOOGLE_APPLICATION_CREDENTIALS",
                                     value: "/etc/secrets/google/key.json"
+                                },{
+                                    name: "TOKEN_API",
+                                    secret: 'website-api-token', // component-container-secret
+                                    value: "token",
                                 }
                             ],
                             secrets: [
                                 {
-                                  name: 'google',
-                                  onePasswordPath: 'vaults/automation/items/tf.eg.website.api.google',
-                                  type: 'file'
+                                    name: 'google',
+                                    onePasswordPath: 'vaults/automation/items/tf.eg.website.api.google',
+                                    type: 'file'
+                                },{
+                                    name: 'token',
+                                    onePasswordPath: 'vaults/automation/items/tf.eg.website.api.token',
+                                    type: 'environment'
                                 }
                             ]
                         }
