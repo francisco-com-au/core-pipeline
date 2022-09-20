@@ -8,8 +8,10 @@ const deploymentPatch = function(
     ): string {
 
     return`---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+# apiVersion: apps/v1
+# kind: Deployment
 metadata:
   name: ${name}
   namespace: ${namespace}
