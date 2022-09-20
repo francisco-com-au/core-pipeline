@@ -85,7 +85,7 @@ const EasyGifts: App = {
                                     name: "GOOGLE_APPLICATION_CREDENTIALS",
                                     value: "/etc/secrets/google/key.json"
                                 },{
-                                    name: "TOKEN_API",
+                                    name: "API_TOKEN",
                                     secret: 'website-api-token', // component-container-secret
                                     value: "token",
                                 }
