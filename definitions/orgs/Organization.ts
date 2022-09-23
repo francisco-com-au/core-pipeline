@@ -4,6 +4,7 @@ import { Org } from '../../types/Org';
 import { AddressAustralia } from './apps/AddressAustralia/AddressAustralia';
 import { EndToEnd } from './apps/EndToEnd';
 import { EasyGifts } from './apps/EasyGifts';
+import { Stocks } from './apps/Stocks';
 
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
@@ -80,5 +81,8 @@ Organization.spec.apps?.push(AddressAustralia)
 // Mount End To End
 EndToEnd.spec.organization = Organization.spec.id;
 Organization.spec.apps?.push(EndToEnd)
+// Mount Stocks
+Stocks.spec.organization = Organization.spec.id;
+Organization.spec.apps?.push(Stocks)
 
 export { Organization }
