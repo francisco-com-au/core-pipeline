@@ -38,7 +38,7 @@ const Stocks: App = {
                 name: 'website',
                 description: 'Front end',
                 source: {
-                    repo: 'easy.gifts-front-end',
+                    repo: 'stocks',
                     infraPath: 'infra',
                 },
                 containers: [
