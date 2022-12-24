@@ -9,13 +9,12 @@ const Database: Container = {
     spec: {
         id: "database",
         name: "database",
-        description: "API",
-        dockerFile: "Dockerfile",
-        dockerContext: ".",
+        description: "Database to store all the tweets",
+        image: "mongo:3.6.23",
         expose: [
             {
                 name: "mongo",
-                port: 27017,
+                port: 27017
             }
         ],
         env: [
