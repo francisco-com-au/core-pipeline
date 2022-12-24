@@ -5,7 +5,7 @@ import { AddressAustralia } from './apps/AddressAustralia/AddressAustralia';
 import { EndToEnd } from './apps/EndToEnd';
 import { EasyGifts } from './apps/EasyGifts';
 import { Stocks } from './apps/Stocks';
-import { Twister } from './apps/Twister';
+import { Twister } from './apps/Twister/Twister'
 
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
