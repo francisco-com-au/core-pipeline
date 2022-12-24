@@ -13,7 +13,7 @@ const Api: Component = {
         name: "api",
         description: "Customer facing API to search.",
         source: {
-            repo: "api",
+            repo: "twister-api",
             infraPath: 'infra',
         },
         domainPrefix: "api",
