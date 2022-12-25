@@ -24,26 +24,36 @@ const Api: Container = {
                 name: "PORT",
                 value: "8080"
             },{
-                name: "MONGO_INITDB_ROOT_USERNAME",
-                secret: "api-database-mongo",
-                value: "username"
+                name: "MONGO_HOST",
+                value: "mongo"
             },{
-                name: "MONGO_INITDB_ROOT_PASSWORD",
-                secret: "api-database-mongo",
-                value: "password"
+                name: "MONGO_PORT",
+                value: "27017"
             },{
-                name: "MONGODB_USER",
-                secret: "api-database-mongo",
-                value: "username"
-            },{
-                name: "MONGODB_PASS",
-                secret: "api-database-mongo",
-                value: "password"
-            },{
-                name: "MONGO_INITDB_DATABASE",
-                secret: "api-database-mongo",
-                value: "db"
+                name: "MONGO_DB_NAME",
+                value: "twister"
             },
+            // },{
+            //     name: "MONGO_INITDB_ROOT_USERNAME",
+            //     secret: "api-database-mongo",
+            //     value: "username"
+            // },{
+            //     name: "MONGO_INITDB_ROOT_PASSWORD",
+            //     secret: "api-database-mongo",
+            //     value: "password"
+            // },{
+            //     name: "MONGODB_USER",
+            //     secret: "api-database-mongo",
+            //     value: "username"
+            // },{
+            //     name: "MONGODB_PASS",
+            //     secret: "api-database-mongo",
+            //     value: "password"
+            // },{
+            //     name: "MONGO_INITDB_DATABASE",
+            //     secret: "api-database-mongo",
+            //     value: "db"
+            // },
         ],
         secrets: []
     }
