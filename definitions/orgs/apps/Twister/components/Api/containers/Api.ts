@@ -25,7 +25,7 @@ const Api: Container = {
                 value: "8080"
             },{
                 name: "MONGO_HOST",
-                value: "mongo"
+                value: "api-database-mongo"
             },{
                 name: "MONGO_PORT",
                 value: "27017"
