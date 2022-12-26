@@ -19,7 +19,13 @@ interface Container extends KRM {
         */
         dockerFile?: string;
         dockerContext?: string;
-        
+
+        /* Defines endpoint to query */
+        readiness?: {
+            path: string,
+            port: number,
+            scheme: 'HTTP' | 'HTTPS',
+        };
 
         /* Ports to expose via services */
         expose?: ContainerPort[];

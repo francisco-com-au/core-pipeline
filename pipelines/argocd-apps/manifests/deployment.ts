@@ -64,7 +64,16 @@ spec:
               memory: "256Mi"
             limits:
               cpu: "250m"
-              memory: "256Mi"
+              memory: "256Mi"${container.spec.readiness? `
+          readinessProbe:
+            httpGet:
+              path: ${container.spec.readiness.path}
+              port: ${container.spec.readiness.port}
+              scheme: ${container.spec.readiness.scheme}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+            successThreshold: 1` : ''}
           envFrom:
             - configMapRef:
                 name: app-level-config

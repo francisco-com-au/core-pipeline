@@ -19,6 +19,11 @@ const Api: Container = {
                 ingressPath: "/",
             }
         ],
+        readiness: {
+            path: '/health',
+            port: 8080,
+            scheme: 'HTTP'
+        },
         env: [
             {
                 name: "PORT",
