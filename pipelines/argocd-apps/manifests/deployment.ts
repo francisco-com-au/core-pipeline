@@ -81,7 +81,7 @@ spec:
               scheme: ${container.spec.probe.scheme}
             initialDelaySeconds: 5
             periodSeconds: 5
-            failureThreshold: 12
+            failureThreshold: 30
             successThreshold: 1` : ''}
           envFrom:
             - configMapRef:
