@@ -64,16 +64,25 @@ spec:
               memory: "256Mi"
             limits:
               cpu: "250m"
-              memory: "256Mi"${container.spec.readiness? `
+              memory: "256Mi"${container.spec.probe? `
           readinessProbe:
             httpGet:
-              path: ${container.spec.readiness.path}
-              port: ${container.spec.readiness.port}
-              scheme: ${container.spec.readiness.scheme}
+              path: ${container.spec.probe.path}
+              port: ${container.spec.probe.port}
+              scheme: ${container.spec.probe.scheme}
             initialDelaySeconds: 5
             periodSeconds: 10
             failureThreshold: 30
-            successThreshold: 1` : ''}
+            successThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: ${container.spec.probe.path}
+              port: ${container.spec.probe.port}
+              scheme: ${container.spec.probe.scheme}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 12
+            successThreshold: 2` : ''}
           envFrom:
             - configMapRef:
                 name: app-level-config

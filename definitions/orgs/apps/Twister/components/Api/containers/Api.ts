@@ -19,7 +19,7 @@ const Api: Container = {
                 ingressPath: "/",
             }
         ],
-        readiness: {
+        probe: {
             path: '/health',
             port: 8080,
             scheme: 'HTTP'

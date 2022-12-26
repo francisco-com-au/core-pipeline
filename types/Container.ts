@@ -21,7 +21,7 @@ interface Container extends KRM {
         dockerContext?: string;
 
         /* Defines endpoint to query */
-        readiness?: {
+        probe?: {
             path: string,
             port: number,
             scheme: 'HTTP' | 'HTTPS',
