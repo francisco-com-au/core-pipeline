@@ -12,6 +12,7 @@ const Api: Container = {
         description: "API",
         dockerFile: "Dockerfile",
         dockerContext: ".",
+        replicas: 2,
         expose: [
             {
                 name: "api",

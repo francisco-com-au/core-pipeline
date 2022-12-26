@@ -31,7 +31,7 @@ spec:
       app: ${appId}
       component: ${componentId}
       container: ${container.spec.id}
-  replicas: 1
+  replicas: ${container.spec.replicas || 1}
   template:
     metadata:
       labels:

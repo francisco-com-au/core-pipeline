@@ -20,6 +20,9 @@ interface Container extends KRM {
         dockerFile?: string;
         dockerContext?: string;
 
+        /* Number of replicase to use. Defaults to 1 */
+        replicas?: number;
+
         /* Defines endpoint to query */
         probe?: {
             path: string,
