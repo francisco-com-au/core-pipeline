@@ -82,7 +82,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
             failureThreshold: 12
-            successThreshold: 2` : ''}
+            successThreshold: 1` : ''}
           envFrom:
             - configMapRef:
                 name: app-level-config
