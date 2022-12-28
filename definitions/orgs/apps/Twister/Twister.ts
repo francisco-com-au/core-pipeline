@@ -1,5 +1,6 @@
 import { App } from "../../../../types/App";
 import { Api } from "./components/Api/Api";
+import { Website } from "./components/Website/Website";
 
 const Twister: App = {
     apiVersion: "platform.io/v1alpha1",
@@ -34,8 +35,8 @@ const Twister: App = {
         components: []
     }
 }
-// Website.spec.app = Twister.spec.id;
-// Twister.spec.components?.push(Website);
+Website.spec.app = Twister.spec.id;
+Twister.spec.components?.push(Website);
 Api.spec.app = Twister.spec.id;
 Twister.spec.components?.push(Api);
 
