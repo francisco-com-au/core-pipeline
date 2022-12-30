@@ -20,6 +20,10 @@ const Twister: App = {
             name: "dev",
             type: "dev",
             branch: "develop",
+        },{
+            name: "beta",
+            type: "dev",
+            branch: "beta",
         }],
         gcp: {
             roleBindings: [
