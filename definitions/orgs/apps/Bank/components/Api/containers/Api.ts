@@ -30,17 +30,20 @@ const Api: Container = {
                 name: "PORT",
                 value: "8080"
             },{
-                name: "MONGO_HOST",
-                value: "api-database-mongo"
+                name: "PROJECT_ID",
+                value: "tf-aa-website-dev-338608"
             },{
-                name: "MONGO_PORT",
-                value: "27017"
-            },{
-                name: "MONGO_DB_NAME",
-                value: "twister"
+                name: "GOOGLE_APPLICATION_CREDENTIALS",
+                value: "/etc/secrets/google/key.json"
             },
         ],
-        secrets: []
+        secrets: [
+            {
+                name: "google",
+                onePasswordPath: 'vaults/automation/items/tf.bank.api.api.google',
+                type: 'file'
+            }
+        ]
     }
 }
 
