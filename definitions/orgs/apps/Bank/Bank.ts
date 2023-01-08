@@ -2,17 +2,17 @@ import { App } from "../../../../types/App";
 import { Api } from "./components/Api/Api";
 import { Website } from "./components/Website/Website";
 
-const Twister: App = {
+const Bank: App = {
     apiVersion: "platform.io/v1alpha1",
     kind: "app",
     metadata: {
-        name: "tw"
+        name: "bank"
     },
     spec: {
-        id: "tw",
-        name: "Twister",
-        description: "Mock replica of Twitter.",
-        domainName: `twister.american-broomstick.com`,
+        id: "bank",
+        name: "Bank",
+        description: "Bank ",
+        domainName: `bank.francisco.au`,
         github: {
             organization: "galarzafrancisco",
         },
@@ -22,11 +22,6 @@ const Twister: App = {
                 type: "dev",
                 branch: "develop",
             },
-            // {
-            //     name: "beta",
-            //     type: "dev",
-            //     branch: "beta",
-            // },
         ],
         gcp: {
             roleBindings: [
@@ -42,9 +37,9 @@ const Twister: App = {
         components: []
     }
 }
-Website.spec.app = Twister.spec.id;
-Twister.spec.components?.push(Website);
-Api.spec.app = Twister.spec.id;
-Twister.spec.components?.push(Api);
+Website.spec.app = Bank.spec.id;
+Bank.spec.components?.push(Website);
+Api.spec.app = Bank.spec.id;
+Bank.spec.components?.push(Api);
 
-export { Twister }
+export { Bank }
