@@ -31,7 +31,7 @@ const Api: Container = {
                 value: "8080"
             },{
                 name: "PROJECT_ID",
-                value: "tf-aa-website-dev-338608"
+                value: "tf-bank-api-dev-dd4999"
             },{
                 name: "GOOGLE_APPLICATION_CREDENTIALS",
                 value: "/etc/secrets/google/key.json"
