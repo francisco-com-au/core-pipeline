@@ -8,7 +8,7 @@ const AI: App = {
         name: "tw"
     },
     spec: {
-        id: "tw",
+        id: "ai",
         name: "AI",
         description: "Playground for AI stuff.",
         domainName: `ai.francisco.com.au`,
