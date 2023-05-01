@@ -25,7 +25,7 @@ const Api: Container = {
                 name: "PORT",
                 value: "8080"
             },{
-                name: "OPEN_AI_KEY",
+                name: "OPENAI_API_KEY",
                 secret: "website-api-openai",
                 value: "token"
             }
