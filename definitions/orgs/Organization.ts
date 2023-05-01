@@ -7,6 +7,7 @@ import { EasyGifts } from './apps/EasyGifts';
 import { Stocks } from './apps/Stocks';
 import { Twister } from './apps/Twister/Twister'
 import { Bank } from './apps/Bank/Bank'
+import { AI } from './apps/AI/AI';
 
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
@@ -72,25 +73,28 @@ const Organization: Org = {
     }
 }
 // Ops.spec.organization = Organization.spec.id;
-// Organization.spec.apps?.push(Ops)
+// Organization.spec.apps?.push(Ops);
 
 // Mount Easy Gifts
 EasyGifts.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(EasyGifts)
+Organization.spec.apps?.push(EasyGifts);
 // Mount Address Auastralia
 AddressAustralia.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(AddressAustralia)
+Organization.spec.apps?.push(AddressAustralia);
 // Mount End To End
 EndToEnd.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(EndToEnd)
+Organization.spec.apps?.push(EndToEnd);
 // Mount Stocks
 Stocks.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Stocks)
+Organization.spec.apps?.push(Stocks);
 // Mount Twister
 Twister.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Twister)
+Organization.spec.apps?.push(Twister);
 // Mount Bank
 Bank.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Bank)
+Organization.spec.apps?.push(Bank);
+// Mount AI
+AI.spec.organization = Organization.spec.id;
+Organization.spec.apps?.push(AI);
 
 export { Organization }
