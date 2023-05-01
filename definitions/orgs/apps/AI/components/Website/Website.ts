@@ -1,4 +1,5 @@
 import { Component } from "../../../../../../types/Component";
+import { Api } from "./containers/Api";
 import { Static } from "./containers/Static";
 
 const Website: Component = {
@@ -23,6 +24,8 @@ const Website: Component = {
 }
 
 Static.spec.component = Website.spec.id;
-Website.spec.containers?.push(Static)
+Website.spec.containers?.push(Static);
+Api.spec.component = Website.spec.id;
+Website.spec.containers?.push(Api);
 
 export { Website }

@@ -9,35 +9,30 @@ const Api: Container = {
     spec: {
         id: "api",
         name: "api",
-        description: "API",
-        dockerFile: "Dockerfile",
-        dockerContext: ".",
-        replicas: 2,
+        description: "API for the front end",
+        dockerFile: "backend/Dockerfile",
+        dockerContext: "backend",
+        // image: "aa/website-api:f9a4f15",
         expose: [
             {
                 name: "api",
                 port: 8080,
-                ingressPath: "/",
+                ingressPath: "/api",
             }
         ],
-        probe: {
-            path: '/health',
-            port: 8080,
-            scheme: 'HTTP'
-        },
         env: [
             {
                 name: "PORT",
                 value: "8080"
             },{
                 name: "OPEN_AI_KEY",
-                secret: "api-api-openai",
+                secret: "website-api-openai",
                 value: "token"
-            },
+            }
         ],
         secrets: [{
             name: 'openai',
-            onePasswordPath: 'vaults/automation/items/tf.ai.api.api.openai',
+            onePasswordPath: 'vaults/automation/items/tf.ai.website.api.openai',
             type: 'environment'
         }]
     }

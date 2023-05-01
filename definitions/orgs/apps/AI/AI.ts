@@ -1,5 +1,4 @@
 import { App } from "../../../../types/App";
-import { Api } from "./components/Api/Api";
 import { Website } from "./components/Website/Website";
 
 const AI: App = {
@@ -22,11 +21,6 @@ const AI: App = {
                 type: "dev",
                 branch: "develop",
             },
-            // {
-            //     name: "beta",
-            //     type: "dev",
-            //     branch: "beta",
-            // },
         ],
         gcp: {
             roleBindings: [
@@ -44,7 +38,5 @@ const AI: App = {
 }
 Website.spec.app = AI.spec.id;
 AI.spec.components?.push(Website);
-Api.spec.app = AI.spec.id;
-AI.spec.components?.push(Api);
 
 export { AI }
