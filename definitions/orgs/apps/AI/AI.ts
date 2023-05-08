@@ -11,7 +11,7 @@ const AI: App = {
         id: "ai",
         name: "AI",
         description: "Playground for AI stuff.",
-        domainName: `ai.francisco.com.au`,
+        domainName: `ai.home.galarza.business`,
         github: {
             organization: "galarzafrancisco",
         },
