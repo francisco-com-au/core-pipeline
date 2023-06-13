@@ -1,5 +1,6 @@
 import { App } from "../../../../types/App";
 import { Website } from "./components/Website/Website";
+import { Discovery } from "./components/Discovery/Discovery";
 
 const AI: App = {
     apiVersion: "platform.io/v1alpha1",
@@ -38,5 +39,7 @@ const AI: App = {
 }
 Website.spec.app = AI.spec.id;
 AI.spec.components?.push(Website);
+Discovery.spec.app = AI.spec.id;
+AI.spec.components?.push(Discovery);
 
 export { AI }
