@@ -51,9 +51,45 @@ makeFolder(imagesDir.split('/'))
 // k8s.apps.v1.Deployment
 process.exit
 
+// Make main readme
+/*
+application
+ ├── app level config
+ └── components
+      ├── component level config
+      └── containers
+           └─ container level config
+*/
+let mainReadme = '';
+Orgs.forEach(org => {
+    mainReadme += "```";
+    mainReadme += `${org.metadata.name}\n`
+    org.spec.apps?.forEach((app, appIdx) => {
+        let moreApps = appIdx + 1 != org.spec.apps?.length;
+        mainReadme += ` ${moreApps ? '├' : '└'}── ${app.spec.name}\n`;
+        app.spec.components?.forEach((component, componentIdx) => {
+            let moreComponents = componentIdx + 1 != app.spec.components?.length;
+            mainReadme += ` ${moreApps ? '│' : ' '}    ${moreComponents ? '├' : '└'}── ${component.spec.name}\n`;
+            component.spec.containers?.forEach((container, containerIdx) => {
+                let moreContainers = containerIdx + 1 != component.spec.containers?.length;
+                mainReadme += ` ${moreApps ? '│' : ' '}    ${moreComponents ? '│' : ' '}    ${moreContainers ? '├' : '└'}── ${container.spec.name}: ${container.spec.image || ''}\n`
+                container.spec.expose?.forEach((port, portIdx) => {
+                    let morePorts = portIdx + 1 != container.spec.expose?.length;
+                    mainReadme += ` ${moreApps ? '│' : ' '}    ${moreComponents ? '│' : ' '}    ${moreContainers ? '│' : ' '}    ${morePorts ? '├' : '└'}── ${port.name}: ${port.port} ${port.ingressPath || ''}\n`
+                })
+            })
+        })
+    });
+    mainReadme += "```";
+});
+
 // Loop orgs
 Orgs.forEach(org => {
     org.spec.apps?.forEach(app => {
+        let appReadme = `# ${app.spec.name}\n`;
+        appReadme += `${app.spec.description}\n\n`;
+        appReadme += `${app.spec.domainName}\n\n`;
+
         console.log(`Processing app ${app.spec.name}...`);
         
         // Render app level base
@@ -63,6 +99,24 @@ Orgs.forEach(org => {
         const imageAppDir = join(imagesDir, app.spec.id);
         makeFolder([imageAppDir]);
 
+        // Readme
+        appReadme += `# Components\n`
+        appReadme += "```\n";
+        appReadme += ` ${app.spec.name}\n`;
+        app.spec.components?.forEach((component, componentIdx) => {
+            let moreComponents = componentIdx + 1 != app.spec.components?.length;
+            appReadme += `  ${moreComponents ? '├' : '└'}── ${component.spec.name}\n`;
+            component.spec.containers?.forEach((container, containerIdx) => {
+                let moreContainers = containerIdx + 1 != component.spec.containers?.length;
+                appReadme += `  ${moreComponents ? '│' : ' '}    ${moreContainers ? '├' : '└'}── ${container.spec.name}: ${container.spec.image || ''}\n`
+                container.spec.expose?.forEach((port, portIdx) => {
+                    let morePorts = portIdx + 1 != container.spec.expose?.length;
+                    appReadme += `  ${moreComponents ? '│' : ' '}    ${moreContainers ? '│' : ' '}    ${morePorts ? '├' : '└'}── ${port.name}: ${port.port} ${port.ingressPath || ''}\n`
+                });
+            });
+        });
+        appReadme += "```\n";
+        
         // Base
         // ----------------------------------------
         const baseDir = join(appDir, 'base');
@@ -354,7 +408,11 @@ Orgs.forEach(org => {
                 });
             };
 
+            writeToFile(appReadme, join(appDir, 'README.md'));
             // Application
         });
     });
 });
+
+// Write readme to managed folder
+writeToFile(mainReadme, join(managedDir, 'README.md'));
