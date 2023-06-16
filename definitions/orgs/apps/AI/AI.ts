@@ -32,6 +32,7 @@ const AI: App = {
                 }
             ],
             apis: [
+                "aiplatform.googleapis.com"
             ],
         },
         components: []
