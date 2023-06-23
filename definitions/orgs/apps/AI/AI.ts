@@ -2,6 +2,7 @@ import { App } from "../../../../types/App";
 import { Website } from "./components/Website/Website";
 import { Discovery } from "./components/Discovery/Discovery";
 
+
 const AI: App = {
     apiVersion: "platform.io/v1alpha1",
     kind: "app",
@@ -12,7 +13,7 @@ const AI: App = {
         id: "ai",
         name: "AI",
         description: "Playground for AI stuff.",
-        domainName: `ai.home.galarza.business`,
+        domainName: `ai.galarza.business`,
         github: {
             organization: "galarzafrancisco",
         },
