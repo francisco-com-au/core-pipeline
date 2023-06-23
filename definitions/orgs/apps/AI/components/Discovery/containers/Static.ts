@@ -11,7 +11,7 @@ const Static: Container = {
         name: "static",
         description: "NGINX serving static content",
         dockerFile: "huberchat/frontend/Dockerfile",
-        dockerContext: "frontend",
+        dockerContext: "huberchat/frontend",
         replicas: 2,
         expose: [
             {

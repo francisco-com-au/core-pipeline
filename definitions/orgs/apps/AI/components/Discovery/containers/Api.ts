@@ -11,7 +11,7 @@ const Api: Container = {
         name: "api",
         description: "API for the front end",
         dockerFile: "huberchat/backend/Dockerfile",
-        dockerContext: "backend",
+        dockerContext: "huberchat/backend",
         // image: "aa/huberchat-api:f9a4f15",
         expose: [
             {
