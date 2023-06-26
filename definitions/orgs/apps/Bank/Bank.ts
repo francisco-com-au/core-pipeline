@@ -12,7 +12,8 @@ const Bank: App = {
         id: "bank",
         name: "Bank",
         description: "Bank ",
-        domainName: `bank.francisco.au`,
+        // domainName: `bank.francisco.au`,
+        domainName: `bank.american-broomstick.com`,
         github: {
             organization: "galarzafrancisco",
         },

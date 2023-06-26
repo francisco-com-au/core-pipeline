@@ -25,6 +25,15 @@ const Discovery: Component = {
                 'firestore.googleapis.com',
                 'aiplatform.googleapis.com',
                 'notebooks.googleapis.com'
+            ],
+            roleBindings: [
+                // {
+                //     member: 'nacho',
+                //     roles: [
+                //         'roles/editor'
+                //     ],
+                //     environment: 'dev'
+                // }
             ]
         }
     }

@@ -12,7 +12,8 @@ const AddressAustralia: App = {
         id: "aa",
         name: "Address Australia",
         description: "Address Australia.",
-        domainName: `addressaustralia.com.au`,
+        // domainName: `addressaustralia.com.au`,
+        domainName: `addressaustralia.american-broomstick.com`,
         github: {
             organization: "address-australia",
         },
