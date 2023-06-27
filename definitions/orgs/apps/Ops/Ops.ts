@@ -34,7 +34,5 @@ const Ops: App = {
 }
 CiCd.spec.app = Ops.spec.id;
 Ops.spec.components?.push(CiCd);
-// Echo.spec.app = Ops.spec.id;
-// Ops.spec.components?.push(Echo);
 
 export { Ops }

@@ -23,6 +23,6 @@ const Website: Component = {
 }
 
 Static.spec.component = Website.spec.id;
-Website.spec.containers?.push(Static)
+// Website.spec.containers?.push(Static)
 
 export { Website }

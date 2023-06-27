@@ -25,12 +25,12 @@ const Website: Component = {
 }
 
 Mongo.spec.component = Website.spec.id;
-Website.spec.containers?.push(Mongo)
+// Website.spec.containers?.push(Mongo)
 
 Static.spec.component = Website.spec.id;
-Website.spec.containers?.push(Static)
+// Website.spec.containers?.push(Static)
 
 Api.spec.component = Website.spec.id;
-Website.spec.containers?.push(Api)
+// Website.spec.containers?.push(Api)
 
 export { Website }

@@ -41,69 +41,69 @@ const EasyGifts: App = {
                     repo: 'easy.gifts-front-end',
                     infraPath: 'infra',
                 },
-                containers: [
-                    {
-                        apiVersion: "platform.io/v1alpha1",
-                        kind: "container",
-                        metadata: {
-                            name: "static"
-                        },
-                        spec: {
-                            id: 'static',
-                            name: 'static',
-                            description: "NGINX serving static content",
-                            dockerFile: 'frontend/Dockerfile',
-                            dockerContext: 'frontend',
-                            expose: [{
-                                name: 'nginx',
-                                port: 80,
-                                ingressPath: '/'
-                            }]
-                        }
-                    }, {
-                        apiVersion: "platform.io/v1alpha1",
-                        kind: "container",
-                        metadata: {
-                            name: "api"
-                        },
-                        spec: {
-                            id: 'api',
-                            name: 'api',
-                            description: "website's api",
-                            dockerFile: 'api/Dockerfile',
-                            dockerContext: 'api',
-                            expose: [{
-                                name: 'nginx',
-                                port: 8080,
-                                ingressPath: '/api'
-                            }],
-                            env: [
-                                {
-                                    name: "PORT",
-                                    value: "8080"
-                                },{
-                                    name: "GOOGLE_APPLICATION_CREDENTIALS",
-                                    value: "/etc/secrets/google/key.json"
-                                },{
-                                    name: "API_TOKEN",
-                                    secret: 'website-api-token', // component-container-secret
-                                    value: "token",
-                                }
-                            ],
-                            secrets: [
-                                {
-                                    name: 'google',
-                                    onePasswordPath: 'vaults/automation/items/tf.eg.website.api.google',
-                                    type: 'file'
-                                },{
-                                    name: 'token',
-                                    onePasswordPath: 'vaults/automation/items/tf.eg.website.api.token',
-                                    type: 'environment'
-                                }
-                            ]
-                        }
-                    }
-                ]
+                // containers: [
+                //     {
+                //         apiVersion: "platform.io/v1alpha1",
+                //         kind: "container",
+                //         metadata: {
+                //             name: "static"
+                //         },
+                //         spec: {
+                //             id: 'static',
+                //             name: 'static',
+                //             description: "NGINX serving static content",
+                //             dockerFile: 'frontend/Dockerfile',
+                //             dockerContext: 'frontend',
+                //             expose: [{
+                //                 name: 'nginx',
+                //                 port: 80,
+                //                 ingressPath: '/'
+                //             }]
+                //         }
+                //     }, {
+                //         apiVersion: "platform.io/v1alpha1",
+                //         kind: "container",
+                //         metadata: {
+                //             name: "api"
+                //         },
+                //         spec: {
+                //             id: 'api',
+                //             name: 'api',
+                //             description: "website's api",
+                //             dockerFile: 'api/Dockerfile',
+                //             dockerContext: 'api',
+                //             expose: [{
+                //                 name: 'nginx',
+                //                 port: 8080,
+                //                 ingressPath: '/api'
+                //             }],
+                //             env: [
+                //                 {
+                //                     name: "PORT",
+                //                     value: "8080"
+                //                 },{
+                //                     name: "GOOGLE_APPLICATION_CREDENTIALS",
+                //                     value: "/etc/secrets/google/key.json"
+                //                 },{
+                //                     name: "API_TOKEN",
+                //                     secret: 'website-api-token', // component-container-secret
+                //                     value: "token",
+                //                 }
+                //             ],
+                //             secrets: [
+                //                 {
+                //                     name: 'google',
+                //                     onePasswordPath: 'vaults/automation/items/tf.eg.website.api.google',
+                //                     type: 'file'
+                //                 },{
+                //                     name: 'token',
+                //                     onePasswordPath: 'vaults/automation/items/tf.eg.website.api.token',
+                //                     type: 'environment'
+                //                 }
+                //             ]
+                //         }
+                //     }
+                // ]
             }
         }]
     }

@@ -24,6 +24,6 @@ const Api: Component = {
 }
 
 ApiContainer.spec.component = Api.spec.id;
-Api.spec.containers?.push(ApiContainer)
+// Api.spec.containers?.push(ApiContainer)
 
 export { Api }
