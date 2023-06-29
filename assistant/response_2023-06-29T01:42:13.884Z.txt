@@ -1,0 +1,244 @@
+Question: I want to add a new microservice to the AI app. Should be built from the /chat directory in the repo and it should be exposed on chat.{domain}/api/v1. The container serves traffic on port 8081
+
+Answer:
+To add a new microservice to the AI app, you need to modify the configuration by adding a new component. Here's the updated configuration:
+
+```json
+[{
+  "apiVersion": "platform.io/v1alpha1",
+  "kind": "app",
+  "metadata": {
+    "name": "tw"
+  },
+  "spec": {
+    "id": "ai",
+    "name": "AI",
+    "description": "Playground for AI stuff.",
+    "domainName": "ai.galarza.business",
+    "github": {
+      "organization": "galarzafrancisco"
+    },
+    "environments": [
+      {
+        "name": "dev",
+        "type": "dev",
+        "branch": "develop"
+      }
+    ],
+    "gcp": {
+      "roleBindings": [
+        {
+          "member": "",
+          "roles": [],
+          "environment": "dev"
+        }
+      ],
+      "apis": [
+        "aiplatform.googleapis.com",
+        "notebooks.googleapis.com"
+      ]
+    },
+    "components": [
+      {
+        "apiVersion": "platform.io/v1alpha1",
+        "kind": "component",
+        "metadata": {
+          "name": "website"
+        },
+        "spec": {
+          "id": "website",
+          "name": "website",
+          "description": "Customer facing Web app.",
+          "source": {
+            "repo": "ai-website",
+            "infraPath": "infra"
+          },
+          "containers": [
+            {
+              "apiVersion": "platform.io/v1alpha1",
+              "kind": "container",
+              "metadata": {
+                "name": "static"
+              },
+              "spec": {
+                "id": "static",
+                "name": "static",
+                "description": "NGINX serving static content",
+                "dockerFile": "frontend/Dockerfile",
+                "dockerContext": "frontend",
+                "replicas": 2,
+                "expose": [
+                  {
+                    "name": "webserver",
+                    "port": 80,
+                    "ingressPath": "/"
+                  }
+                ],
+                "component": "website"
+              }
+            },
+            {
+              "apiVersion": "platform.io/v1alpha1",
+              "kind": "container",
+              "metadata": {
+                "name": "api"
+              },
+              "spec": {
+                "id": "api",
+                "name": "api",
+                "description": "API for the front end",
+                "dockerFile": "backend/Dockerfile",
+                "dockerContext": "backend",
+                "expose": [
+                  {
+                    "name": "api",
+                    "port": 8080,
+                    "ingressPath": "/api/v1"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "PORT",
+                    "value": "8080"
+                  },
+                  {
+                    "name": "OPENAI_API_KEY",
+                    "secret": "website-api-openai",
+                    "value": "token"
+                  }
+                ],
+                "secrets": [
+                  {
+                    "name": "openai",
+                    "onePasswordPath": "vaults/automation/items/tf.ai.website.api.openai",
+                    "type": "environment"
+                  }
+                ],
+                "component": "website"
+              }
+            },
+            {
+              "apiVersion": "platform.io/v1alpha1",
+              "kind": "container",
+              "metadata": {
+                "name": "chat"
+              },
+              "spec": {
+                "id": "chat",
+                "name": "chat",
+                "description": "Microservice for chat functionality",
+                "dockerFile": "chat/Dockerfile",
+                "dockerContext": "chat",
+                "expose": [
+                  {
+                    "name": "chat",
+                    "port": 8081,
+                    "ingressPath": "/api/v1"
+                  }
+                ],
+                "component": "website"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "platform.io/v1alpha1",
+        "kind": "component",
+        "metadata": {
+          "name": "discovery"
+        },
+        "spec": {
+          "id": "discovery",
+          "name": "discovery",
+          "domainPrefix": "huberchat",
+          "description": "Used to play with AI services",
+          "source": {
+            "repo": "ai-discovery",
+            "infraPath": "infra"
+          },
+          "containers": [
+            {
+              "apiVersion": "platform.io/v1alpha1",
+              "kind": "container",
+              "metadata": {
+                "name": "static"
+              },
+              "spec": {
+                "id": "static",
+                "name": "static",
+                "description": "NGINX serving static content",
+                "dockerFile": "huberchat/frontend/Dockerfile",
+                "dockerContext": "huberchat/frontend",
+                "replicas": 2,
+                "expose": [
+                  {
+                    "name": "webserver",
+                    "port": 80,
+                    "ingressPath": "/"
+                  }
+                ],
+                "component": "discovery"
+              }
+            },
+            {
+              "apiVersion": "platform.io/v1alpha1",
+              "kind": "container",
+              "metadata": {
+                "name": "api"
+              },
+              "spec": {
+                "id": "api",
+                "name": "api",
+                "description": "API for the front end",
+                "dockerFile": "huberchat/backend/Dockerfile",
+                "dockerContext": "huberchat/backend",
+                "expose": [
+                  {
+                    "name": "api",
+                    "port": 8080,
+                    "ingressPath": "/api/v1"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "PORT",
+                    "value": "8080"
+                  },
+                  {
+                    "name": "OPENAI_API_KEY",
+                    "secret": "discovery-api-openai",
+                    "value": "token"
+                  }
+                ],
+                "secrets": [
+                  {
+                    "name": "openai",
+                    "onePasswordPath": "vaults/automation/items/tf.ai.discovery.api.openai",
+                    "type": "environment"
+                  }
+                ],
+                "component": "discovery"
+              }
+            }
+          ],
+          "gcp": {
+            "apis": [
+              "dns.googleapis.com",
+              "pubsub.googleapis.com",
+              "firestore.googleapis.com",
+              "aiplatform.googleapis.com",
+              "notebooks.googleapis.com"
+            ],
+            "roleBindings": []
+          },
+          "app": "ai"
+        }
+      }
+    ],
+    "organization": "undefined"
+  }
+}]
+```
+
+This configuration adds a new container named "chat" to the "website" component in the "AI" app. The container is built from the `/chat` directory in the repository and is exposed on `chat.{domain}/api/v1` with traffic served on port 8081.

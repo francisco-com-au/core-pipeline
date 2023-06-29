@@ -1,0 +1,14 @@
+Question: what is running in the AI app?
+
+Answer:
+The AI app consists of the following components:
+
+1. Website: This is the customer-facing web app. It serves static content using NGINX and has 2 replicas. It is sourced from the "ai-website" repository and the infrastructure configuration is located in the "infra" folder.
+
+2. API: This component provides the API for the front end of the AI app. It is responsible for handling requests from the website. It is sourced from the "ai-website" repository and the infrastructure configuration is located in the "infra" folder. The API is built using a Dockerfile located in the "backend" folder. It exposes the API on port 8080 and has an ingress path of "/api". It requires the "OPENAI_API_KEY" environment variable, which is stored as a secret named "openai" in the OnePassword vault.
+
+3. Discovery: This component is used to play with AI services. It serves static content using NGINX and has 2 replicas. It is sourced from the "ai-discovery" repository and the infrastructure configuration is located in the "infra" folder.
+
+The AI app utilizes various Google Cloud APIs, including "dns.googleapis.com", "pubsub.googleapis.com", "firestore.googleapis.com", "aiplatform.googleapis.com", and "notebooks.googleapis.com". It also has role bindings defined for accessing these APIs.
+
+Please let me know if you need more information.
