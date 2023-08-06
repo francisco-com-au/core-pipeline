@@ -1,5 +1,4 @@
 import { App } from "../../../../types/App";
-import { Api } from "./components/Api/Api";
 import { Website } from "./components/Website/Website";
 
 const LeanmoteAI: App = {
@@ -39,7 +38,5 @@ const LeanmoteAI: App = {
 }
 Website.spec.app = LeanmoteAI.spec.id;
 LeanmoteAI.spec.components?.push(Website);
-Api.spec.app = LeanmoteAI.spec.id;
-LeanmoteAI.spec.components?.push(Api);
 
 export { LeanmoteAI }
