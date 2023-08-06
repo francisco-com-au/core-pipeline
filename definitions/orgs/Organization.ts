@@ -8,6 +8,7 @@ import { Stocks } from './apps/Stocks';
 import { Twister } from './apps/Twister/Twister'
 import { Bank } from './apps/Bank/Bank'
 import { AI } from './apps/AI/AI';
+import { LeanmoteAI } from './apps/LeanmoteAI/LeanmoteAI';
 
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
@@ -96,5 +97,8 @@ Organization.spec.apps?.push(Bank);
 // Mount AI
 AI.spec.organization = Organization.spec.id;
 Organization.spec.apps?.push(AI);
+// Mount LeanmoteAI
+LeanmoteAI.spec.organization = Organization.spec.id;
+Organization.spec.apps?.push(LeanmoteAI);
 
 export { Organization }
