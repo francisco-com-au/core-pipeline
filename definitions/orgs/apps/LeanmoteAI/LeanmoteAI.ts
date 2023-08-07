@@ -11,7 +11,7 @@ const LeanmoteAI: App = {
         id: "lm",
         name: "Leanmote AI",
         description: "Leanmote AI",
-        domainName: `leanmote.american-broomstick.com`,
+        domainName: `leanmote.galarza.business`,
         github: {
             organization: "leanmote-ai",
         },
