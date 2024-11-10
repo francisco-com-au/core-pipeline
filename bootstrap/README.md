@@ -31,7 +31,7 @@ By the end of this guide you will be able to commit code to a repo and have GCP 
     - Follow the prompts
     - Use TXT verification
     - Copy the token provided
-    - Go to the DNS settings of [your domain](https://domains.google.com/registrar/american-broomstick.com/dns)
+    - Go to the DNS settings of [your domain](https://account.squarespace.com/domains/managed/american-broomstick.com/dns/dns-settings)
     - Add a custom record @ TXT with the token provided(looks something like `google-site-verification=8kgjahs_g4kdsla_s_djf6ad2f`)
     - Verify domain (this may take a few minutes)
 - Create a new user with your name. This will be your primary user with less permissions to avoid mistakes `francisco@american-broomstick.com`
