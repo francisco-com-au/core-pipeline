@@ -26,16 +26,16 @@ By the end of this guide you will be able to commit code to a repo and have GCP 
     - Sign up for Cloud Identity
     - Follow the prompts
     - Provide a domain name that you own
-    - Create a user called `gcp-admin@francisco.com.au`
+    - Create a user called `gcp-admin@american-broomstick.com`
 - Verify domain
     - Follow the prompts
     - Use TXT verification
     - Copy the token provided
-    - Go to the DNS settings of [your domain](https://domains.google.com/registrar/francisco.com.au/dns)
+    - Go to the DNS settings of [your domain](https://domains.google.com/registrar/american-broomstick.com/dns)
     - Add a custom record @ TXT with the token provided(looks something like `google-site-verification=8kgjahs_g4kdsla_s_djf6ad2f`)
     - Verify domain (this may take a few minutes)
-- Create a new user with your name. This will be your primary user with less permissions to avoid mistakes `francisco@francisco.com.au`
-- Sign in with your new admin user (`gcp-admin@francisco.com.au`) and accept the free $300 because why not?
+- Create a new user with your name. This will be your primary user with less permissions to avoid mistakes `francisco@american-broomstick.com`
+- Sign in with your new admin user (`gcp-admin@american-broomstick.com`) and accept the free $300 because why not?
 - Create a billing account
 ### 1.3. Config gcloud CLI and create root project
 - install gcloud ([instructions](https://cloud.google.com/sdk/docs/install))
@@ -43,7 +43,7 @@ By the end of this guide you will be able to commit code to a repo and have GCP 
 - [2] Create a new configuration
 - Name it `fran-gcp-admin`
 - Select log in with a new account
-- Log in with the `gcp-admin@francisco.com.au` created in step 2
+- Log in with the `gcp-admin@american-broomstick.com` created in step 2
 - Create a new project
 - Name it `gcp-fran-root`
 
@@ -68,7 +68,7 @@ This is a very sensitive project and only members of the `gcp-organization-admin
 ### 2.1. Set the following environment variables
 | variable              | description |
 |-----------------------|-------------|
-| org_domain            | Domain of your organization. This is usually a DNS name you own. Example: `francisco.com.au` |
+| org_domain            | Domain of your organization. This is usually a DNS name you own. Example: `american-broomstick.com` |
 | org_abbreviation      | A short abbreviation to be used as part of all the project IDs you create. Keeps names short. Example: `fran` |
 | org_id                | The ID of the organization you created on step 1. Example: `123456789012` |
 | billing_id            | The ID of the billing account you created on step 1.2. Example: `012ABC-DE3456-7890FA` |
@@ -83,7 +83,7 @@ This is a very sensitive project and only members of the `gcp-organization-admin
     
 ```bash
 # Admin stuff
-export org_domain='francisco.com.au'
+export org_domain='american-broomstick.com'
 export org_abbreviation='fran'
 export org_id='123456789012'
 export billing_id='012ABC-DE3456-7890FA'
@@ -130,7 +130,7 @@ In this part you will configure a pipeline to automatically provision GCP resour
 ### 3.2 Connect to GitHub
 - Login to GCP as admin
     - Open the [GCP console](https://console.cloud.google.com)
-    - login with the admin user creted in 1.2 (`gcp-admin@francisco.com.au`)
+    - login with the admin user creted in 1.2 (`gcp-admin@american-broomstick.com`)
     - select the admin project created in 1.3 (`gcp-fran-root`)
 - Connect this GitHub repo
     - go to the [Cloud Build](https://console.cloud.google.com/cloud-build) section
