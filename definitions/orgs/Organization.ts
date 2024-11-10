@@ -98,9 +98,6 @@ Organization.spec.apps?.push(Bank);
 // Mount AI
 AI.spec.organization = Organization.spec.id;
 Organization.spec.apps?.push(AI);
-// Mount LeanmoteAI
-LeanmoteAI.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(LeanmoteAI);
 // Mount store
 Store.spec.organization = Organization.spec.id;
 Organization.spec.apps?.push(Store);

@@ -33,7 +33,7 @@ const AddressAustralia: App = {
             apis: [
             ],
         },
-        components: []
+        components: [Api, Website]
     }
 }
 Website.spec.app = AddressAustralia.spec.id;
