@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source env/test-ab.env
+source env/ab.env
 
 # First sign in to 1password
 eval $(op signin)
@@ -110,6 +110,19 @@ gcloud identity groups memberships add \
     --member-email="$user_name@$org_domain"
 
 
+echo "
+##############################################################################
+#
+# Grant groups access to resources
+#
+##############################################################################
+"
+# gcp-organization-admins
+gcloud organizations add-iam-policy-binding $org_id \
+    --member=group:gcp-organization-admins@$org_domain \
+    --role=roles/orgpolicy.policyAdmin
+
+
 
 echo "
 ##############################################################################
@@ -118,6 +131,12 @@ echo "
 #
 ##############################################################################
 "
+
+# Allow creation of service accounts
+gcloud resource-manager org-policies disable-enforce \
+    constraints/iam.disableServiceAccountKeyCreation \
+    --organization=$org_id
+
 
 # Create service account
 gcloud iam service-accounts create $core_pipeline_sa_name \
