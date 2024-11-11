@@ -1,7 +1,5 @@
 import { Component } from "../../../../../../types/Component";
-import { Mongo } from "./containers/Mongo";
 import { Static } from "./containers/Static";
-import { Api } from "./containers/Api";
 
 const Website: Component = {
     apiVersion: "platform.io/v1alpha1",
@@ -12,9 +10,9 @@ const Website: Component = {
     spec: {
         id: "website",
         name: "website",
-        description: "Front end stuff.",
+        description: "Customer facing Web app.",
         source: {
-            repo: "website",
+            repo: "twister-website",
             infraPath: 'infra',
         },
         containers: [],
@@ -24,13 +22,7 @@ const Website: Component = {
     }
 }
 
-Mongo.spec.component = Website.spec.id;
-// Website.spec.containers?.push(Mongo)
-
 Static.spec.component = Website.spec.id;
-// Website.spec.containers?.push(Static)
-
-Api.spec.component = Website.spec.id;
-// Website.spec.containers?.push(Api)
+Website.spec.containers?.push(Static)
 
 export { Website }

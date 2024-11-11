@@ -20,6 +20,7 @@ import { deployment } from "./manifests/deployment";
 import { ingressPatch } from "./manifests/ingressPatch";
 import { deploymentPatch } from "./manifests/deploymentPatch";
 import { configMap } from "./manifests/configMap";
+import { onePasswordSecret } from "./manifests/onePasswordSecret";
 
 
 const APPS_REPO = process.env.APPS_REPO || "";
@@ -50,9 +51,45 @@ makeFolder(imagesDir.split('/'))
 // k8s.apps.v1.Deployment
 process.exit
 
+// Make main readme
+/*
+application
+ ├── app level config
+ └── components
+      ├── component level config
+      └── containers
+           └─ container level config
+*/
+let mainReadme = '';
+Orgs.forEach(org => {
+    mainReadme += "```";
+    mainReadme += `${org.metadata.name}\n`
+    org.spec.apps?.forEach((app, appIdx) => {
+        let moreApps = appIdx + 1 != org.spec.apps?.length;
+        mainReadme += ` ${moreApps ? '├' : '└'}── ${app.spec.name}\n`;
+        app.spec.components?.forEach((component, componentIdx) => {
+            let moreComponents = componentIdx + 1 != app.spec.components?.length;
+            mainReadme += ` ${moreApps ? '│' : ' '}    ${moreComponents ? '├' : '└'}── ${component.spec.name}\n`;
+            component.spec.containers?.forEach((container, containerIdx) => {
+                let moreContainers = containerIdx + 1 != component.spec.containers?.length;
+                mainReadme += ` ${moreApps ? '│' : ' '}    ${moreComponents ? '│' : ' '}    ${moreContainers ? '├' : '└'}── ${container.spec.name}: ${container.spec.image || ''}\n`
+                container.spec.expose?.forEach((port, portIdx) => {
+                    let morePorts = portIdx + 1 != container.spec.expose?.length;
+                    mainReadme += ` ${moreApps ? '│' : ' '}    ${moreComponents ? '│' : ' '}    ${moreContainers ? '│' : ' '}    ${morePorts ? '├' : '└'}── ${port.name}: ${port.port} ${port.ingressPath || ''}\n`
+                })
+            })
+        })
+    });
+    mainReadme += "```";
+});
+
 // Loop orgs
 Orgs.forEach(org => {
     org.spec.apps?.forEach(app => {
+        let appReadme = `# ${app.spec.name}\n`;
+        appReadme += `${app.spec.description}\n\n`;
+        appReadme += `${app.spec.domainName}\n\n`;
+
         console.log(`Processing app ${app.spec.name}...`);
         
         // Render app level base
@@ -62,6 +99,24 @@ Orgs.forEach(org => {
         const imageAppDir = join(imagesDir, app.spec.id);
         makeFolder([imageAppDir]);
 
+        // Readme
+        appReadme += `# Components\n`
+        appReadme += "```\n";
+        appReadme += ` ${app.spec.name}\n`;
+        app.spec.components?.forEach((component, componentIdx) => {
+            let moreComponents = componentIdx + 1 != app.spec.components?.length;
+            appReadme += `  ${moreComponents ? '├' : '└'}── ${component.spec.name}\n`;
+            component.spec.containers?.forEach((container, containerIdx) => {
+                let moreContainers = containerIdx + 1 != component.spec.containers?.length;
+                appReadme += `  ${moreComponents ? '│' : ' '}    ${moreContainers ? '├' : '└'}── ${container.spec.name}: ${container.spec.image || ''}\n`
+                container.spec.expose?.forEach((port, portIdx) => {
+                    let morePorts = portIdx + 1 != container.spec.expose?.length;
+                    appReadme += `  ${moreComponents ? '│' : ' '}    ${moreContainers ? '│' : ' '}    ${morePorts ? '├' : '└'}── ${port.name}: ${port.port} ${port.ingressPath || ''}\n`
+                });
+            });
+        });
+        appReadme += "```\n";
+        
         // Base
         // ----------------------------------------
         const baseDir = join(appDir, 'base');
@@ -115,7 +170,7 @@ Orgs.forEach(org => {
                 const patches: string[] = [];
 
                 // Render applicationSet patch
-                const componentsPatch = argocdApplicationSetPatch(app.spec.id, APPS_REPO, 'main', environment.name);
+                const componentsPatch = argocdApplicationSetPatch(app.spec.id, APPS_REPO, process.env.PLATFORM_BRANCH || 'main', environment.name);
                 writeToFile(componentsPatch, join(patchesDir, 'components.yaml'));
                 patches.push('patches/components.yaml');
                 
@@ -190,13 +245,18 @@ Orgs.forEach(org => {
                 // Deployments
                 const containerName = `${component.spec.id}-${container.spec.id}`;
                 const image = container.spec.image || `gcr.io/${CONTAINER_REGISTRY_PROJECT}/${app.spec.id}/${component.spec.id}/main/${container.spec.id}:latest`
+                const pullSecrets = ['image-pull-secret'];
+                // if (!container.spec.image) {
+                //     pullSecrets.push('image-pull-secret');
+                // }
                 const deploy = deployment(
                     containerName, // name
                     app.spec.id, // namespace
                     app.spec.id, // app id
                     component.spec.id, // component id
                     image, // image
-                    container // container
+                    container, // container
+                    pullSecrets // pull secret
                 );
                 writeToFile(deploy, join(baseDir, `deploy-${containerName}.yaml`));
                 resources.push(`deploy-${containerName}.yaml`);
@@ -213,10 +273,20 @@ Orgs.forEach(org => {
                         component.spec.id, // component id
                         container.spec.id // container id
                     )
-                    // Service
                     writeToFile(svc, join(baseDir, `svc-${containerPortName}.yaml`));
                     resources.push(`svc-${containerPortName}.yaml`);
+                });
 
+                // Secrets
+                container.spec.secrets?.forEach(containerSecret => {
+                    const secretName = `${component.spec.id}-${container.spec.id}-${containerSecret.name}`
+                    const secret = onePasswordSecret(
+                        secretName, // name
+                        containerSecret.onePasswordPath, // path
+                        app.spec.id, // namespace
+                    )
+                    writeToFile(secret, join(baseDir, `secret-${secretName}.yaml`));
+                    resources.push(`secret-${secretName}.yaml`);
                 });
             });
 
@@ -338,7 +408,11 @@ Orgs.forEach(org => {
                 });
             };
 
+            writeToFile(appReadme, join(appDir, 'README.md'));
             // Application
         });
     });
 });
+
+// Write readme to managed folder
+writeToFile(mainReadme, join(managedDir, 'README.md'));

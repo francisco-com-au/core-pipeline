@@ -1,21 +1,23 @@
 import { App } from "../../../../types/App";
-import { Component } from "../../../../types/Component";
-import { Container } from "../../../../types/Container";
 
-
-const Application: App = {
+const Store: App = {
     apiVersion: "platform.io/v1alpha1",
     kind: "app",
     metadata: {
-        name: "end-to-end-test",
+        name: "store",
     },
     spec: {
-        id: 'e2e',
-        name: 'End to end',
-        description: 'End to end testing, from definition to container built',
+        id: 'store',
+        name: 'store',
+        description: 'Store app to handle inventory, order and sell stuff',
         domainName: 'american-broomstick.com',
         github: {
             organization: 'galarzafrancisco',
+        },
+        gcp: {
+            apis: [
+                'firestore.googleapis.com',
+            ],
         },
         environments: [{
             name: 'dev',
@@ -33,7 +35,7 @@ const Application: App = {
                 name: 'portal',
                 description: 'Simple web app',
                 source: {
-                    repo: 'end-to-end-portal',
+                    repo: 'store-portal',
                     infraPath: 'infra',
                 },
                 containers: [{
@@ -52,6 +54,11 @@ const Application: App = {
                             name: 'webserver',
                             port: 8080,
                             ingressPath: '/'
+                        }],
+                        secrets: [{
+                            name: 'demo',
+                            onePasswordPath: 'vaults/automation/items/tf.store.portal.demo',
+                            type: 'file'
                         }]
                     }
                 }]
@@ -60,4 +67,4 @@ const Application: App = {
     }
 }
 
-export { Application }
+export { Store }

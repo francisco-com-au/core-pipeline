@@ -24,57 +24,85 @@ const Api: Container = {
                 name: "PORT",
                 value: "8080"
             },{
+                name: "PROJECT_ID",
+                value: "tf-aa-website-dev-338608"
+            },{
                 name: "GOOGLE_APPLICATION_CREDENTIALS",
-                value: "/var/secrets/google/key.json"
+                value: "/etc/secrets/google/key.json"
             },{
                 name: 'MONGO_PORT',
                 value: '27017'
             },{
                 name: "MONGO_COLLECTION",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "db"
             },{
                 name: "MONGO_USER_NAME",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "username"
             },{
                 name: "MONGO_PASSWORD",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "password"
             },{
                 name: "COOKIE_NAME",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "cookie_name"
             },{
                 name: "COOKIE_SECRET",
-                secret: "website-sessions-mongo",
+                secret: "website-mongo-sessions",
                 value: "cookie_secret"
             },{
                 name: "SENDGRID_API_KEY",
-                secret: "sendgrid-key",
+                secret: "website-api-sendgrid-key",
                 value: "key"
             },{
                 name: "STRIPE_SECRET_KEY",
-                secret: "stripe-key",
+                secret: "website-api-stripe-key",
                 value: "secret_key"
             },{
                 name: "STRIPE_PUBLISHABLE_KEY",
-                secret: "stripe-key",
+                secret: "website-api-stripe-key",
                 value: "publishable_key"
             },{
                 name: "STRIPE_WEBHOOK_SECRET",
-                secret: "stripe-key",
+                secret: "website-api-stripe-key",
                 value: "webhook_secret"
             },{
                 name: "MAIL_USERNAME",
-                secret: "mail-key",
+                secret: "website-api-mail-key",
                 value: "MAIL_USERNAME"
             },{
                 name: "MAIL_PASSWORD",
-                secret: "mail-key",
+                secret: "website-api-mail-key",
                 value: "MAIL_PASSWORD"
+            }, {
+                name: "API_TOKEN",
+                secret: "website-api-token",
+                value: "token"
             }
-        ]
+        ],
+        secrets: [{
+            name: 'google',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.google',
+            type: 'file'
+        },{
+            name: 'sendgrid-key',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.sendgrid',
+            type: 'environment'
+        },{
+            name: 'stripe-key',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.stripe',
+            type: 'environment'
+        },{
+            name: 'mail-key',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.mail',
+            type: 'environment'
+        },{
+            name: 'token',
+            onePasswordPath: 'vaults/automation/items/tf.aa.website.api.token.dev',
+            type: 'environment'
+        }]
     }
 }
 

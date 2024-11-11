@@ -16,7 +16,7 @@ rm -rf platform-apps
 # Clone repo
 gh repo clone $APPS_REPO
 cd platform-apps
-git checkout main
+git checkout $PLATFORM_BRANCH # test org uses develop branch. Production org uses main branch.
 git checkout -b $BRANCH
 cd ..
 
@@ -35,7 +35,7 @@ function has_changes () {
     git push --set-upstream origin $BRANCH
 
     # Merge to master
-    git checkout main
+    git checkout $PLATFORM_BRANCH
     git merge $BRANCH
     git push
 }

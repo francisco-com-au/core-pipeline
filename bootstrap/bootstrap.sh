@@ -1,8 +1,11 @@
 #!/bin/bash
 
-source env/test-fran.env
+source env/ab.env
 
+# First sign in to 1password
+eval $(op signin)
 
+echo "
 ##############################################################################
 #
 # Set up the Root project:
@@ -10,6 +13,7 @@ source env/test-fran.env
 # - enable billing
 #
 ##############################################################################
+"
 
 # Enable Resource Manager API (to be able to use other APIs)
 gcloud services enable cloudresourcemanager.googleapis.com --project $root_project_id
@@ -42,6 +46,7 @@ gsutil mb \
     gs://$root_project_id-terraform-backend
 
 
+echo "
 ##############################################################################
 #
 # Set up org groups
@@ -51,6 +56,7 @@ gsutil mb \
 # - viewers
 #
 ##############################################################################
+"
 
 # org admin
 gcloud identity groups create \
@@ -104,25 +110,76 @@ gcloud identity groups memberships add \
     --member-email="$user_name@$org_domain"
 
 
+echo "
+##############################################################################
+#
+# Grant groups access to resources
+#
+##############################################################################
+"
+# gcp-organization-admins
+gcloud organizations add-iam-policy-binding $org_id \
+    --member=group:gcp-organization-admins@$org_domain \
+    --role=roles/orgpolicy.policyAdmin
 
+
+
+echo "
 ##############################################################################
 #
 # Make a Service Account used by the core pipeline to deploy resources
 #
 ##############################################################################
+"
+
+# Allow creation of service accounts
+gcloud resource-manager org-policies disable-enforce \
+    constraints/iam.disableServiceAccountKeyCreation \
+    --organization=$org_id
+
 
 # Create service account
 gcloud iam service-accounts create $core_pipeline_sa_name \
     --description="used by the core pipeline to deploy resources at the org level" \
     --display-name="$core_pipeline_sa_name" \
     --project $root_project_id
-# Make key
+# Make key if not exists
 mkdir -p ~/credentials/$root_project_id
-gcloud iam service-accounts keys create ~/credentials/$root_project_id/$core_pipeline_sa_name.json \
+ls ~/credentials/$root_project_id/$core_pipeline_sa_name.json || gcloud iam service-accounts keys create ~/credentials/$root_project_id/$core_pipeline_sa_name.json \
     --iam-account $core_pipeline_sa_name@$root_project_id.iam.gserviceaccount.com \
     --project $root_project_id
 cp ~/credentials/$root_project_id/$core_pipeline_sa_name.json ../$org_abbreviation-core-pipeline-key.json
+# Put it in 1password
+secret_name="$org_abbreviation.root.core-pipeline"
+exists=false
+op item get --vault $vault_name $secret_name && exists=true || exists=false
+if [[ "$exists" == "true" ]]; then
+    echo Edit
+    op item edit \
+        --vault=$vault_name \
+        $secret_name \
+        "key\.json[file]=../$org_abbreviation-core-pipeline-key.json"
+else
+    echo Create
+    op item create --category="API Credential" \
+        --title=$secret_name \
+        --vault=$vault_name \
+        "key\.json[file]=../$org_abbreviation-core-pipeline-key.json"
+fi
 
+
+
+echo "
+##############################################################################
+#
+# Connect this repo to the bootstrap CI/CD
+#
+##############################################################################
+"
+
+
+# Create service account
+gcloud iam service-accounts create $core_pipeline_sa_name \
 
 # ------------------------------------------------
 # Grant roles

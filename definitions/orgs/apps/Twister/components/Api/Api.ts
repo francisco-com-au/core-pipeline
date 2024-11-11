@@ -1,5 +1,6 @@
 import { Component } from "../../../../../../types/Component";
 import { Api as ApiContainer } from "./containers/Api";
+import { Database as DatabaseContainer } from "./containers/Database";
 
 const Api: Component = {
     apiVersion: "platform.io/v1alpha1",
@@ -12,7 +13,7 @@ const Api: Component = {
         name: "api",
         description: "Customer facing API to search.",
         source: {
-            repo: "api",
+            repo: "twister-api",
             infraPath: 'infra',
         },
         domainPrefix: "api",
@@ -24,6 +25,8 @@ const Api: Component = {
 }
 
 ApiContainer.spec.component = Api.spec.id;
-// Api.spec.containers?.push(ApiContainer)
+Api.spec.containers?.push(ApiContainer);
+DatabaseContainer.spec.component = Api.spec.id;
+Api.spec.containers?.push(DatabaseContainer);
 
 export { Api }

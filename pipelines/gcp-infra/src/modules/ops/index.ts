@@ -73,7 +73,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
     });
 
     // Enable Pubsub and Cloudbuild APIs
-    const apis = ['pubsub.googleapis.com', 'cloudbuild.googleapis.com'];
+    const apis = ['pubsub.googleapis.com', 'cloudbuild.googleapis.com', 'iam.googleapis.com', 'cloudresourcemanager.googleapis.com'];
     const enabledApis = new Map<string, gcp.projects.Service>();
     let e: gcp.projects.Service;
     apis.forEach(api => {
@@ -127,6 +127,16 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 displayName: `CI/CD - ${app.spec.name} / ${env.name}`,
                 description: `Service account for automated CI/CD for App "${app.spec.name}" - Environment "${env.name}"`,
             });
+            // Give it access to write logs and pull artifacts            
+            [
+                'roles/logging.logWriter', 'roles/storage.objectViewer'
+            ].forEach(role => {
+                new gcp.projects.IAMMember(`${org.spec.id}.cicd.${app.spec.id}.${env.name}.${role}`, {
+                    project: ciProject.projectId,
+                    member: serviceAccount.email.apply(sa => `serviceAccount:${sa}`),
+                    role: role,
+                });
+            });
         });
     });
 
@@ -160,7 +170,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
             const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.repo-all-events.push.${app.spec.id}.${component.spec.id}`,
                 {
                     project: ciProject.projectId,
-                    name: `repo-all-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}`.substring(0, 63),
+                    name: makeTriggerName(`repo-all-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}`),
                     github: {
                         name: repoName,
                         owner: repoOrg,
@@ -206,7 +216,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 const messageBody = '{org:"$_ORG",app:"$_APP",component:"$_COMPONENT",env:"$_ENV",branch:"$BRANCH_NAME",repo:"$REPO_NAME",sha:"$SHORT_SHA",event:"$_EVENT"}'
                 const pushTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.repo-events.push.${app.spec.id}.${component.spec.id}.${env.name}`, {
                         project: ciProject.projectId,
-                        name: `repo-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}-${branch}-${env.name}`.substring(0, 63),
+                        name: makeTriggerName(`repo-events-push-${repoOrg ? `${repoOrg}-` : ''}${repoName}-${branch}-${env.name}`),
                         github: {
                             name: repoName,
                             owner: repoOrg,
@@ -247,9 +257,9 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 // If this component has an infrastructure folder, create a trigger
                 const buildInfra = false;
                 if (buildInfra && component.spec.source.infraPath) {
-                    const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.infra.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
+                    const infraTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.infra.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
                             project: ciProject.projectId,
-                            name: `component-infra-${app.spec.id}-${component.spec.id}-${env.name}`.substring(0, 63),
+                            name: makeTriggerName(`component-infra-${app.spec.id}-${component.spec.id}-${env.name}`),
                             github: {
                                 name: repoName,
                                 owner: repoOrg,
@@ -260,10 +270,13 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                             includedFiles: [`${component.spec.source.infraPath}/**`],
                             includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
                             build: {
+                                options: {
+                                    logging: 'CLOUD_LOGGING_ONLY'
+                                },
                                 steps: [
                                     {
                                         id: "Infra 🔧",
-                                        name: "pulumi/pulumi",
+                                        name: "gcr.io/$PROJECT_ID/core-pipeline-runner:latest",
                                         entrypoint: "/bin/sh",
                                         args: [
                                             "-c", `
@@ -302,7 +315,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                 if (buildComponent) {
                     const buildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.component.${app.spec.id}.${component.spec.id}.${env.name}`, {
                             project: ciProject.projectId,
-                            name: `component-build-${app.spec.id}-${component.spec.id}-${env.name}`.substring(0, 63),
+                            name: makeTriggerName(`component-build-${app.spec.id}-${component.spec.id}-${env.name}`),
                             github: {
                                 name: repoName,
                                 owner: repoOrg,
@@ -342,7 +355,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                     const messageBody = '{event:"New image available"}';
                     const containerBuildTrigger = new gcp.cloudbuild.Trigger(`${org.spec.id}.cicd.build.container.${app.spec.id}.${component.spec.id}.${container.spec.id}.${env.name}`, {
                         project: ciProject.projectId,
-                        name: `container-build-${app.spec.id}-${component.spec.id}-${container.spec.id}-${env.name}`.substring(0, 63),
+                        name: makeTriggerName(`container-build-${app.spec.id}-${component.spec.id}-${container.spec.id}-${env.name}`),
                         github: {
                             name: repoName,
                             owner: repoOrg,
@@ -387,7 +400,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                     ],
                                     waitFors: ["Build 🐳"],
                                 },{
-                                    id: "Update tag",
+                                    id: "Update tag 🏷",
                                     name: `gcr.io/$PROJECT_ID/core-pipeline-runner:latest`,
                                     entrypoint: "sh",
                                     args: [
@@ -411,7 +424,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         # Clone repo
                                         gh repo clone $$APPS_REPO
                                         cd platform-apps
-                                        git checkout main
+                                        git checkout ${process.env.PLATFORM_BRANCH}
                                         git checkout -b $$BRANCH
 
                                         # Apply tag
@@ -425,7 +438,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                             git push --set-upstream origin $$BRANCH
 
                                             # Merge to master
-                                            git checkout main
+                                            git checkout ${process.env.PLATFORM_BRANCH}
                                             git pull
                                             git merge $$BRANCH
                                             git push
@@ -441,7 +454,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                     ],
                                     waitFors: ["Push [sha] 🚀"]
                                 },{
-                                    id: "Publish new tag available",
+                                    id: "Publish new tag available 📝",
                                     name: "gcr.io/cloud-builders/gcloud",
                                     args: [
                                         'pubsub',
@@ -451,7 +464,7 @@ export function makeCIProject(org: Org, parentFolder: gcp.organizations.Folder):
                                         '--message',
                                         messageBody,
                                     ],
-                                    waitFors: ["Update tag"]
+                                    waitFors: ["Update tag 🏷"]
                                 }
                             ],
                             // images: [ciProject.projectId.apply(projectId => `gcr://${projectId}/`)],
@@ -534,48 +547,55 @@ export function makeNetworkProject(org: Org, parentFolder: gcp.organizations.Fol
 
     // Create DNS entries. Crawl the org to see what domains we need.
     const domains: string[] = [];
-    if (org.spec.domain) {
-        domains.push(org.spec.domain);
-        // const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${org.spec.domain}`.replace(/\./g, '-'), {
-        //     // name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
-        //     project: networkProject.projectId,
-        //     description: `Org level domain for organization ${org.spec.name}`,
-        //     dnsName: `${org.spec.domain}`,
-        //     labels: {
-        //         'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
-        //         'app': 'ops',
-        //         'created_by': 'pulumi',
-        //         // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}` <- this triggers a recreate and it fails
-        //     },
-        // },
-        // {
-        //     dependsOn: dnsApi ? [dnsApi] : []
-        // });
-    };
+    // if (org.spec.domain) {
+    //     domains.push(org.spec.domain);
+    //     const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${org.spec.domain}`.replace(/\./g, '-'), {
+    //         // name: 'Org DNS zone'.replace(/ /g, '-').toLowerCase(),
+    //         project: networkProject.projectId,
+    //         description: `Org level domain for organization ${org.spec.name}`,
+    //         dnsName: `${org.spec.domain}.`,
+    //         labels: {
+    //             'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
+    //             'app': 'ops',
+    //             'created_by': 'pulumi',
+    //             // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}` <- this triggers a recreate and it fails
+    //         },
+    //     },
+    //     {
+    //         dependsOn: dnsApi ? [dnsApi] : []
+    //     });
+    // };
     org.spec.apps?.forEach(app => {
         if (app.spec.domainName && !domains.includes(app.spec.domainName)) {
             domains.push(app.spec.domainName);
-            // const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${app.spec.domainName}`.replace(/\./g, '-'), {
-            //     // name: app.spec.name.replace(/ /g, '-').toLowerCase(),
-            //     project: networkProject.projectId,
-            //     description: `Domain for app ${app.spec.name}`,
-            //     dnsName: `${app.spec.domainName}.`,
-            //     labels: {
-            //         'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
-            //         'app': app.spec.name.replace(/ /g, '-').toLowerCase(),
-            //         'created_by': 'pulumi',
-            //         // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}` <- this triggers a recreate and it fails
-            //     },
-            // },
-            // {
-            //     dependsOn: dnsApi ? [dnsApi] : []
-            // });
+            const zone = new gcp.dns.ManagedZone(`${org.spec.id}-${app.spec.domainName}`.replace(/\./g, '-'), {
+                // name: app.spec.name.replace(/ /g, '-').toLowerCase(),
+                project: networkProject.projectId,
+                description: `Domain for app ${app.spec.name}`,
+                dnsName: `${app.spec.domainName}.`,
+                labels: {
+                    'organization': org.spec.name.replace(/ /g, '-').toLowerCase(),
+                    'app': app.spec.name.replace(/ /g, '-').toLowerCase(),
+                    'created_by': 'pulumi',
+                    // 'pulumi_last_reconciled': `${(moment(new Date())).format('YYYMMDD-HHmmss')}` <- this triggers a recreate and it fails
+                },
+            },
+            {
+                dependsOn: dnsApi ? [dnsApi] : []
+            });
         };
     });
 
     return networkProject
 };
 
+function makeTriggerName (name: string): string{
+    name = name.replace(/\./g, '-').substring(0, 62);
+    if (name.endsWith('-')) {
+        name += 'x';
+    };
+    return name
+}
 export function makePlatformOps(org: Org) {
     const platformOpsFolder = makeFolders(org);
     const networkProject = makeNetworkProject(org, platformOpsFolder);

@@ -2,7 +2,14 @@ import { RoleBinding } from '../../types/GCP';
 import { Org } from '../../types/Org';
 // import { Ops } from './apps/Ops/Ops';
 import { AddressAustralia } from './apps/AddressAustralia/AddressAustralia';
-import { Application } from './apps/EndToEndTest';
+import { EndToEnd } from './apps/EndToEnd';
+import { EasyGifts } from './apps/EasyGifts';
+import { Stocks } from './apps/Stocks';
+import { Twister } from './apps/Twister/Twister'
+import { Bank } from './apps/Bank/Bank'
+import { AI } from './apps/AI/AI';
+import { LeanmoteAI } from './apps/LeanmoteAI/LeanmoteAI';
+import { Store } from './apps/Store';
 
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
@@ -68,10 +75,31 @@ const Organization: Org = {
     }
 }
 // Ops.spec.organization = Organization.spec.id;
-// Organization.spec.apps?.push(Ops)
+// Organization.spec.apps?.push(Ops);
+
+// // Mount Easy Gifts
+// EasyGifts.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(EasyGifts);
+// Mount Address Auastralia
 AddressAustralia.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(AddressAustralia)
-Application.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Application)
+Organization.spec.apps?.push(AddressAustralia);
+// // Mount End To End
+// EndToEnd.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(EndToEnd);
+// // Mount Stocks
+// Stocks.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(Stocks);
+// // Mount Twister
+// Twister.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(Twister);
+// // Mount Bank
+// Bank.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(Bank);
+// // Mount AI
+// AI.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(AI);
+// // Mount store
+// Store.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(Store);
 
 export { Organization }

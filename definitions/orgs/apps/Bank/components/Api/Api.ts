@@ -10,20 +10,20 @@ const Api: Component = {
     spec: {
         id: "api",
         name: "api",
-        description: "Customer facing API to search.",
+        description: "API will receive posts from UP.",
         source: {
-            repo: "api",
+            repo: "bank-api",
             infraPath: 'infra',
         },
         domainPrefix: "api",
         containers: [],
         gcp: {
-            apis: ['dns.googleapis.com']
+            apis: ['dns.googleapis.com','pubsub.googleapis.com','firestore.googleapis.com']
         }
     }
 }
 
 ApiContainer.spec.component = Api.spec.id;
-// Api.spec.containers?.push(ApiContainer)
+// Api.spec.containers?.push(ApiContainer);
 
 export { Api }

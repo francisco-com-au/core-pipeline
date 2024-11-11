@@ -81,7 +81,13 @@ export function makeFolders(org: Org, ciProject: gcp.organizations.Project): Org
                 });
                 orgFolders[orgId].apps[appId].environments[envName].gcpFolderId = envFolder.id;
                 // Apply IAM
-                ['roles/resourcemanager.folderEditor', 'roles/resourcemanager.projectCreator', 'roles/resourcemanager.projectDeleter', 'roles/editor'].forEach(role => {
+                [
+                    'roles/resourcemanager.folderEditor',
+                    'roles/resourcemanager.projectCreator',
+                    'roles/resourcemanager.projectDeleter',
+                    'roles/resourcemanager.projectIamAdmin',
+                    'roles/editor'
+                ].forEach(role => {
                     console.log(`role ${role}`)
                     new gcp.folder.IAMMember(`${orgId}.${appId}.${envName}.serviceAccount:cicd.${role}`, {
                         folder: envFolder.id,
@@ -154,9 +160,27 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                     }, {dependsOn: [project]});
                 });
 
-                // Create build trigger for infra components
                 console.log(`component.spec.source ${JSON.stringify(component.spec.source)}`)
                 if (component.spec.source.infraPath) {
+                    // Create a service account for each component
+                    const serviceAccount = new gcp.serviceaccount.Account(`${org.spec.id}.${app.spec.id}.${component.spec.id}.${envName}`, {
+                        project: project.projectId,
+                        accountId: `editor-${app.spec.id}-${component.spec.id}-${envName}`,
+                        displayName: `Editor`,
+                        description: `General purpose account.`,
+                    });
+                    [
+                        "roles/editor"
+                    ].forEach(role => {
+                        new gcp.projects.IAMMember(`${org.spec.id}.${app.spec.id}.${component.spec.id}.${envName}.${role}`, {
+                            project: project.projectId,
+                            member: serviceAccount.email.apply(sa => `serviceAccount:${sa}`),
+                            role: role,
+                        });
+                    });
+
+                    
+                    // Create build trigger for infra components
                     const repoOrg = component.spec.source.organization || app.spec.github.organization;
                     const repoName = component.spec.source.repo;
                     const env = app.spec.environments.filter(e => e.name == envName)[0];
@@ -175,10 +199,13 @@ export function makeProjects(org: Org, orgFolders: OrgFolders, ciProject: Projec
                             includedFiles: [`${component.spec.source.infraPath}/**`],
                             includeBuildLogs: "INCLUDE_BUILD_LOGS_WITH_STATUS",
                             build: {
+                                options: {
+                                    logging: 'CLOUD_LOGGING_ONLY'
+                                },
                                 steps: [
                                     {
                                         id: "Infra 🔧",
-                                        name: "pulumi/pulumi",
+                                        name: "gcr.io/$PROJECT_ID/core-pipeline-runner:latest",
                                         entrypoint: "/bin/sh",
                                         args: [
                                             "-c", `

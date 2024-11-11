@@ -7,11 +7,15 @@ const deployment = function(
     componentId: string,
     image: string,
     container: Container,
+    pullSecrets: string[],
     ): string {
 
     const plainEnv = container.spec.env?.filter(e => !e.secret && !e.configMap) || [];
     const secretEnv = container.spec.env?.filter(e => e.secret) || [];
     const configMapEnv = container.spec.env?.filter(e => !e.secret && e.configMap) || [];
+    // const volumens = container.spec.secrets?.map(s => {return {
+    //   a: s.
+    // }}) || [];
 
     return`---
 apiVersion: apps/v1
@@ -27,7 +31,7 @@ spec:
       app: ${appId}
       component: ${componentId}
       container: ${container.spec.id}
-  replicas: 1
+  replicas: ${container.spec.replicas || 1}
   template:
     metadata:
       labels:
@@ -60,7 +64,25 @@ spec:
               memory: "256Mi"
             limits:
               cpu: "250m"
-              memory: "256Mi"
+              memory: "256Mi"${container.spec.probe? `
+          readinessProbe:
+            httpGet:
+              path: ${container.spec.probe.path}
+              port: ${container.spec.probe.port}
+              scheme: ${container.spec.probe.scheme}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+            successThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: ${container.spec.probe.path}
+              port: ${container.spec.probe.port}
+              scheme: ${container.spec.probe.scheme}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 30
+            successThreshold: 1` : ''}
           envFrom:
             - configMapRef:
                 name: app-level-config
@@ -70,6 +92,16 @@ spec:
                 name: component-level-config-${componentId}
             - configMapRef:
                 name: container-level-config-${componentId}-${container.spec.id}
+          ${container.spec.secrets? `volumeMounts:${container.spec.secrets?.map(s => `
+            - mountPath: "/etc/secrets/${s.name}"
+              name: ${s.name}
+              readOnly: true`).join('')}` : ''}
+      ${container.spec.secrets? `volumes:${container.spec.secrets?.map(s => `
+        - name: ${s.name}
+          secret:
+            secretName: ${componentId}-${container.spec.id}-${s.name}`).join('')}` : ''}
+      ${pullSecrets.length ? `imagePullSecrets:${pullSecrets.map(p => `
+        - name: ${p}`).join('')}` : ''}
 `
 }
 

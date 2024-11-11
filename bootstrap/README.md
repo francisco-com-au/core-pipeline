@@ -6,6 +6,7 @@ By the end of this guide you will be able to commit code to a repo and have GCP 
 # 0. Dependencies
 - Docker running
 - docker buildx if you're on Apple silicon
+- 1password installed and authenticated
 
 # 1. Organisation setup 🏛
 
@@ -17,34 +18,35 @@ By the end of this guide you will be able to commit code to a repo and have GCP 
 
 ## Steps
 ### 1.1. Login
-- Log in to GCP and create a project not tied to any organisation. `gcp-fran-bootstrap`
-- Go to [APIs and services > Enabled APIs and services > Enable Service Usage API](https://console.cloud.google.com/apis/library/serviceusage.googleapis.com?project=gcp-fran-bootstrap)
+- Log in to GCP and create a project not tied to any organisation. `gcp-ab-bootstrap`
+- Go to [APIs and services > Enabled APIs and services > Enable Service Usage API](https://console.cloud.google.com/apis/library/serviceusage.googleapis.com?project=gcp-ab-bootstrap)
 
 ### 1.2. Set up Cloud Identity account
-- Go to [IAM > Identity & Organisation](https://console.cloud.google.com/iam-admin/cloudidentity/consumer?folder=&project=gcp-fran-bootstrap) and start the checklist
+- Go to [IAM > Identity & Organisation](https://console.cloud.google.com/iam-admin/cloudidentity/consumer?folder=&project=gcp-ab-bootstrap) and start the checklist
     - Sign up for Cloud Identity
     - Follow the prompts
     - Provide a domain name that you own
-    - Create a user called `gcp-admin@francisco.com.au`
+    - Create a user called `gcp-admin@american-broomstick.com`
 - Verify domain
     - Follow the prompts
     - Use TXT verification
     - Copy the token provided
-    - Go to the DNS settings of [your domain](https://domains.google.com/registrar/francisco.com.au/dns)
-    - Add a custom record @ TXT with the token provided(looks something like `google-site-verification=8kgjahs_g4kdsla_s_djf6ad2f`)
+    - Go to the DNS settings of [your domain](https://account.squarespace.com/domains/managed/american-broomstick.com/dns/dns-settings)
+    - Add a custom TXT record with `name=@` and the token provided (looks something like `google-site-verification=8kgjahs_g4kdsla_s_djf6ad2f`) as data
     - Verify domain (this may take a few minutes)
-- Create a new user with your name. This will be your primary user with less permissions to avoid mistakes `francisco@francisco.com.au`
-- Sign in with your new admin user (`gcp-admin@francisco.com.au`) and accept the free $300 because why not?
+- Create a new user with your name. This will be your primary user with less permissions to avoid mistakes `francisco@american-broomstick.com`
+- Optional but handy: create a Chrome profile with your admin user (`gcp-admin@american-broomstick.com`).
+- Sign in to [Google Cloud](https://console.cloud.google.com/) with your new admin user (`gcp-admin@american-broomstick.com`) and accept the free $300 because why not?
 - Create a billing account
 ### 1.3. Config gcloud CLI and create root project
 - install gcloud ([instructions](https://cloud.google.com/sdk/docs/install))
 - run `gcloud init` and follow this configuration:
 - [2] Create a new configuration
-- Name it `fran-gcp-admin`
+- Name it `ab-gcp-admin`
 - Select log in with a new account
-- Log in with the `gcp-admin@francisco.com.au` created in step 2
+- Log in with the `gcp-admin@american-broomstick.com` created in step 2
 - Create a new project
-- Name it `gcp-fran-root`
+- Name it `gcp-ab-root`
 
 
 # 2. Bootstrap initial configuration 🧱⛏
@@ -52,7 +54,7 @@ By the end of this guide you will be able to commit code to a repo and have GCP 
 <details>
     <summary>click to expand</summary>
 
-This step will configure the project `gcp-fran-root` created on the previous step. This project will be an admin zone and will serve as a host for:
+This step will configure the project `gcp-ab-root` created on the previous step. This project will be an admin zone and will serve as a host for:
 - `[deprecated: using Pulumi now]` ~~Bucket to store the Terraform state files to deploy Infrastructure as Code.~~
 - `[deprecated: using Pulumi now]` ~~Terraform service account with permissions at the organisation level to create/delete resources.~~
 - `core-pipeline` service account. This permission will be used by the Core Pipeline to deploy org level stuff. As such it has very sensitive permissions.
@@ -67,11 +69,11 @@ This is a very sensitive project and only members of the `gcp-organization-admin
 ### 2.1. Set the following environment variables
 | variable              | description |
 |-----------------------|-------------|
-| org_domain            | Domain of your organization. This is usually a DNS name you own. Example: `francisco.com.au` |
-| org_abbreviation      | A short abbreviation to be used as part of all the project IDs you create. Keeps names short. Example: `fran` |
+| org_domain            | Domain of your organization. This is usually a DNS name you own. Example: `american-broomstick.com` |
+| org_abbreviation      | A short abbreviation to be used as part of all the project IDs you create. Keeps names short. Example: `ab` |
 | org_id                | The ID of the organization you created on step 1. Example: `123456789012` |
 | billing_id            | The ID of the billing account you created on step 1.2. Example: `012ABC-DE3456-7890FA` |
-| root_project_id       | The ID of the project you created on step 1.3. Example: `gcp-fran-root` |
+| root_project_id       | The ID of the project you created on step 1.3. Example: `gcp-ab-root` |
 | user_name             | The name of the primary user account with less privileges created on step 1.2. Example: `francisco` |
 | core_pipeline_sa_name | A name for the service account used by the core pipeline. Example: `core-pipeline` |
 | terraform_sa_name     | `[deprecated]` A name for the service account used by Terraform. Example `terraform` |
@@ -82,8 +84,8 @@ This is a very sensitive project and only members of the `gcp-organization-admin
     
 ```bash
 # Admin stuff
-export org_domain='francisco.com.au'
-export org_abbreviation='fran'
+export org_domain='american-broomstick.com'
+export org_abbreviation='ab'
 export org_id='123456789012'
 export billing_id='012ABC-DE3456-7890FA'
 export root_project_id="gcp-${org_abbreviation}-root"
@@ -129,8 +131,8 @@ In this part you will configure a pipeline to automatically provision GCP resour
 ### 3.2 Connect to GitHub
 - Login to GCP as admin
     - Open the [GCP console](https://console.cloud.google.com)
-    - login with the admin user creted in 1.2 (`gcp-admin@francisco.com.au`)
-    - select the admin project created in 1.3 (`gcp-fran-root`)
+    - login with the admin user creted in 1.2 (`gcp-admin@american-broomstick.com`)
+    - select the admin project created in 1.3 (`gcp-ab-root`)
 - Connect this GitHub repo
     - go to the [Cloud Build](https://console.cloud.google.com/cloud-build) section
     - go to Triggers > Manage Repositories > Connect repository
