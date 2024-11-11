@@ -212,8 +212,10 @@ gcloud organizations add-iam-policy-binding $org_id \
 gcloud organizations add-iam-policy-binding $org_id \
     --member=serviceAccount:$core_pipeline_sa_name@$root_project_id.iam.gserviceaccount.com \
     --role=roles/storage.admin
-
-
+# Artifact registry admin
+gcloud organizations add-iam-policy-binding $org_id \
+    --member=serviceAccount:$core_pipeline_sa_name@$root_project_id.iam.gserviceaccount.com \
+    --role=roles/artifactregistry.admin
 
 
 
