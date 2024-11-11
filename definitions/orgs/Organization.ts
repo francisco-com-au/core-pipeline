@@ -1,15 +1,6 @@
 import { RoleBinding } from '../../types/GCP';
 import { Org } from '../../types/Org';
-// import { Ops } from './apps/Ops/Ops';
 import { AddressAustralia } from './apps/AddressAustralia/AddressAustralia';
-import { EndToEnd } from './apps/EndToEnd';
-import { EasyGifts } from './apps/EasyGifts';
-import { Stocks } from './apps/Stocks';
-import { Twister } from './apps/Twister/Twister'
-import { Bank } from './apps/Bank/Bank'
-import { AI } from './apps/AI/AI';
-import { LeanmoteAI } from './apps/LeanmoteAI/LeanmoteAI';
-import { Store } from './apps/Store';
 
 const defaultRoles: RoleBinding[] = [
 // gcp-viewer can view everything
