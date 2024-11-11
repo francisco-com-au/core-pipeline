@@ -77,29 +77,29 @@ const Organization: Org = {
 // Ops.spec.organization = Organization.spec.id;
 // Organization.spec.apps?.push(Ops);
 
-// Mount Easy Gifts
-EasyGifts.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(EasyGifts);
+// // Mount Easy Gifts
+// EasyGifts.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(EasyGifts);
 // Mount Address Auastralia
 AddressAustralia.spec.organization = Organization.spec.id;
 Organization.spec.apps?.push(AddressAustralia);
-// Mount End To End
-EndToEnd.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(EndToEnd);
-// Mount Stocks
-Stocks.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Stocks);
-// Mount Twister
-Twister.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Twister);
-// Mount Bank
-Bank.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Bank);
-// Mount AI
-AI.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(AI);
-// Mount store
-Store.spec.organization = Organization.spec.id;
-Organization.spec.apps?.push(Store);
+// // Mount End To End
+// EndToEnd.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(EndToEnd);
+// // Mount Stocks
+// Stocks.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(Stocks);
+// // Mount Twister
+// Twister.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(Twister);
+// // Mount Bank
+// Bank.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(Bank);
+// // Mount AI
+// AI.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(AI);
+// // Mount store
+// Store.spec.organization = Organization.spec.id;
+// Organization.spec.apps?.push(Store);
 
 export { Organization }
