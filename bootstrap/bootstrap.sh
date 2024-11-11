@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source env/test-fran.env
+source env/test-ab.env
 
 # First sign in to 1password
 eval $(op signin)
